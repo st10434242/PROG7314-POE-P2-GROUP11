@@ -1,0 +1,8 @@
+<resources>
+    <!--
+      Compose draws the real theme (see ui/theme/Theme.kt). This XML style only
+      exists so the manifest has something to point at before Compose starts,
+      which is what stops the white flash on cold launch.
+    -->
+    <style name="Theme.Runway" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

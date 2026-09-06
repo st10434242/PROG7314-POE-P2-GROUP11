@@ -2,6 +2,8 @@ package com.example.runway.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.runway.data.auth.GoogleAuthClient
+import com.example.runway.data.auth.AuthSessionStore
 import com.example.runway.data.local.RunwayDatabase
 import com.example.runway.data.repository.OfflineItemRepository
 import com.example.runway.domain.repository.ItemRepository
@@ -23,5 +25,13 @@ class AppContainer(context: Context) {
 
     val itemRepository: ItemRepository by lazy {
         OfflineItemRepository(database.itemDao())
+    }
+
+    val googleAuthClient: GoogleAuthClient by lazy {
+        GoogleAuthClient(context)
+    }
+
+    val authSessionStore: AuthSessionStore by lazy {
+        AuthSessionStore(context)
     }
 }

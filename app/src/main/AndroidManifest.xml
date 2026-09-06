@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Runway">
 
+        <!-- Single Activity: hosts the whole nav graph, including auth (splash / onboarding /
+             sign in / biometric) - see runway_nav_graph.xml. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"

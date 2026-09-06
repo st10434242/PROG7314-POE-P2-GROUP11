@@ -45,6 +45,7 @@ ksp {
 }
 
 dependencies {
+    implementation(libs.androidx.cardview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.ktx)
@@ -63,6 +64,8 @@ dependencies {
     // Navigation component, XML nav graph
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.biometric)
 
     // Room
     implementation(libs.androidx.room.runtime)

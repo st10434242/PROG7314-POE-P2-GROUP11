@@ -26,6 +26,11 @@ google-services.json
 *.apk
 *.aab
 
+# Firebase / Google credentials
+google-services.json
+firebase-adminsdk-*.json
+runway-part2-group11-firebase-adminsdk-fbsvc-4a2a622864.json
+
 # OS
 .DS_Store
 Thumbs.db

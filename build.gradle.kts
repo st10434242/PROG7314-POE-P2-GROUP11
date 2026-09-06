@@ -2,6 +2,5 @@
 // in the modules that need them - hence `apply false`.
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.ksp) apply false
 }

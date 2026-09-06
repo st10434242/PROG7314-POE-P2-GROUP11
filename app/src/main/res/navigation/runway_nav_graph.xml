@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Navigation graph. Only the four tab roots for now; add screens under them as they are built. -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/runway_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.runway.ui.home.HomeFragment"
+        android:label="@string/rw_nav_home"
+        tools:layout="@layout/fragment_stub" />
+
+    <fragment
+        android:id="@+id/wardrobeFragment"
+        android:name="com.example.runway.ui.wardrobe.WardrobeFragment"
+        android:label="@string/rw_nav_wardrobe"
+        tools:layout="@layout/fragment_stub" />
+
+    <fragment
+        android:id="@+id/outfitsFragment"
+        android:name="com.example.runway.ui.outfits.OutfitsFragment"
+        android:label="@string/rw_nav_outfits"
+        tools:layout="@layout/fragment_stub" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.runway.ui.profile.ProfileFragment"
+        android:label="@string/rw_nav_profile"
+        tools:layout="@layout/fragment_stub" />
+
+</navigation>

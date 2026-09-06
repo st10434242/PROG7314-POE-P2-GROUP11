@@ -10,7 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.runway.RunwayApplication
 import com.example.runway.domain.repository.ItemRepository
-import com.example.runway.ui.navigation.Routes
+import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 
 /**
  * Reads its navigation argument from SavedStateHandle rather than being
- * handed it by the composable - so the id survives process death.
+ * handed it by the fragment - so the id survives process death.
  */
 class ItemDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: ItemRepository
 ) : ViewModel() {
 
-    private val itemId: Long = checkNotNull(savedStateHandle[Routes.ARG_ITEM_ID]) {
-        "ItemDetailViewModel requires a ${Routes.ARG_ITEM_ID} argument"
+    private val itemId: Long = checkNotNull(savedStateHandle[NavArgs.ITEM_ID]) {
+        "ItemDetailViewModel requires a ${NavArgs.ITEM_ID} argument"
     }
 
     val uiState: StateFlow<ItemDetailUiState> = repository.observeItem(itemId)

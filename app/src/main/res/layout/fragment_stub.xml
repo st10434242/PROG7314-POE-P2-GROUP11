@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder screen shared by the four tab roots. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.example.runway.ui.components.ScreenHeaderView
+        android:id="@+id/stubHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:rwLarge="true"
+        app:rwShowBack="false"
+        tools:rwTitle="@string/rw_nav_wardrobe" />
+
+    <androidx.core.widget.NestedScrollView
+        style="@style/Widget.Runway.ScreenContent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.example.runway.ui.components.EmptyStateView
+                android:id="@+id/stubEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:rwIcon="@drawable/ic_rw_sparkles"
+                tools:rwBody="@string/rw_stub_wardrobe_body"
+                tools:rwTitle="@string/rw_nav_wardrobe" />
+
+            <!-- Opens the component catalog. -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/stubCatalog"
+                style="@style/Widget.Runway.Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/rw_space_8"
+                android:text="@string/rw_catalog_open"
+                app:icon="@drawable/ic_rw_palette" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

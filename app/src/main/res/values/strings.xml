@@ -1,15 +1,136 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+
     <string name="app_name">RUNWAY</string>
 
-    <string name="items_title">Items</string>
-    <string name="items_empty">Nothing here yet. Add the first item.</string>
-    <string name="items_add">Add item</string>
-    <string name="item_title_hint">Title</string>
-    <string name="item_note_hint">Note</string>
-    <string name="action_save">Save</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_delete">Delete</string>
-    <string name="action_back">Back</string>
-    <string name="detail_title">Item detail</string>
-    <string name="detail_missing">That item no longer exists.</string>
+    <!--Shared actions-->
+    <string name="rw_action_back">Back</string>
+    <string name="rw_action_close">Close</string>
+    <string name="rw_action_save">Save</string>
+    <string name="rw_action_cancel">Cancel</string>
+    <string name="rw_action_delete">Delete</string>
+    <string name="rw_action_add">Add item</string>
+    <string name="rw_action_edit">Edit</string>
+    <string name="rw_action_favourite">Favourite</string>
+
+    <!--Navigation-->
+    <string name="rw_nav_home">Home</string>
+    <string name="rw_nav_wardrobe">Wardrobe</string>
+    <string name="rw_nav_outfits">Outfits</string>
+    <string name="rw_nav_profile">Profile</string>
+
+    <!--Component accessibility-->
+    <!-- StarRatingView announces each star individually, so screen-reader users
+         can hear which value a tap will set. -->
+    <plurals name="rw_star_rating">
+        <item quantity="one">%d star</item>
+        <item quantity="other">%d stars</item>
+    </plurals>
+    <string name="rw_rating_current" tools:ignore="PluralsCandidate">Rated %1$d out of %2$d</string>
+
+    <!--Sync banner-->
+    <string name="rw_sync_offline">Offline — changes are queued</string>
+    <plurals name="rw_sync_queued">
+        <item quantity="one">Offline — %d change queued</item>
+        <item quantity="other">Offline — %d changes queued</item>
+    </plurals>
+    <string name="rw_sync_syncing">Syncing…</string>
+
+    <!--Stub screens-->
+    <!-- Placeholders proving the shell works. Each is replaced by the teammate
+         who owns that screen's ticket. -->
+    <string name="rw_stub_home_title">Home</string>
+    <string name="rw_stub_home_body">The dashboard, weather suggestions and today\'s outfit land here.</string>
+    <string name="rw_stub_wardrobe_title">Wardrobe</string>
+    <string name="rw_stub_wardrobe_body">Your wardrobe grid, search and filters land here.</string>
+    <string name="rw_stub_outfits_title">Outfits</string>
+    <string name="rw_stub_outfits_body">Saved outfits, the builder and the weekly planner land here.</string>
+    <string name="rw_stub_profile_title">Profile</string>
+    <string name="rw_stub_profile_body">Your stats, swap listings and settings land here.</string>
+    <string name="rw_stub_add">Add-item flow — camera, cutout and tagging.</string>
+
+    <!--Component catalog-->
+    <string name="rw_catalog_title">Component catalog</string>
+    <string name="rw_catalog_subtitle">Runway design system</string>
+    <string name="rw_catalog_open">Open component catalog</string>
+
+    <string name="rw_catalog_buttons">Buttons</string>
+    <string name="rw_catalog_icon_buttons">Icon buttons</string>
+    <string name="rw_catalog_chips">Chips</string>
+    <string name="rw_catalog_inputs">Inputs</string>
+    <string name="rw_catalog_selection">Selection controls</string>
+    <string name="rw_catalog_data">Data display</string>
+    <string name="rw_catalog_rows">List rows</string>
+    <string name="rw_catalog_feedback">Feedback</string>
+    <string name="rw_catalog_empty">Empty states</string>
+    <string name="rw_catalog_identity">Identity</string>
+    <string name="rw_catalog_typography">Typography</string>
+    <string name="rw_catalog_icons">Icons</string>
+
+    <string name="rw_catalog_primary">Primary</string>
+    <string name="rw_catalog_secondary">Secondary</string>
+    <string name="rw_catalog_outline">Outline</string>
+    <string name="rw_catalog_ghost">Ghost</string>
+    <string name="rw_catalog_danger">Delete item</string>
+    <string name="rw_catalog_small">Small</string>
+    <string name="rw_catalog_block">Full width</string>
+    <string name="rw_catalog_disabled">Disabled</string>
+
+    <string name="rw_catalog_show_sheet">Show bottom sheet</string>
+    <string name="rw_catalog_show_dialog">Show confirm dialog</string>
+    <string name="rw_catalog_show_destructive">Show destructive dialog</string>
+    <string name="rw_catalog_show_toast">Show toast</string>
+    <string name="rw_catalog_toast_text">Saved to your wardrobe</string>
+    <string name="rw_catalog_sheet_title">Filter wardrobe</string>
+    <string name="rw_catalog_sheet_body">Bottom sheets carry the same 24dp top corners and drag handle everywhere they appear.</string>
+    <string name="rw_catalog_dialog_title">Discard changes?</string>
+    <string name="rw_catalog_dialog_body">Anything you have edited on this screen will be lost.</string>
+    <string name="rw_catalog_dialog_confirm">Discard</string>
+    <string name="rw_catalog_delete_title">Delete this item?</string>
+    <string name="rw_catalog_delete_body">It will be removed from your wardrobe and from any outfits that use it.</string>
+
+    <string name="rw_catalog_field_label">Brand</string>
+    <string name="rw_catalog_field_hint">Optional</string>
+    <string name="rw_catalog_field_placeholder">e.g. Country Road</string>
+    <string name="rw_catalog_notes_label">Notes</string>
+    <string name="rw_catalog_error_label">Price</string>
+    <string name="rw_catalog_error_text">Enter a price above zero</string>
+
+    <string name="rw_catalog_section_action">See all</string>
+    <string name="rw_catalog_empty_title">Your wardrobe is empty</string>
+    <string name="rw_catalog_empty_body">Add your first piece and it will show up here.</string>
+    <string name="rw_catalog_empty_action">Add an item</string>
+
+    <string name="rw_catalog_segment_day">Day</string>
+    <string name="rw_catalog_segment_night">Night</string>
+    <string name="rw_catalog_segment_system">System</string>
+
+    <string name="rw_catalog_stat_items">Items owned</string>
+    <string name="rw_catalog_stat_delta">+3 this month</string>
+    <string name="rw_catalog_stat_outfits">Outfits built</string>
+    <string name="rw_catalog_stat_cpw">Avg cost per wear</string>
+
+    <string name="rw_catalog_row_notifications">Notifications</string>
+    <string name="rw_catalog_row_language">Language</string>
+    <string name="rw_catalog_row_language_value">English</string>
+    <string name="rw_catalog_row_wash">Wash reminders</string>
+    <string name="rw_catalog_row_signout">Sign out</string>
+
+    <string name="rw_catalog_stars_value">Confidence: %1$d / %2$d</string>
+
+    <!-- Specimen text for the type scale. Each names the style it is set in, so a
+         screenshot of the catalog doubles as the typography reference. -->
+    <string name="rw_type_display_large">Display Large · 22sp serif</string>
+    <string name="rw_type_display">Display · 17sp serif</string>
+    <string name="rw_type_label">Label · 12sp uppercase</string>
+    <string name="rw_type_body">Body · 14sp — the default for row labels and input text.</string>
+    <string name="rw_type_secondary">Secondary · 13sp — subtitles and supporting copy.</string>
+    <string name="rw_type_micro">Micro · 11sp — tile captions and the smallest supporting text.</string>
+
+    <string name="rw_catalog_wear_meter">Wears before wash</string>
+    <string name="rw_catalog_badge_new">New</string>
+    <string name="rw_catalog_badge_wash">Wash</string>
+    <string name="rw_catalog_badge_swap">Swap</string>
+
 </resources>

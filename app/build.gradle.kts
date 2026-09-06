@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     id("com.google.gms.google-services") version "4.5.0" apply false
 }
@@ -35,7 +34,8 @@ android {
     }
 
     buildFeatures {
-        compose = true
+        // ViewBinding generates a binding class per XML layout, so no findViewById.
+        viewBinding = true
     }
 }
 
@@ -46,26 +46,24 @@ ksp {
 }
 
 dependencies {
-    // The BOM must be declared before the Compose artifacts it versions.
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
-
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
 
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    // Material widgets that the Runway component library styles.
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
 
     // MVVM
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(libs.androidx.navigation.compose)
+    // Navigation component, XML nav graph
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     // Room
     implementation(libs.androidx.room.runtime)

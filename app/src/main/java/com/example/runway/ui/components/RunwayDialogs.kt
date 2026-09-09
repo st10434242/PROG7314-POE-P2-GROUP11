@@ -19,6 +19,7 @@ object RunwayDialogs {
         @StringRes confirmLabelRes: Int,
         @StringRes cancelLabelRes: Int = R.string.rw_action_cancel,
         destructive: Boolean = false,
+        onCancel: () -> Unit = {},
         onConfirm: () -> Unit,
     ) {
         Log.d(TAG, "confirm: title=${context.getString(titleRes)} destructive=$destructive")
@@ -28,7 +29,10 @@ object RunwayDialogs {
             .setNegativeButton(cancelLabelRes) { dialog, _ ->
                 Log.d(TAG, "confirm: cancelled")
                 dialog.dismiss()
+                onCancel()
             }
+            // Also covers the back button and tapping outside the dialog.
+            .setOnCancelListener { onCancel() }
             .setPositiveButton(confirmLabelRes) { dialog, _ ->
                 Log.d(TAG, "confirm: confirmed")
                 dialog.dismiss()

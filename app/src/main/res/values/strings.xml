@@ -81,7 +81,7 @@
     <string name="rw_biometric_title">Unlock Runway</string>
     <string name="rw_biometric_body">Use your fingerprint or face to confirm it\'s you.</string>
     <string name="rw_biometric_continue">Unlock</string>
-    <string name="rw_biometric_helper">Touch the sensor to confirm it's you.</string>
+    <string name="rw_biometric_helper">Touch the sensor to confirm it\'s you.</string>
     <string name="rw_biometric_use_account">Use account instead</string>
     <string name="rw_biometric_failed">We could not verify your fingerprint. Try again or use your account.</string>
     <string name="rw_biometric_avatar_content_description">Signed-in account</string>
@@ -235,5 +235,52 @@
     <string name="rw_catalog_badge_new">New</string>
     <string name="rw_catalog_badge_wash">Wash</string>
     <string name="rw_catalog_badge_swap">Swap</string>
+
+    <!--Settings-->
+    <string name="rw_settings_title">Settings</string>
+
+    <string name="rw_settings_appearance">Appearance</string>
+    <string name="rw_settings_theme">Theme</string>
+    <string name="rw_settings_theme_day">Day</string>
+    <string name="rw_settings_theme_night">Night</string>
+    <string name="rw_settings_theme_system">System</string>
+    <string name="rw_settings_theme_confirm_title">Change theme?</string>
+    <string name="rw_settings_theme_confirm_day">The app will switch to the day theme.</string>
+    <string name="rw_settings_theme_confirm_night">The app will switch to the night theme.</string>
+    <string name="rw_settings_theme_confirm_system">The app will follow your device theme.</string>
+    <string name="rw_settings_theme_apply">Apply</string>
+
+    <string name="rw_settings_language">Language</string>
+    <string name="rw_settings_language_en">English</string>
+    <string name="rw_settings_language_af">Afrikaans</string>
+    <string name="rw_settings_language_zu">isiZulu</string>
+
+    <string name="rw_settings_security">Security</string>
+    <string name="rw_settings_biometrics">Biometric unlock</string>
+    <string name="rw_settings_biometrics_hint">Use your fingerprint or face to open Runway.</string>
+    <string name="rw_settings_biometrics_off_title">Turn off biometric unlock?</string>
+    <string name="rw_settings_biometrics_off_body">You will sign in with your Google account instead.</string>
+    <string name="rw_settings_biometrics_off_confirm">Turn off</string>
+    <string name="rw_settings_biometrics_on">Biometric unlock on</string>
+
+    <string name="rw_settings_notifications">Notifications</string>
+    <string name="rw_settings_notify_wash">Wash reminders</string>
+    <string name="rw_settings_notify_swap">Swap requests</string>
+    <string name="rw_settings_notify_weather">Weather suggestions</string>
+    <string name="rw_settings_notify_on">%1$s on</string>
+    <string name="rw_settings_notify_off">%1$s off</string>
+
+    <string name="rw_settings_wardrobe">Wardrobe</string>
+    <string name="rw_settings_wear_limit">Default wear limit</string>
+    <string name="rw_settings_wear_limit_hint">How many wears before an item goes in the laundry basket.</string>
+    <string name="rw_settings_wear_limit_less">Decrease wear limit</string>
+    <string name="rw_settings_wear_limit_more">Increase wear limit</string>
+
+    <string name="rw_settings_about">About</string>
+    <string name="rw_settings_version">Runway version %1$s</string>
+    <string name="rw_settings_reset">Reset to defaults</string>
+    <string name="rw_settings_reset_title">Reset all settings?</string>
+    <string name="rw_settings_reset_body">Every setting goes back to the way it started. Your wardrobe is not affected.</string>
+    <string name="rw_settings_reset_done">Settings reset</string>
 
 </resources>

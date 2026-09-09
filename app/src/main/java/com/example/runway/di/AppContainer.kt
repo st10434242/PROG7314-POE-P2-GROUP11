@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Room
 import com.example.runway.data.auth.GoogleAuthClient
 import com.example.runway.data.auth.AuthSessionStore
+import com.example.runway.data.local.PreferencesSettingsStore
 import com.example.runway.data.local.RunwayDatabase
 import com.example.runway.data.repository.OfflineItemRepository
 import com.example.runway.domain.repository.ItemRepository
+import com.example.runway.domain.repository.SettingsRepository
 
 /**
  * Hand-rolled dependency container. Small enough to read in one sitting, and
@@ -33,5 +35,9 @@ class AppContainer(context: Context) {
 
     val authSessionStore: AuthSessionStore by lazy {
         AuthSessionStore(context)
+    }
+
+    val settingsRepository: SettingsRepository by lazy {
+        PreferencesSettingsStore(context)
     }
 }

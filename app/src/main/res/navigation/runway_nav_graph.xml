@@ -12,7 +12,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/runway_nav_graph"
-    app:startDestination="@id/signInFragment">
+    app:startDestination="@id/settingsFragment">
 
     <!-- ============================= Auth ============================= -->
 
@@ -274,7 +274,7 @@
         <action
             android:id="@+id/action_profile_signOut_to_signIn"
             app:destination="@id/signInFragment"
-            app:popUpTo="@id/splashFragment"
+            app:popUpTo="@id/runway_nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -294,7 +294,7 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.runway.ui.profile.SettingsFragment"
         android:label="Settings"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/action_settings_to_language"
             app:destination="@id/languageFragment" />

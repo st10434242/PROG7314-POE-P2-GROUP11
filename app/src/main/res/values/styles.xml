@@ -118,7 +118,7 @@
         <item name="android:minHeight">@dimen/rw_chip_height</item>
         <item name="chipMinHeight">@dimen/rw_chip_height</item>
         <item name="chipCornerRadius">@dimen/rw_radius_pill</item>
-        <item name="chipBackgroundColor">@color/rw_chip_background</item>
+        <item name="chipBackgroundColor">@color/rw_chip_background_state</item>
         <item name="chipStrokeColor">@color/rw_chip_stroke</item>
         <item name="chipStrokeWidth">@dimen/rw_border_width</item>
         <item name="android:textColor">@color/rw_chip_text</item>

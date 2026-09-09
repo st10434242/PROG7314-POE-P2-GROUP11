@@ -48,7 +48,7 @@
             android:layout_marginTop="48dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardBackgroundColor="@color/rw_chip_background"
+            app:cardBackgroundColor="?attr/rwSurface"
             app:cardCornerRadius="48dp"
             app:cardElevation="0dp"
             app:strokeColor="?attr/colorOutline"

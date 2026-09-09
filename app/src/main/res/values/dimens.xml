@@ -33,12 +33,14 @@
     <dimen name="rw_icon_size">18dp</dimen>
     <dimen name="rw_icon_size_small">14dp</dimen>
     <dimen name="rw_icon_size_tab">22dp</dimen>
+
     <!-- Circular well behind a list row icon. -->
     <dimen name="rw_icon_well_size">36dp</dimen>
     <dimen name="rw_icon_well_size_large">56dp</dimen>
 
     <!-- Components -->
     <dimen name="rw_avatar_size">44dp</dimen>
+    <dimen name="rw_auth_logo_size">112dp</dimen>
     <dimen name="rw_swatch_size">18dp</dimen>
     <dimen name="rw_meter_height">6dp</dimen>
     <dimen name="rw_divider_height">1dp</dimen>

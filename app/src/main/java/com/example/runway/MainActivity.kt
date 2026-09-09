@@ -6,16 +6,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.runway.databinding.ActivityMainBinding
-import com.example.runway.ui.components.RunwayToast
 
 /**
- * The app's single Activity. Hosts the nav graph and owns the bottom bar,
- * the add-item FAB and the sync banner.
+ * The app's single Activity. Hosts the whole nav graph - auth (splash / onboarding /
+ * sign in / biometric), the four-tab shell and the add-item modal flow all live in one
+ * NavHostFragment here - and owns the bottom bar, the add-item FAB and the sync banner.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +36,8 @@ class MainActivity : AppCompatActivity() {
         setUpFab()
     }
 
-    /** Connects the bottom navigation bar to the nav graph. */
+    /** Connects the bottom navigation bar to the nav graph and hides the shell chrome
+     * (bottom bar + FAB) on destinations that are not part of the four-tab shell. */
     private fun setUpNavigation() {
         val host = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
         navController = host.navController
@@ -43,19 +45,17 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d(TAG, "navigated to ${destination.label ?: destination.id}")
+            val showChrome = destination.id !in CHROMELESS_DESTINATIONS
+            binding.bottomNav.isVisible = showChrome
+            binding.addFab.isVisible = showChrome
         }
     }
 
-    /** The centre FAB opens the add-item flow, which is not a tab. */
+    /** The centre FAB opens the add-item flow as a modal stack over the current tab. */
     private fun setUpFab() {
         binding.addFab.setOnClickListener {
             Log.d(TAG, "add-item FAB tapped")
-            // Placeholder until the add-item flow is built.
-            RunwayToast.show(
-                view = binding.root,
-                message = getString(R.string.rw_stub_add),
-                anchor = binding.bottomNav,
-            )
+            navController.navigate(R.id.addItemGraph)
         }
     }
 
@@ -70,11 +70,6 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNav.updatePadding(bottom = bars.bottom)
             WindowInsetsCompat.CONSUMED
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart")
     }
 
     override fun onResume() {
@@ -99,5 +94,17 @@ class MainActivity : AppCompatActivity() {
 
     private companion object {
         const val TAG = "MainActivity"
+
+        /** Destinations that are not part of the four-tab shell: auth and the add-item
+         * modal flow. The bottom bar and FAB are hidden on these, matching the mockup
+         * (TabBar only renders inside TabShell, after AppGate hands off). */
+        val CHROMELESS_DESTINATIONS = setOf(
+            R.id.onboardingFragment,
+            R.id.signInFragment,
+            R.id.biometricFragment,
+            R.id.cameraFragment,
+            R.id.cutoutFragment,
+            R.id.tagItemFragment,
+        )
     }
 }

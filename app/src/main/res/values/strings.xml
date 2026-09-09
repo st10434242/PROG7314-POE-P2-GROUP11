@@ -20,6 +20,28 @@
     <string name="rw_nav_outfits">Outfits</string>
     <string name="rw_nav_profile">Profile</string>
 
+    <!--Authentication-->
+    <string name="rw_auth_login_title">Sign in to Runway</string>
+    <string name="rw_auth_login_body">Use your Google account to sync your wardrobe across devices.</string>
+    <string name="rw_auth_fingerprint">Unlock with fingerprint next time</string>
+    <string name="rw_auth_google_button">Continue with Google</string>
+    <string name="rw_auth_email_label">Account email</string>
+    <string name="rw_auth_email_hint">Optional email hint</string>
+    <string name="rw_auth_email_helper">Optional. Helps preselect the right Google account.</string>
+    <string name="rw_auth_email_error">Enter a valid email address or leave the field blank.</string>
+    <string name="rw_auth_terms">By continuing you agree to the Runway terms and privacy policy.</string>
+    <string name="rw_auth_sign_in_failed">We could not sign you in. Please try again.</string>
+    <string name="rw_auth_cancelled">Sign-in was cancelled. Please try again.</string>
+    <string name="rw_auth_invalid_account">Google returned an incomplete account. Please choose another account.</string>
+    <string name="rw_auth_sign_out_failed">You were signed out locally, but Google sign-out could not finish.</string>
+    <string name="rw_auth_no_session">Your session is no longer available. Please sign in again.</string>
+    <string name="rw_auth_logo_content_description">Runway logo</string>
+    <string name="rw_auth_fingerprint_unavailable">Fingerprint unlock is not available on this device.</string>
+
+    <string name="rw_profile_sign_out">Sign out</string>
+    <string name="rw_profile_sign_out_title">Sign out of Runway?</string>
+    <string name="rw_profile_sign_out_body">You will need to choose your Google account again next time.</string>
+
     <!--Component accessibility-->
     <!-- StarRatingView announces each star individually, so screen-reader users
          can hear which value a tap will set. -->
@@ -49,6 +71,87 @@
     <string name="rw_stub_profile_title">Profile</string>
     <string name="rw_stub_profile_body">Your stats, swap listings and settings land here.</string>
     <string name="rw_stub_add">Add-item flow — camera, cutout and tagging.</string>
+
+    <!--Onboarding-->
+    <string name="rw_onboarding_title">Welcome to Runway</string>
+    <string name="rw_onboarding_body">Your digital closet — snap your clothes, plan outfits and never wonder what to wear. The three intro slides land here.</string>
+    <string name="rw_onboarding_continue">Get started</string>
+
+    <!--Biometric unlock-->
+    <string name="rw_biometric_title">Unlock Runway</string>
+    <string name="rw_biometric_body">Use your fingerprint or face to confirm it\'s you.</string>
+    <string name="rw_biometric_continue">Unlock</string>
+    <string name="rw_biometric_helper">Touch the sensor to confirm it's you.</string>
+    <string name="rw_biometric_use_account">Use account instead</string>
+    <string name="rw_biometric_failed">We could not verify your fingerprint. Try again or use your account.</string>
+    <string name="rw_biometric_avatar_content_description">Signed-in account</string>
+
+    <!--Home tab pushes-->
+    <string name="rw_stub_weather_title">Weather suggestions</string>
+    <string name="rw_stub_weather_body">Outfit picks based on today\'s forecast land here.</string>
+
+    <!--Wardrobe tab pushes-->
+    <string name="rw_stub_item_detail_title">Item detail</string>
+    <string name="rw_stub_item_detail_body">Photos, tags, wear count and cost-per-wear land here.</string>
+    <string name="rw_item_detail_loading">Loading item…</string>
+    <string name="rw_item_detail_not_found">This item could not be found.</string>
+    <string name="rw_stub_item_edit_title">Edit item</string>
+    <string name="rw_stub_item_edit_body">Editing category, colour, brand, size, material and price lands here.</string>
+    <string name="rw_stub_colour_matcher_title">Colour matcher</string>
+    <string name="rw_stub_colour_matcher_body">Smart colour-matching suggestions for this item land here.</string>
+    <string name="rw_stub_laundry_title">Laundry basket</string>
+    <string name="rw_stub_laundry_body">Wear limits and wash reminders land here.</string>
+
+    <!--Add-item modal flow-->
+    <string name="rw_stub_camera_title">Camera</string>
+    <string name="rw_stub_camera_body">Capturing a clothing photo, or picking one from the gallery, lands here.</string>
+    <string name="rw_camera_continue">Use photo</string>
+    <string name="rw_stub_cutout_title">Cutout preview</string>
+    <string name="rw_stub_cutout_body">The automatic background-removal preview lands here.</string>
+    <string name="rw_cutout_continue">Looks good</string>
+    <string name="rw_stub_tag_item_title">Tag item</string>
+    <string name="rw_stub_tag_item_body">Category, colour, brand, size, material and price fields land here.</string>
+    <string name="rw_tag_item_continue">Save item</string>
+
+    <!--Outfits tab pushes-->
+    <string name="rw_stub_outfit_builder_title">Outfit builder</string>
+    <string name="rw_stub_outfit_builder_body">The drag-and-drop outfit canvas lands here.</string>
+    <string name="rw_stub_outfit_detail_title">Outfit detail</string>
+    <string name="rw_stub_outfit_detail_body">Outfit pieces, wear tracking and the confidence rating land here.</string>
+
+    <!--Profile tab pushes-->
+    <string name="rw_stub_stats_title">Stats &amp; insights</string>
+    <string name="rw_stub_stats_body">Most/least worn and cost-per-wear insights land here.</string>
+    <string name="rw_stub_notifications_title">Notifications</string>
+    <string name="rw_stub_notifications_body">Wash reminders and swap-request alerts land here.</string>
+    <string name="rw_stub_settings_title">Settings</string>
+    <string name="rw_stub_settings_body">Theme, biometrics, offline sync and language live here.</string>
+    <string name="rw_stub_language_title">Language</string>
+    <string name="rw_stub_language_body">English, Afrikaans and isiZulu land here.</string>
+
+    <!--Swap market-->
+    <string name="rw_stub_swap_market_title">Swap market</string>
+    <string name="rw_stub_swap_market_body">Items listed for swap or donation land here.</string>
+    <string name="rw_stub_listing_detail_title">Listing detail</string>
+    <string name="rw_stub_listing_detail_body">Listing photos, condition and swap requests land here.</string>
+    <string name="rw_stub_my_listings_title">My listings</string>
+    <string name="rw_stub_my_listings_body">Items you have listed, and requests on them, land here.</string>
+    <string name="rw_stub_create_listing_title">List for swap</string>
+    <string name="rw_stub_create_listing_body">Choosing an item and listing it for swap or donation lands here.</string>
+
+    <!--Bottom sheets-->
+    <string name="rw_sheet_filter_title">Filter</string>
+    <string name="rw_sheet_filter_body">Category, colour and other wardrobe filters land here.</string>
+    <string name="rw_sheet_sort_title">Sort</string>
+    <string name="rw_sheet_sort_body">Sort order options land here.</string>
+    <string name="rw_sheet_day_detail_title">Day detail</string>
+    <string name="rw_sheet_day_detail_body">The outfit planned for this day lands here.</string>
+    <string name="rw_sheet_pick_outfit_title">Pick an outfit</string>
+    <string name="rw_sheet_pick_outfit_body">Choosing an outfit to schedule lands here.</string>
+    <string name="rw_sheet_confidence_title">Rate today\'s confidence</string>
+    <string name="rw_sheet_confidence_body">The confidence-rating control lands here.</string>
+    <string name="rw_sheet_confirm_title">Are you sure?</string>
+    <string name="rw_sheet_confirm_body">A generic confirm/cancel action lands here.</string>
 
     <!--Component catalog-->
     <string name="rw_catalog_title">Component catalog</string>

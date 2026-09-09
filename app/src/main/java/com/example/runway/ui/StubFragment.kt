@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.example.runway.databinding.FragmentStubBinding
 import com.example.runway.ui.catalog.CatalogActivity
+import com.example.runway.ui.components.EmptyStateView
 
 /**
  * Placeholder for a tab root that has not been built yet. Each tab subclasses
@@ -27,6 +28,13 @@ abstract class StubFragment : Fragment() {
 
     private var _binding: FragmentStubBinding? = null
     private val binding get() = requireNotNull(_binding) { "Accessed binding outside the view lifecycle" }
+
+    /**
+     * The empty-state view showing the title/body, exposed so a subclass that needs to
+     * demonstrate its one forward navigation (e.g. a "Continue" button) can add it here.
+     * Only valid between onViewCreated and onDestroyView.
+     */
+    protected val emptyState: EmptyStateView get() = binding.stubEmpty
 
     // Named logTag, not tag: Fragment already has a tag property.
     private val logTag: String get() = javaClass.simpleName

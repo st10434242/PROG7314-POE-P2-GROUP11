@@ -4,6 +4,7 @@
 
     <color name="rw_bg">#FF0A0A0B</color>
     <color name="rw_surface">#FF161618</color>
+    <color name="rw_chip_background">#FF161618</color>
     <color name="rw_elevated">#FF1F1F22</color>
     <color name="rw_border">#FF2A2A2E</color>
     <color name="rw_fg">#FFFAFAFA</color>

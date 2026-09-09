@@ -81,7 +81,7 @@
     <string name="rw_biometric_title">Unlock Runway</string>
     <string name="rw_biometric_body">Use your fingerprint or face to confirm it\'s you.</string>
     <string name="rw_biometric_continue">Unlock</string>
-    <string name="rw_biometric_helper">Touch the sensor to confirm it's you.</string>
+    <string name="rw_biometric_helper">Touch the sensor to confirm it\'s you.</string>
     <string name="rw_biometric_use_account">Use account instead</string>
     <string name="rw_biometric_failed">We could not verify your fingerprint. Try again or use your account.</string>
     <string name="rw_biometric_avatar_content_description">Signed-in account</string>

@@ -274,7 +274,7 @@
         <action
             android:id="@+id/action_profile_signOut_to_signIn"
             app:destination="@id/signInFragment"
-            app:popUpTo="@id/splashFragment"
+            app:popUpTo="@id/signInFragment"
             app:popUpToInclusive="true" />
     </fragment>
 

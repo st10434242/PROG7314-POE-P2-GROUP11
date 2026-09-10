@@ -47,20 +47,12 @@
             android:textAppearance="@style/TextAppearance.Runway.Body"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <com.example.runway.ui.components.FieldView
-            android:id="@+id/authEmailField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            app:rwHint="@string/rw_auth_email_helper"
-            app:rwLabel="@string/rw_auth_email_label" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/authGoogleButton"
             style="@style/Widget.Runway.Button.Outline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="@string/rw_auth_google_button"
             app:icon="@drawable/ic_rw_google" />
 

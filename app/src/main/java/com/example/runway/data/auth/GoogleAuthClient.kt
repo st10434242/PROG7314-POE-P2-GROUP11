@@ -34,6 +34,9 @@ class GoogleAuthClient(
     /** Firebase only accepts an ID token minted for the web client, not the Android one. */
     private val webClientId = appContext.getString(R.string.default_web_client_id)
 
+    /** Firebase persists its own user across launches, so it decides whether a session exists. */
+    val hasActiveSession: Boolean get() = firebaseAuth.currentUser != null
+
     /** Needs an Activity context: Credential Manager draws the account sheet over the caller. */
     suspend fun signIn(activityContext: Context): SignInOutcome {
         val request = GetCredentialRequest.Builder()

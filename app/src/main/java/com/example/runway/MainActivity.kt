@@ -41,6 +41,12 @@ class MainActivity : AppCompatActivity() {
     private fun setUpNavigation() {
         val host = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
         navController = host.navController
+
+        // Re-inflated so a returning user does not land on the sign-in screen.
+        val graph = navController.navInflater.inflate(R.navigation.runway_nav_graph)
+        graph.setStartDestination(resolveStartDestination())
+        navController.graph = graph
+
         binding.bottomNav.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -49,6 +55,18 @@ class MainActivity : AppCompatActivity() {
             binding.bottomNav.isVisible = showChrome
             binding.addFab.isVisible = showChrome
         }
+    }
+
+    /** Firebase decides whether a session survived, the local store only caches the profile. */
+    private fun resolveStartDestination(): Int {
+        val container = (application as RunwayApplication).container
+        if (!container.googleAuthClient.hasActiveSession) {
+            container.authSessionStore.clearSession()
+            return R.id.signInFragment
+        }
+
+        val session = container.authSessionStore.currentSession ?: return R.id.signInFragment
+        return if (session.biometricEnabled) R.id.biometricFragment else R.id.homeFragment
     }
 
     /** The centre FAB opens the add-item flow as a modal stack over the current tab. */

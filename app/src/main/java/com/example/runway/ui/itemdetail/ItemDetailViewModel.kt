@@ -17,16 +17,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/**
- * Reads its navigation argument from SavedStateHandle rather than being
- * handed it by the fragment - so the id survives process death.
- */
+// ViewModel for one garment's detail screen (IIE, 2026; Android Open Source Project, 2020c).
+
 class ItemDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: ItemRepository
 ) : ViewModel() {
-
-    private val itemId: Long = checkNotNull(savedStateHandle[NavArgs.ITEM_ID]) {
+    private val itemId: String = checkNotNull(savedStateHandle[NavArgs.ITEM_ID]) {
         "ItemDetailViewModel requires a ${NavArgs.ITEM_ID} argument"
     }
 
@@ -54,3 +51,8 @@ class ItemDetailViewModel(
         }
     }
 }
+
+/* Reference List
+IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
+Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 31 July 2023].
+*/

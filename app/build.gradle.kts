@@ -1,6 +1,10 @@
+
+
+// Build script for the Runway Android app (IIE, 2026; Square, Inc., n.d.).
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
 }
 
@@ -16,9 +20,16 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // The deployed API. Used by every build type unless overridden below.
+        buildConfigField("String", "API_BASE_URL", "\"https://runway-api.onrender.com/\"")
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -36,6 +47,7 @@ android {
     buildFeatures {
         // ViewBinding generates a binding class per XML layout, so no findViewById.
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -57,13 +69,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.recyclerview)
 
-    // MVVM
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)
 
-    // Navigation component, XML nav graph
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.credentials)
@@ -71,10 +81,15 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.androidx.biometric)
 
-    // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.serialization)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -86,10 +101,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation(libs.firebase.messaging) // FCM messaging
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.auth)
 }
+
+/* Reference List
+IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
+Square, Inc., n.d.. Retrofit: A type-safe HTTP client for Android and Java. [online] Available at: <https://square.github.io/retrofit/> [Accessed 31 July 2023].
+*/

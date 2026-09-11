@@ -3,13 +3,21 @@ package com.example.runway.domain.repository
 import com.example.runway.domain.model.Item
 import kotlinx.coroutines.flow.Flow
 
-/**
- * The contract the ViewModel depends on. Because this is an interface, a unit
- * test can hand the ViewModel a fake and never touch a real database.
- */
+// Repository contract the ViewModels depend on (IIE, 2026).
+
 interface ItemRepository {
     fun observeItems(): Flow<List<Item>>
-    fun observeItem(id: Long): Flow<Item?>
+
+    fun observeItem(id: String): Flow<Item?>
+
     suspend fun save(item: Item)
-    suspend fun delete(id: Long)
+
+    suspend fun delete(id: String)
+
+    // Pulls changes from the API and pushes anything queued locally.
+    suspend fun refresh(): Result<Unit>
 }
+
+/* Reference List
+IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
+*/

@@ -1,127 +1,63 @@
 package com.example.runway.data.auth
 
-import android.content.Context
-import android.util.Log
-import androidx.credentials.ClearCredentialStateRequest
-import androidx.credentials.CredentialManager
-import androidx.credentials.CustomCredential
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetCredentialResponse
-import androidx.credentials.exceptions.ClearCredentialException
-import androidx.credentials.exceptions.GetCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialException
-import androidx.credentials.exceptions.GetCredentialInterruptedException
-import androidx.credentials.exceptions.GetCredentialProviderConfigurationException
-import androidx.credentials.exceptions.NoCredentialException
 import com.example.runway.R
-import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.firebase.FirebaseNetworkException
+import android.content.Context
+import android.content.Intent
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
 
-/** Wraps Credential Manager and the Firebase exchange so the fragments stay focused on UI. */
-class GoogleAuthClient(
-    context: Context,
-    private val firebaseAuth: FirebaseAuth,
-) {
-
+// Google sign-in and the exchange for a Firebase identity (IIE, 2026; Sandoval, 2016).
+class GoogleAuthClient(context: Context) {
     private val appContext = context.applicationContext
     private val credentialManager = CredentialManager.create(appContext)
 
-    /** Firebase only accepts an ID token minted for the web client, not the Android one. */
-    private val webClientId = appContext.getString(R.string.default_web_client_id)
+    private val firebaseAuth: FirebaseAuth get() = FirebaseAuth.getInstance()
 
-    /** Firebase persists its own user across launches, so it decides whether a session exists. */
-    val hasActiveSession: Boolean get() = firebaseAuth.currentUser != null
-
-    /** Needs an Activity context: Credential Manager draws the account sheet over the caller. */
-    suspend fun signIn(activityContext: Context): SignInOutcome {
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(GetSignInWithGoogleOption.Builder(webClientId).build())
+    // requestIdToken is what asks Google for a token rather than just an email address.
+    private fun options(emailHint: String? = null): GoogleSignInOptions =
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(appContext.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .apply {
+                emailHint?.takeIf { it.isNotBlank() }?.let { setAccountName(it) }
+            }
             .build()
 
-        val response = try {
-            credentialManager.getCredential(activityContext, request)
-        } catch (e: GetCredentialException) {
-            Log.w(TAG, "credential request failed: ${e::class.simpleName}", e)
-            return e.toFailure()
-        }
+    fun buildSignInIntent(emailHint: String? = null): Intent =
+        GoogleSignIn.getClient(appContext, options(emailHint)).signInIntent
 
-        return exchangeWithFirebase(response)
+    // Turns a Google ID token into a signed-in Firebase user.
+    suspend fun signInToFirebase(
+        googleIdToken: String,
+        biometricEnabled: Boolean,
+    ): AuthSession {
+        val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
+        val result = firebaseAuth.signInWithCredential(credential).await()
+
+        val user = requireNotNull(result.user) { "Firebase returned no user for this credential" }
+
+        return AuthSession(
+            id = user.uid,
+            email = user.email.orEmpty(),
+            displayName = user.displayName.orEmpty(),
+            photoUrl = user.photoUrl?.toString(),
+            signedInAtMillis = System.currentTimeMillis(),
+            biometricEnabled = biometricEnabled,
+        )
     }
 
-    suspend fun signOut(): Boolean {
+    // Signs out of both.
+    fun signOut(): Task<Void> {
         firebaseAuth.signOut()
-        return try {
-            credentialManager.clearCredentialState(ClearCredentialStateRequest())
-            true
-        } catch (e: ClearCredentialException) {
-            Log.w(TAG, "could not clear credential state", e)
-            false
-        }
-    }
-
-    private suspend fun exchangeWithFirebase(response: GetCredentialResponse): SignInOutcome {
-        val credential = response.credential
-        if (credential !is CustomCredential ||
-            credential.type != GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-        ) {
-            Log.w(TAG, "unexpected credential type: ${credential.type}")
-            return SignInOutcome.Failure.IncompleteAccount
-        }
-
-        val idToken = try {
-            GoogleIdTokenCredential.createFrom(credential.data).idToken
-        } catch (e: GoogleIdTokenParsingException) {
-            Log.w(TAG, "could not parse the Google ID token", e)
-            return SignInOutcome.Failure.IncompleteAccount
-        }
-
-        return try {
-            val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-            val user = firebaseAuth.signInWithCredential(firebaseCredential).await().user
-                ?: return SignInOutcome.Failure.Failed
-            val email = user.email
-            if (email.isNullOrBlank()) return SignInOutcome.Failure.IncompleteAccount
-
-            SignInOutcome.Success(
-                AuthSession(
-                    id = user.uid,
-                    email = email,
-                    displayName = user.displayName.orEmpty(),
-                    photoUrl = user.photoUrl?.toString(),
-                    signedInAtMillis = System.currentTimeMillis(),
-                    biometricEnabled = false,
-                )
-            )
-        } catch (_: FirebaseNetworkException) {
-            SignInOutcome.Failure.Network
-        } catch (e: Exception) {
-            Log.w(TAG, "credential exchange failed", e)
-            SignInOutcome.Failure.Failed
-        }
-    }
-
-    private fun GetCredentialException.toFailure(): SignInOutcome.Failure = when (this) {
-        is GetCredentialCancellationException -> SignInOutcome.Failure.Cancelled
-        is NoCredentialException -> SignInOutcome.Failure.NoAccount
-        is GetCredentialInterruptedException -> SignInOutcome.Failure.Network
-        is GetCredentialProviderConfigurationException -> SignInOutcome.Failure.Configuration
-        else -> SignInOutcome.Failure.Failed
-    }
-
-    private companion object {
-        const val TAG = "GoogleAuthClient"
+        return GoogleSignIn.getClient(appContext, options()).signOut()
     }
 }
 
-/* References:
-    1. Google. 2026. Authenticate with Google on Android. [Online].
-        Available at: https://firebase.google.com/docs/auth/android/google-signin [Accessed 10 September 2026]
-
-    2. Android Developers. 2026. Implement Sign in with Google. [Online].
-        Available at: https://developer.android.com/identity/sign-in/credential-manager-siwg-implementation [Accessed 10 September 2026]
+/* Reference List
+IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
+Sandoval, K., 2016. What is the Difference Between an API and an SDK?. [online] Available at: <https://nordicapis.com/what-is-the-difference-between-an-api-and-an-sdk/> [Accessed 31 July 2023].
 */

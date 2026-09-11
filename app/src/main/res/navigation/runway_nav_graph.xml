@@ -113,7 +113,7 @@
         tools:layout="@layout/fragment_stub">
         <argument
             android:name="itemId"
-            app:argType="long" />
+            app:argType="string" />
         <action
             android:id="@+id/action_itemDetail_to_itemEdit"
             app:destination="@id/itemEditFragment" />
@@ -135,7 +135,7 @@
         tools:layout="@layout/fragment_stub">
         <argument
             android:name="itemId"
-            app:argType="long" />
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -145,7 +145,7 @@
         tools:layout="@layout/fragment_stub">
         <argument
             android:name="itemId"
-            app:argType="long" />
+            app:argType="string" />
         <action
             android:id="@+id/action_colourMatcher_to_itemDetail"
             app:destination="@id/itemDetailFragment" />
@@ -348,8 +348,9 @@
         tools:layout="@layout/fragment_stub">
         <argument
             android:name="itemId"
-            app:argType="long"
-            android:defaultValue="-1L" />
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
     <!-- ============================= Bottom sheets ============================= -->

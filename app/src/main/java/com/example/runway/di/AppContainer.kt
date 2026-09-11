@@ -9,6 +9,7 @@ import com.example.runway.data.local.RunwayDatabase
 import com.example.runway.data.local.SyncPreferences
 import com.example.runway.data.remote.api.ApiClient
 import com.example.runway.data.repository.OfflineItemRepository
+import com.example.runway.data.repository.SyncingSettingsRepository
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.SettingsRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -50,7 +51,10 @@ class AppContainer(context: Context) {
     }
 
     val settingsRepository: SettingsRepository by lazy {
-        PreferencesSettingsStore(appContext)
+        SyncingSettingsRepository(
+            local = PreferencesSettingsStore(appContext),
+            api = ApiClient.api,
+        )
     }
 }
 

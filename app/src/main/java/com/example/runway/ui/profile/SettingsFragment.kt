@@ -58,6 +58,10 @@ class SettingsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     if (!state.isLoading) render(state.settings)
+                    state.errorMessage?.let { message ->
+                        RunwayToast.show(binding.root, message)
+                        viewModel.onErrorShown()
+                    }
                 }
             }
         }

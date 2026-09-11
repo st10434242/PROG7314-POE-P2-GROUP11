@@ -94,10 +94,6 @@ retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "con
 # Logs full request and response bodies in debug builds only (Square, 2026).
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-# Awaits a Play Services Task from a coroutine (the Firebase sign-in exchange).
-kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
-# Firebase Auth issues the ID token the API verifies.
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 
 [plugins]
 # AGP 9 has built-in Kotlin support, so no separate kotlin-android plugin is applied.

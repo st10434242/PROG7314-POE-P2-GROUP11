@@ -42,7 +42,7 @@ class AppContainer(context: Context) {
     }
 
     val googleAuthClient: GoogleAuthClient by lazy {
-        GoogleAuthClient(appContext)
+        GoogleAuthClient(appContext, FirebaseAuth.getInstance())
     }
 
     val authSessionStore: AuthSessionStore by lazy {

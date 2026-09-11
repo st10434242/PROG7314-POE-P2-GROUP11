@@ -10,10 +10,9 @@ import com.example.runway.R
 import com.example.runway.ui.StubFragment
 import kotlinx.coroutines.launch
 
-/**
- * Takes an [com.example.runway.ui.navigation.NavArgs.ITEM_ID] argument. Already wired to the
- * real [ItemDetailViewModel] - only the screen itself is still a placeholder.
- */
+// Detail screen for one garment (IIE, 2026; Android Open Source Project, 2020c).
+
+// Takes an [com.example.runway.ui.navigation.NavArgs.ITEM_ID] argument.
 class ItemDetailFragment : StubFragment() {
     override val titleRes = R.string.rw_stub_item_detail_title
     override val bodyRes = R.string.rw_stub_item_detail_body
@@ -25,13 +24,19 @@ class ItemDetailFragment : StubFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    val item = state.item
                     emptyState.body = when {
                         state.isLoading -> getString(R.string.rw_item_detail_loading)
-                        state.item == null -> getString(R.string.rw_item_detail_not_found)
-                        else -> state.item.title
+                        item == null -> getString(R.string.rw_item_detail_not_found)
+                        else -> item.name
                     }
                 }
             }
         }
     }
 }
+
+/* Reference List
+IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
+Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 31 July 2023].
+*/

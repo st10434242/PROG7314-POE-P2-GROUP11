@@ -19,50 +19,101 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// ViewModel for the wardrobe list (IIE, 2026).
+// Synchronisation runs off the main thread (Android Open Source Project, 2020b).
+
 class ItemsViewModel(
     private val repository: ItemRepository
 ) : ViewModel() {
-
-    // Errors raised by user actions (as opposed to by the data stream).
+    // Errors raised by user actions, as opposed to by the data stream itself.
     private val actionError = MutableStateFlow<String?>(null)
+    private val syncing = MutableStateFlow(false)
 
     val uiState: StateFlow<ItemsUiState> =
         combine(
             repository.observeItems()
                 .map<List<Item>, Result<List<Item>>> { Result.success(it) }
                 .catch { emit(Result.failure(it)) },
-            actionError.asStateFlow()
-        ) { result, error ->
+            actionError.asStateFlow(),
+            syncing.asStateFlow(),
+        ) { result, error, isSyncing ->
             result.fold(
                 onSuccess = { items ->
-                    ItemsUiState(items = items, isLoading = false, errorMessage = error)
+                    ItemsUiState(
+                        items = items,
+                        isLoading = false,
+                        isSyncing = isSyncing,
+                        errorMessage = error,
+                    )
                 },
                 onFailure = { throwable ->
-                    ItemsUiState(isLoading = false, errorMessage = throwable.message ?: "Could not load items.")
+                    ItemsUiState(
+                        isLoading = false,
+                        isSyncing = isSyncing,
+                        errorMessage = throwable.message ?: "Could not load your wardrobe.",
+                    )
                 }
             )
         }.stateIn(
             scope = viewModelScope,
-            // Keep collecting for 5s after the screen goes away so a rotation
-            // does not re-query the database.
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = ItemsUiState()
         )
 
-    fun onAddItem(title: String, note: String) {
-        val cleanTitle = title.trim()
-        if (cleanTitle.isEmpty()) {
-            actionError.value = "A title is required."
+    init {
+        refresh()
+    }
+
+    // Syncs with the Runway API.
+    fun refresh() {
+        viewModelScope.launch {
+            syncing.value = true
+            repository.refresh()
+            syncing.value = false
+        }
+    }
+
+    fun onAddItem(
+        name: String,
+        category: String,
+        colour: String? = null,
+        brand: String? = null,
+        size: String? = null,
+        purchasePrice: Double? = null,
+    ) {
+        val cleanName = name.trim()
+        if (cleanName.isEmpty()) {
+            actionError.value = "A name is required."
             return
         }
+        if (category.isBlank()) {
+            actionError.value = "Choose a category."
+            return
+        }
+        if (purchasePrice != null && purchasePrice < 0) {
+            actionError.value = "A price cannot be negative."
+            return
+        }
+
         viewModelScope.launch {
-            runCatching { repository.save(Item(title = cleanTitle, note = note.trim())) }
+            runCatching {
+                repository.save(
+                    Item(
+                        name = cleanName,
+                        category = category,
+                        colour = colour?.trim()?.ifBlank { null },
+                        brand = brand?.trim()?.ifBlank { null },
+                        size = size?.trim()?.ifBlank { null },
+                        purchasePrice = purchasePrice,
+                    )
+                )
+            }
                 .onFailure { actionError.value = it.message ?: "Could not save the item." }
                 .onSuccess { actionError.value = null }
         }
     }
 
-    fun onDeleteItem(id: Long) {
+    fun onDeleteItem(id: String) {
         viewModelScope.launch {
             runCatching { repository.delete(id) }
                 .onFailure { actionError.value = it.message ?: "Could not delete the item." }
@@ -82,3 +133,8 @@ class ItemsViewModel(
         }
     }
 }
+
+/* Reference List
+IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
+Android Open Source Project, 2020b. Processes and threads overview. [online] Available at: <https://developer.android.com/guide/components/processes-and-threads> [Accessed 31 July 2023].
+*/

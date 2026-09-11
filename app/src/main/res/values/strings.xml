@@ -25,13 +25,12 @@
     <string name="rw_auth_login_body">Use your Google account to sync your wardrobe across devices.</string>
     <string name="rw_auth_fingerprint">Unlock with fingerprint next time</string>
     <string name="rw_auth_google_button">Continue with Google</string>
-    <string name="rw_auth_email_label">Account email</string>
-    <string name="rw_auth_email_hint">Optional email hint</string>
-    <string name="rw_auth_email_helper">Optional. Helps preselect the right Google account.</string>
-    <string name="rw_auth_email_error">Enter a valid email address or leave the field blank.</string>
     <string name="rw_auth_terms">By continuing you agree to the Runway terms and privacy policy.</string>
     <string name="rw_auth_sign_in_failed">We could not sign you in. Please try again.</string>
     <string name="rw_auth_cancelled">Sign-in was cancelled. Please try again.</string>
+    <string name="rw_auth_no_account">No Google account is available on this device. Add one in Settings, then try again.</string>
+    <string name="rw_auth_config_error">Sign-in is temporarily unavailable. Please try again later.</string>
+    <string name="rw_auth_network_error">We could not reach Google. Check your connection and try again.</string>
     <string name="rw_auth_invalid_account">Google returned an incomplete account. Please choose another account.</string>
     <string name="rw_auth_sign_out_failed">You were signed out locally, but Google sign-out could not finish.</string>
     <string name="rw_auth_no_session">Your session is no longer available. Please sign in again.</string>

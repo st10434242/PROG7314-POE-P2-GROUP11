@@ -1,10 +1,6 @@
 package com.example.runway.ui.auth
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
-import android.text.InputType
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,44 +92,55 @@ class SignInFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.authEmailField.placeholder = getString(R.string.rw_auth_email_hint)
-        binding.authEmailField.editText.inputType =
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         biometricAvailable = isBiometricAvailable()
         binding.authFingerprintSwitch.isChecked = biometricAvailable
         binding.authFingerprintSwitch.isEnabled = biometricAvailable
 
-        binding.authGoogleButton.setOnClickListener {
-            binding.authEmailField.error = null
-            binding.authError.isVisible = false
-            val emailHint = binding.authEmailField.text.trim()
-            if (emailHint.isNotBlank() && !Patterns.EMAIL_ADDRESS.matcher(emailHint).matches()) {
-                binding.authEmailField.error = getString(R.string.rw_auth_email_error)
-                return@setOnClickListener
-            }
+        binding.authGoogleButton.setOnClickListener { startSignIn() }
+    }
 
-            hideKeyboard()
-            binding.authGoogleButton.isEnabled = false
-            try {
-                googleSignInLauncher.launch(
-                    googleAuthClient.buildSignInIntent(emailHint.takeIf { it.isNotBlank() })
-                )
-            } catch (_: Exception) {
-                binding.authGoogleButton.isEnabled = true
-                showError(getString(R.string.rw_auth_sign_in_failed))
+    private fun startSignIn() {
+        binding.authError.isVisible = false
+        setBusy(true)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            // requireActivity() rather than the fragment: the account sheet needs a window.
+            val outcome = googleAuthClient.signIn(requireActivity())
+            if (_binding == null) return@launch
+            setBusy(false)
+
+            when (outcome) {
+                is SignInOutcome.Success -> onSignedIn(outcome)
+                SignInOutcome.Failure.Cancelled -> showError(R.string.rw_auth_cancelled)
+                SignInOutcome.Failure.NoAccount -> showError(R.string.rw_auth_no_account)
+                SignInOutcome.Failure.Configuration -> showError(R.string.rw_auth_config_error)
+                SignInOutcome.Failure.Network -> showError(R.string.rw_auth_network_error)
+                SignInOutcome.Failure.IncompleteAccount ->
+                    showError(R.string.rw_auth_invalid_account)
+                SignInOutcome.Failure.Failed -> showError(R.string.rw_auth_sign_in_failed)
             }
         }
     }
 
-    private fun hideKeyboard() {
-        val inputManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
-            as? InputMethodManager ?: return
-        inputManager.hideSoftInputFromWindow(binding.root.windowToken, 0)
+    private fun onSignedIn(outcome: SignInOutcome.Success) {
+        val useBiometric = binding.authFingerprintSwitch.isChecked && biometricAvailable
+        sessionStore.saveSession(outcome.session.copy(biometricEnabled = useBiometric))
+
+        val destination = if (useBiometric) {
+            R.id.action_signIn_to_biometric
+        } else {
+            R.id.action_signIn_to_home
+        }
+        findNavController().navigate(destination)
     }
 
-    private fun showError(message: String) {
+    private fun setBusy(busy: Boolean) {
+        binding.authGoogleButton.isEnabled = !busy
+    }
+
+    private fun showError(messageRes: Int) {
         if (_binding == null) return
-        binding.authError.text = message
+        binding.authError.setText(messageRes)
         binding.authError.isVisible = true
     }
 

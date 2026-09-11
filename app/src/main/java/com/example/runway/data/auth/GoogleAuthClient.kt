@@ -13,6 +13,7 @@ import kotlinx.coroutines.tasks.await
 // Google sign-in and the exchange for a Firebase identity (IIE, 2026; Sandoval, 2016).
 class GoogleAuthClient(context: Context) {
     private val appContext = context.applicationContext
+    private val credentialManager = CredentialManager.create(appContext)
 
     private val firebaseAuth: FirebaseAuth get() = FirebaseAuth.getInstance()
 

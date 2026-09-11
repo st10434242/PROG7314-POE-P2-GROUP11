@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.runway.RunwayApplication
+import com.example.runway.data.remote.api.toUserMessage
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.repository.ItemRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,7 +69,7 @@ class ItemsViewModel(
     fun refresh() {
         viewModelScope.launch {
             syncing.value = true
-            repository.refresh()
+            repository.refresh().onFailure { actionError.value = it.toUserMessage() }
             syncing.value = false
         }
     }

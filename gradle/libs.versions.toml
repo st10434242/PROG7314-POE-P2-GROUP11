@@ -17,6 +17,8 @@ navigation = "2.10.0"
 room = "2.8.4"
 coroutines = "1.10.2"
 playServicesAuth = "21.6.0"
+credentials = "1.6.0"
+googleid = "1.2.0"
 biometric = "1.1.0"
 
 junit = "4.13.2"
@@ -45,6 +47,11 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+
+# Credential Manager replaces the legacy Google Sign-In API.
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 
 # --- Room ---
@@ -54,6 +61,9 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# Bridges Play Services / Firebase Task<T> to suspend functions via Task.await().
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
@@ -68,6 +78,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 # Firebase uses a Bill of Materials, which supplies versions for its modules.
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 

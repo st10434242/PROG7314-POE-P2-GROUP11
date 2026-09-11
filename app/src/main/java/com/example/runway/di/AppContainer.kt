@@ -9,6 +9,7 @@ import com.example.runway.data.local.RunwayDatabase
 import com.example.runway.data.repository.OfflineItemRepository
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.SettingsRepository
+import com.google.firebase.auth.FirebaseAuth
 
 /**
  * Hand-rolled dependency container. Small enough to read in one sitting, and
@@ -30,7 +31,7 @@ class AppContainer(context: Context) {
     }
 
     val googleAuthClient: GoogleAuthClient by lazy {
-        GoogleAuthClient(context)
+        GoogleAuthClient(context, FirebaseAuth.getInstance())
     }
 
     val authSessionStore: AuthSessionStore by lazy {

@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.runway.R
 import com.example.runway.RunwayApplication
 import com.example.runway.databinding.FragmentProfileBinding
 import com.example.runway.ui.components.RunwayDialogs
 import com.example.runway.ui.components.RunwayToast
+import kotlinx.coroutines.launch
 
 /** Profile tab with the session logout action. */
 class ProfileFragment : Fragment() {
@@ -47,9 +49,10 @@ class ProfileFragment : Fragment() {
 
     private fun signOut() {
         application.container.authSessionStore.clearSession()
-        application.container.googleAuthClient.signOut().addOnCompleteListener { task ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            val cleared = application.container.googleAuthClient.signOut()
             val currentBinding = _binding
-            if (!task.isSuccessful && currentBinding != null) {
+            if (!cleared && currentBinding != null) {
                 RunwayToast.show(currentBinding.root, R.string.rw_auth_sign_out_failed)
             }
             if (isAdded) {

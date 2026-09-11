@@ -37,7 +37,7 @@
         <action
             android:id="@+id/action_signIn_to_home"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/signInFragment"
+            app:popUpTo="@id/runway_nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -49,12 +49,12 @@
         <action
             android:id="@+id/action_biometric_to_home"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/signInFragment"
+            app:popUpTo="@id/runway_nav_graph"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_biometric_to_signIn"
             app:destination="@id/signInFragment"
-            app:popUpTo="@id/signInFragment"
+            app:popUpTo="@id/runway_nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
 

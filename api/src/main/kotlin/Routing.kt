@@ -12,6 +12,7 @@ fun Application.configureRouting() {
 
         healthRoutes()
         itemRoutes()
+        wardrobeRoutes()
         outfitRoutes()
         userRoutes()
     }

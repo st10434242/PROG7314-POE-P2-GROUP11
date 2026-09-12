@@ -25,8 +25,21 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"https://runway-api.onrender.com/\"")
     }
 
+    // Every machine normally signs debug builds with its own ~/.android/debug.keystore,
+    // and Google Sign-In only accepts certificates registered in Firebase. Signing with
+    // a keystore kept in the repo means anyone who clones the project can sign in.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("keystore/runway-debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
         }
 

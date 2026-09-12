@@ -30,6 +30,7 @@
     <string name="rw_auth_cancelled">Sign-in was cancelled. Please try again.</string>
     <string name="rw_auth_no_account">No Google account is available on this device. Add one in Settings, then try again.</string>
     <string name="rw_auth_config_error">Sign-in is temporarily unavailable. Please try again later.</string>
+    <string name="rw_auth_unregistered">Google would not accept this build of Runway. Its signing certificate needs to be registered in the Firebase project before sign-in will work on this device.</string>
     <string name="rw_auth_network_error">We could not reach Google. Check your connection and try again.</string>
     <string name="rw_auth_invalid_account">Google returned an incomplete account. Please choose another account.</string>
     <string name="rw_auth_sign_out_failed">You were signed out locally, but Google sign-out could not finish.</string>

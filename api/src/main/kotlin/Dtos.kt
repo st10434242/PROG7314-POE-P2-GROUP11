@@ -30,8 +30,11 @@ data class ItemResponse(
     val size: String? = null,
     val purchasePrice: Double? = null,
     val wearCount: Long = 0,
+    val wearLimit: Long = DEFAULT_WEAR_LIMIT,
     // Computed on the server so every client shows the same number.
     val costPerWear: Double? = null,
+    // Saves every client working out the laundry rule for itself.
+    val needsWash: Boolean = false,
     val archived: Boolean = false,
     val deleted: Boolean = false,
     val createdAt: String? = null,
@@ -46,6 +49,8 @@ data class CreateItemRequest(
     val brand: String? = null,
     val size: String? = null,
     val purchasePrice: Double? = null,
+    // Left out means "use whatever the user's settings say".
+    val wearLimit: Int? = null,
 ) {
     // Validation happens on the server even though the app validates too: the app can be bypassed by anyone with the API's URL and a token.
     fun validate() {
@@ -55,6 +60,7 @@ data class CreateItemRequest(
         if (purchasePrice != null && purchasePrice < 0) {
             throw ValidationException("purchasePrice cannot be negative")
         }
+        validateWearLimit(wearLimit)
     }
 }
 
@@ -67,6 +73,7 @@ data class UpdateItemRequest(
     val brand: String? = null,
     val size: String? = null,
     val purchasePrice: Double? = null,
+    val wearLimit: Int? = null,
     val archived: Boolean? = null,
 ) {
     fun validate() {
@@ -75,8 +82,9 @@ data class UpdateItemRequest(
         if (purchasePrice != null && purchasePrice < 0) {
             throw ValidationException("purchasePrice cannot be negative")
         }
+        validateWearLimit(wearLimit)
         if (name == null && category == null && colour == null && brand == null &&
-            size == null && purchasePrice == null && archived == null
+            size == null && purchasePrice == null && wearLimit == null && archived == null
         ) {
             throw ValidationException("Provide at least one field to update")
         }
@@ -154,6 +162,7 @@ data class SettingsDto(
     val units: String = "METRIC",
     val notificationsEnabled: Boolean = true,
     val biometricEnabled: Boolean = false,
+    val defaultWearLimit: Int = DEFAULT_WEAR_LIMIT.toInt(),
 ) {
     fun validate() {
         if (theme !in setOf("LIGHT", "DARK", "SYSTEM")) {
@@ -162,8 +171,59 @@ data class SettingsDto(
         if (units !in setOf("METRIC", "IMPERIAL")) {
             throw ValidationException("units must be METRIC or IMPERIAL")
         }
+        validateWearLimit(defaultWearLimit)
     }
 }
+
+// A partial update. Sending items replaces every placement on the outfit.
+@Serializable
+data class UpdateOutfitRequest(
+    val name: String? = null,
+    val occasion: String? = null,
+    val season: String? = null,
+    val coverImagePath: String? = null,
+    val items: List<OutfitItemDto>? = null,
+) {
+    fun validate() {
+        if (name != null && name.isBlank()) throw ValidationException("name cannot be blank")
+        if (name != null && name.length > MAX_NAME) {
+            throw ValidationException("name must be $MAX_NAME characters or fewer")
+        }
+        if (items != null && items.any { it.clothingItemId.isBlank() }) {
+            throw ValidationException("every outfit item needs a clothingItemId")
+        }
+        if (name == null && occasion == null && season == null &&
+            coverImagePath == null && items == null
+        ) {
+            throw ValidationException("Provide at least one field to update")
+        }
+    }
+}
+
+@Serializable
+data class LogOutfitWearRequest(
+    // ISO-8601 instant.
+    val wornOn: String? = null,
+)
+
+@Serializable
+data class OutfitWearResponse(
+    val outfitId: String,
+    val wornOn: String? = null,
+    // One entry per garment in the outfit, with its new count.
+    val items: List<WearResponse> = emptyList(),
+)
+
+// Totals for the home and profile screens, worked out on the server.
+@Serializable
+data class WardrobeSummaryResponse(
+    val itemCount: Int = 0,
+    val outfitCount: Int = 0,
+    val totalWears: Long = 0,
+    val totalValue: Double = 0.0,
+    // How many items are at or past their wear limit.
+    val needsWashCount: Int = 0,
+)
 
 // Firestore timestamp to ISO-8601, for JSON.
 fun Timestamp?.toIso(): String? = this?.toDate()?.toInstant()?.toString()
@@ -181,7 +241,21 @@ fun costPerWear(price: Double?, wearCount: Long): Double? =
     if (price == null || wearCount <= 0) null
     else Math.round((price / wearCount) * 100.0) / 100.0
 
+// One rule for every wear limit the API accepts.
+fun validateWearLimit(limit: Int?) {
+    if (limit == null) return
+    if (limit < MIN_WEAR_LIMIT || limit > MAX_WEAR_LIMIT) {
+        throw ValidationException("wearLimit must be between $MIN_WEAR_LIMIT and $MAX_WEAR_LIMIT")
+    }
+}
+
+// True once a garment has been worn as many times as its limit allows.
+fun needsWash(wearCount: Long, wearLimit: Long): Boolean =
+    wearLimit > 0 && wearCount >= wearLimit
+
 private const val MAX_NAME = 120
+const val MIN_WEAR_LIMIT = 1
+const val MAX_WEAR_LIMIT = 60
 
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.

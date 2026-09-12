@@ -58,6 +58,7 @@ class SignInFragment : Fragment() {
                 is SignInOutcome.Success -> onSignedIn(outcome)
                 SignInOutcome.Failure.Cancelled -> showError(R.string.rw_auth_cancelled)
                 SignInOutcome.Failure.NoAccount -> showError(R.string.rw_auth_no_account)
+                SignInOutcome.Failure.Unregistered -> showError(R.string.rw_auth_unregistered)
                 SignInOutcome.Failure.Configuration -> showError(R.string.rw_auth_config_error)
                 SignInOutcome.Failure.Network -> showError(R.string.rw_auth_network_error)
                 SignInOutcome.Failure.IncompleteAccount ->

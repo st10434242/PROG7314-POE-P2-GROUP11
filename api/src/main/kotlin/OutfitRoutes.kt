@@ -8,6 +8,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
+import io.ktor.server.routing.patch
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 
@@ -35,9 +36,20 @@ fun Route.outfitRoutes(service: OutfitService = OutfitService()) {
                 call.respond(service.get(call.uid(), call.outfitId()))
             }
 
+            patch("/{id}") {
+                val body = call.receive<UpdateOutfitRequest>()
+                call.respond(service.update(call.uid(), call.outfitId(), body))
+            }
+
             delete("/{id}") {
                 service.softDelete(call.uid(), call.outfitId())
                 call.respond(HttpStatusCode.NoContent)
+            }
+
+            // Wearing an outfit counts a wear against every garment in it.
+            post("/{id}/wears") {
+                val body = call.receive<LogOutfitWearRequest>()
+                call.respond(HttpStatusCode.Created, service.logWear(call.uid(), call.outfitId(), body))
             }
         }
     }

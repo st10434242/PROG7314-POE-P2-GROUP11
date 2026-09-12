@@ -1,6 +1,7 @@
 package com.example
 
 import com.google.cloud.Timestamp
+import com.google.cloud.firestore.FieldValue
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.Query
 
@@ -74,6 +75,96 @@ class OutfitService(firestore: Firestore? = null) {
 
         batch.commit().await()
         return document.toResponse(placements)
+    }
+
+    // Updates the outfit, and replaces its placements when the body carries items.
+    suspend fun update(uid: String, id: String, body: UpdateOutfitRequest): OutfitResponse {
+        body.validate()
+        requireOwned(uid, id)
+
+        val ref = outfits.document(id)
+        val batch = db.batch()
+
+        val changes = buildMap<String, Any> {
+            body.name?.let { put("name", it.trim()) }
+            body.occasion?.let { put("occasion", it) }
+            body.season?.let { put("season", it) }
+            body.coverImagePath?.let { put("coverImagePath", it) }
+            put(Fields.UPDATED_AT, Timestamp.now())
+        }
+        batch.update(ref, changes)
+
+        // A canvas edit moves and removes pieces, so the old placements go first.
+        if (body.items != null) {
+            val existing = ref.collection(Collections.OUTFIT_ITEMS).get().await().documents
+            existing.forEach { batch.delete(it.reference) }
+
+            body.items.forEach { dto ->
+                val itemRef = ref.collection(Collections.OUTFIT_ITEMS).document()
+                batch.set(itemRef, dto.toDocument(itemRef.id))
+            }
+        }
+
+        batch.commit().await()
+        return get(uid, id)
+    }
+
+    // Records the outfit as worn and counts a wear against each garment in it.
+    suspend fun logWear(uid: String, id: String, body: LogOutfitWearRequest): OutfitWearResponse {
+        requireOwned(uid, id)
+
+        val placements = loadItems(id)
+        if (placements.isEmpty()) {
+            throw ValidationException("An outfit needs at least one item before it can be worn")
+        }
+
+        val wornOn = body.wornOn?.toTimestamp() ?: Timestamp.now()
+        val now = Timestamp.now()
+        val itemsCollection = db.collection(Collections.CLOTHING_ITEMS)
+        val batch = db.batch()
+
+        val wears = placements.map { placement ->
+            val wearRef = db.collection(Collections.WEAR_HISTORY).document()
+
+            batch.set(
+                wearRef,
+                WearHistoryDocument(
+                    id = wearRef.id,
+                    ownerUid = uid,
+                    clothingItemId = placement.clothingItemId,
+                    outfitId = id,
+                    wornOn = wornOn,
+                ),
+            )
+
+            batch.update(
+                itemsCollection.document(placement.clothingItemId),
+                mapOf(
+                    Fields.WEAR_COUNT to FieldValue.increment(1),
+                    Fields.UPDATED_AT to now,
+                ),
+            )
+
+            wearRef.id to placement.clothingItemId
+        }
+
+        batch.commit().await()
+
+        // Read back afterwards so the counts returned are the stored ones.
+        val responses = wears.map { (wearId, clothingItemId) ->
+            val count = itemsCollection.document(clothingItemId).get().await()
+                .toObject(ClothingItemDocument::class.java)?.wearCount ?: 0
+
+            WearResponse(
+                id = wearId,
+                clothingItemId = clothingItemId,
+                outfitId = id,
+                wornOn = wornOn.toIso(),
+                newWearCount = count,
+            )
+        }
+
+        return OutfitWearResponse(outfitId = id, wornOn = wornOn.toIso(), items = responses)
     }
 
     suspend fun softDelete(uid: String, id: String) {

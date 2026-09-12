@@ -49,8 +49,18 @@ interface RunwayApi {
     @POST("api/v1/outfits")
     suspend fun createOutfit(@Body body: OutfitDto): OutfitDto
 
+    @PATCH("api/v1/outfits/{id}")
+    suspend fun updateOutfit(@Path("id") id: String, @Body body: UpdateOutfitDto): OutfitDto
+
     @DELETE("api/v1/outfits/{id}")
     suspend fun deleteOutfit(@Path("id") id: String)
+
+    // Counts a wear against every garment in the outfit.
+    @POST("api/v1/outfits/{id}/wears")
+    suspend fun logOutfitWear(@Path("id") id: String, @Body body: LogOutfitWearDto): OutfitWearDto
+
+    @GET("api/v1/wardrobe/summary")
+    suspend fun getWardrobeSummary(): WardrobeSummaryDto
 
     @GET("api/v1/users/me")
     suspend fun getProfile(): UserDto

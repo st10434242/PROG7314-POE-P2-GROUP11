@@ -14,8 +14,11 @@ data class ItemDto(
     val size: String? = null,
     val purchasePrice: Double? = null,
     val wearCount: Long = 0,
+    val wearLimit: Long = 3,
     // Computed by the API so every client shows the same figure.
     val costPerWear: Double? = null,
+    // True once the item has been worn as many times as its limit allows.
+    val needsWash: Boolean = false,
     val archived: Boolean = false,
     val deleted: Boolean = false,
     val createdAt: String? = null,
@@ -30,6 +33,8 @@ data class CreateItemDto(
     val brand: String? = null,
     val size: String? = null,
     val purchasePrice: Double? = null,
+    // Left null to inherit the limit from the user's settings.
+    val wearLimit: Int? = null,
 )
 
 @Serializable
@@ -40,6 +45,7 @@ data class UpdateItemDto(
     val brand: String? = null,
     val size: String? = null,
     val purchasePrice: Double? = null,
+    val wearLimit: Int? = null,
     val archived: Boolean? = null,
 )
 
@@ -81,6 +87,39 @@ data class OutfitDto(
     val updatedAt: String? = null,
 )
 
+// A partial update. Sending items replaces every placement on the outfit.
+@Serializable
+data class UpdateOutfitDto(
+    val name: String? = null,
+    val occasion: String? = null,
+    val season: String? = null,
+    val coverImagePath: String? = null,
+    val items: List<OutfitItemDto>? = null,
+)
+
+@Serializable
+data class LogOutfitWearDto(
+    val wornOn: String? = null,
+)
+
+@Serializable
+data class OutfitWearDto(
+    val outfitId: String = "",
+    val wornOn: String? = null,
+    // One entry per garment in the outfit, with its new count.
+    val items: List<WearDto> = emptyList(),
+)
+
+// Totals for the home and profile screens.
+@Serializable
+data class WardrobeSummaryDto(
+    val itemCount: Int = 0,
+    val outfitCount: Int = 0,
+    val totalWears: Long = 0,
+    val totalValue: Double = 0.0,
+    val needsWashCount: Int = 0,
+)
+
 @Serializable
 data class UserDto(
     val uid: String = "",
@@ -97,6 +136,7 @@ data class SettingsDto(
     val units: String = "METRIC",
     val notificationsEnabled: Boolean = true,
     val biometricEnabled: Boolean = false,
+    val defaultWearLimit: Int = 3,
 )
 
 // One page of results.

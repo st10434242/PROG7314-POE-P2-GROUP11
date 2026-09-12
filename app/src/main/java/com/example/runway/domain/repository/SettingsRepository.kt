@@ -14,4 +14,6 @@ interface SettingsRepository {
     suspend fun update(settings: RunwaySettings)
 
     suspend fun resetToDefaults()
+
+    suspend fun refresh(): Result<Unit> = Result.success(Unit)
 }

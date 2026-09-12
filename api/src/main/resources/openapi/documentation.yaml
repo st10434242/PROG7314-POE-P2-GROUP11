@@ -24,6 +24,7 @@ tags:
   - name: Health
   - name: Items
   - name: Outfits
+  - name: Wardrobe
   - name: Users
 
 paths:
@@ -186,15 +187,23 @@ paths:
           description: The wear was recorded
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  id: { type: string }
-                  clothingItemId: { type: string }
-                  outfitId: { type: string, nullable: true }
-                  wornOn: { type: string, format: date-time }
-                  newWearCount: { type: integer, example: 15 }
+              schema: { $ref: '#/components/schemas/Wear' }
         '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/wardrobe/summary:
+    get:
+      tags: [Wardrobe]
+      summary: Counts and totals across the caller's whole wardrobe
+      description: Backs the home and profile screens, so every client shows the same figures.
+      security:
+        - firebaseAuth: []
+      responses:
+        '200':
+          description: The totals
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WardrobeSummary' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
 
   /api/v1/outfits:
     get:
@@ -269,6 +278,36 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Outfit' }
         '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Outfits]
+      summary: Update an outfit
+      description: >
+        A partial update. Sending items replaces every placement on the outfit,
+        because editing the canvas both moves and removes pieces.
+      security:
+        - firebaseAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string, example: Friday dinner }
+                occasion: { type: string, nullable: true }
+                season: { type: string, nullable: true }
+                coverImagePath: { type: string, nullable: true }
+                items:
+                  type: array
+                  items: { $ref: '#/components/schemas/OutfitItem' }
+      responses:
+        '200':
+          description: The updated outfit
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Outfit' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
     delete:
       tags: [Outfits]
       summary: Delete an outfit
@@ -276,6 +315,38 @@ paths:
         - firebaseAuth: []
       responses:
         '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/outfits/{id}/wears:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    post:
+      tags: [Outfits]
+      summary: Record that the outfit was worn
+      description: Counts one wear against every garment in the outfit, in a single batch.
+      security:
+        - firebaseAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wornOn:
+                  type: string
+                  format: date-time
+                  description: Defaults to now.
+      responses:
+        '201':
+          description: The wear, with each garment's new count
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OutfitWear' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '404': { $ref: '#/components/responses/NotFound' }
 
   /api/v1/users/me:
@@ -340,12 +411,20 @@ components:
         size: { type: string, nullable: true, example: M }
         purchasePrice: { type: number, format: double, nullable: true, example: 1299.00 }
         wearCount: { type: integer, example: 14 }
+        wearLimit:
+          type: integer
+          example: 3
+          description: Wears allowed before the garment is due a wash.
         costPerWear:
           type: number
           format: double
           nullable: true
           example: 92.79
           description: Computed on the server. Null until the garment has been worn once.
+        needsWash:
+          type: boolean
+          example: false
+          description: True once wearCount has reached wearLimit.
         archived: { type: boolean, example: false }
         deleted: { type: boolean, example: false }
         createdAt: { type: string, format: date-time }
@@ -419,6 +498,39 @@ components:
         units: { type: string, enum: [METRIC, IMPERIAL], default: METRIC }
         notificationsEnabled: { type: boolean, default: true }
         biometricEnabled: { type: boolean, default: false }
+        defaultWearLimit:
+          type: integer
+          default: 3
+          minimum: 1
+          maximum: 60
+          description: Applied to a new item that does not name its own limit.
+
+    WardrobeSummary:
+      type: object
+      properties:
+        itemCount: { type: integer, example: 26 }
+        outfitCount: { type: integer, example: 12 }
+        totalWears: { type: integer, example: 184 }
+        totalValue: { type: number, format: double, example: 18450.00 }
+        needsWashCount: { type: integer, example: 3 }
+
+    Wear:
+      type: object
+      properties:
+        id: { type: string }
+        clothingItemId: { type: string }
+        outfitId: { type: string, nullable: true }
+        wornOn: { type: string, format: date-time }
+        newWearCount: { type: integer, example: 15 }
+
+    OutfitWear:
+      type: object
+      properties:
+        outfitId: { type: string }
+        wornOn: { type: string, format: date-time }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Wear' }
 
     ApiError:
       type: object

@@ -46,7 +46,7 @@ class GoogleAuthClient(
         val response = try {
             credentialManager.getCredential(activityContext, request)
         } catch (e: GetCredentialException) {
-            Log.w(TAG, "credential request failed: ${e::class.simpleName}", e)
+            Log.w(TAG, "credential request failed: ${e::class.simpleName}: ${e.message}", e)
             return e.toFailure()
         }
 
@@ -106,7 +106,16 @@ class GoogleAuthClient(
     }
 
     private fun GetCredentialException.toFailure(): SignInOutcome.Failure = when (this) {
-        is GetCredentialCancellationException -> SignInOutcome.Failure.Cancelled
+        // Credential Manager reports a refused request as a cancellation too, so the
+        // message is the only thing that separates "the user closed the sheet" from
+        // "Google would not accept this build".
+        is GetCredentialCancellationException ->
+            if (message?.contains(REAUTH_FAILED, ignoreCase = true) == true) {
+                SignInOutcome.Failure.Unregistered
+            } else {
+                SignInOutcome.Failure.Cancelled
+            }
+
         is NoCredentialException -> SignInOutcome.Failure.NoAccount
         is GetCredentialInterruptedException -> SignInOutcome.Failure.Network
         is GetCredentialProviderConfigurationException -> SignInOutcome.Failure.Configuration
@@ -115,6 +124,9 @@ class GoogleAuthClient(
 
     private companion object {
         const val TAG = "GoogleAuthClient"
+
+        // Google's wording when it rejects the app's signing certificate.
+        const val REAUTH_FAILED = "reauth"
     }
 }
 

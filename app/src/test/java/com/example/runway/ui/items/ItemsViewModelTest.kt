@@ -12,6 +12,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ItemsViewModelTest {
@@ -34,7 +35,7 @@ class ItemsViewModelTest {
             viewModel.uiState.collect { }
         }
 
-        val expected = listOf(Item(1L, "Wire up Room", "Entity, DAO, database"))
+        val expected = listOf(Item(id = "item-1", name = "Black wool coat", category = "OUTERWEAR"))
         repository.emit(expected)
 
         assertFalse(viewModel.uiState.value.isLoading)
@@ -44,7 +45,7 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun `a blank title is rejected and never reaches the repository`() = runTest {
+    fun `a blank name is rejected and never reaches the repository`() = runTest {
         val repository = FakeItemRepository()
         val viewModel = ItemsViewModel(repository)
 
@@ -52,10 +53,44 @@ class ItemsViewModelTest {
             viewModel.uiState.collect { }
         }
 
-        viewModel.onAddItem(title = "   ", note = "ignored")
+        viewModel.onAddItem(name = "   ", category = "TOP")
 
         assertEquals(0, repository.saveCount)
-        assertEquals("A title is required.", viewModel.uiState.value.errorMessage)
+        assertEquals("A name is required.", viewModel.uiState.value.errorMessage)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `a blank category is rejected`() = runTest {
+        val repository = FakeItemRepository()
+        val viewModel = ItemsViewModel(repository)
+
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.collect { }
+        }
+
+        viewModel.onAddItem(name = "Black wool coat", category = "  ")
+
+        assertEquals(0, repository.saveCount)
+        assertEquals("Choose a category.", viewModel.uiState.value.errorMessage)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `a negative price is rejected`() = runTest {
+        val repository = FakeItemRepository()
+        val viewModel = ItemsViewModel(repository)
+
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.collect { }
+        }
+
+        viewModel.onAddItem(name = "Coat", category = "OUTERWEAR", purchasePrice = -1.0)
+
+        assertEquals(0, repository.saveCount)
+        assertEquals("A price cannot be negative.", viewModel.uiState.value.errorMessage)
 
         job.cancel()
     }
@@ -69,12 +104,37 @@ class ItemsViewModelTest {
             viewModel.uiState.collect { }
         }
 
-        viewModel.onAddItem(title = "  Prove the ViewModel  ", note = " StateFlow ")
+        viewModel.onAddItem(name = "  Black wool coat  ", category = "OUTERWEAR", brand = " Country Road ")
 
         assertEquals(1, repository.saveCount)
         assertEquals(null, viewModel.uiState.value.errorMessage)
-        assertEquals("Prove the ViewModel", viewModel.uiState.value.items.single().title)
-        assertEquals("StateFlow", viewModel.uiState.value.items.single().note)
+
+        val saved = viewModel.uiState.value.items.single()
+        assertEquals("Black wool coat", saved.name)
+        assertEquals("OUTERWEAR", saved.category)
+        assertEquals("Country Road", saved.brand)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `losing the connection tells the user their changes will sync later`() = runTest {
+        val repository = FakeItemRepository()
+        repository.refreshResult = Result.failure(IOException("socket closed"))
+        val viewModel = ItemsViewModel(repository)
+
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.uiState.collect { }
+        }
+
+        viewModel.refresh()
+
+        assertTrue(repository.refreshCount > 0)
+        // The raw exception is never shown; toUserMessage turns it into this.
+        assertEquals(
+            "You are offline. Changes are saved and will sync later.",
+            viewModel.uiState.value.errorMessage,
+        )
 
         job.cancel()
     }

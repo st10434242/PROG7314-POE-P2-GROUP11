@@ -75,6 +75,7 @@ class ItemService(firestore: Firestore? = null) {
             size = body.size?.trim(),
             purchasePrice = body.purchasePrice,
             wearCount = 0,
+            wearLimit = body.wearLimit?.toLong() ?: defaultWearLimitFor(uid),
             archived = false,
             deleted = false,
             createdAt = now,
@@ -96,6 +97,7 @@ class ItemService(firestore: Firestore? = null) {
             body.brand?.let { put("brand", it.trim()) }
             body.size?.let { put("size", it.trim()) }
             body.purchasePrice?.let { put("purchasePrice", it) }
+            body.wearLimit?.let { put(Fields.WEAR_LIMIT, it.toLong()) }
             body.archived?.let { put(Fields.ARCHIVED, it) }
             put(Fields.UPDATED_AT, Timestamp.now())
         }
@@ -149,6 +151,48 @@ class ItemService(firestore: Firestore? = null) {
             wornOn = wornOn.toIso(),
             newWearCount = item.wearCount + 1,
         )
+    }
+
+    // Totals behind the home and profile screens. Counted here so every client agrees.
+    suspend fun summary(uid: String): WardrobeSummaryResponse {
+        val itemDocuments = items
+            .whereEqualTo(Fields.OWNER_UID, uid)
+            .whereEqualTo(Fields.DELETED, false)
+            .get()
+            .await()
+            .documents
+            .map { it.toObject(ClothingItemDocument::class.java) }
+
+        val outfitCount = db.collection(Collections.OUTFITS)
+            .whereEqualTo(Fields.OWNER_UID, uid)
+            .whereEqualTo(Fields.DELETED, false)
+            .get()
+            .await()
+            .size()
+
+        return WardrobeSummaryResponse(
+            itemCount = itemDocuments.size,
+            outfitCount = outfitCount,
+            totalWears = itemDocuments.sumOf { it.wearCount },
+            // Rounded to cents so the figure prints cleanly as money.
+            totalValue = Math.round(itemDocuments.sumOf { it.purchasePrice ?: 0.0 } * 100.0) / 100.0,
+            needsWashCount = itemDocuments.count { needsWash(it.wearCount, it.wearLimit) },
+        )
+    }
+
+    // Falls back to the shared default if the user has never opened settings.
+    private suspend fun defaultWearLimitFor(uid: String): Long {
+        val snapshot = db.collection(Collections.USERS)
+            .document(uid)
+            .collection(Collections.SETTINGS)
+            .document(Collections.SETTINGS_DOC)
+            .get()
+            .await()
+
+        if (!snapshot.exists()) return DEFAULT_WEAR_LIMIT
+
+        return snapshot.toObject(UserSettingsDocument::class.java)?.defaultWearLimit
+            ?: DEFAULT_WEAR_LIMIT
     }
 
     // Fetches an item and proves the caller owns it.

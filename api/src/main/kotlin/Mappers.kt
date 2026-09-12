@@ -12,7 +12,9 @@ fun ClothingItemDocument.toResponse(): ItemResponse = ItemResponse(
     size = size,
     purchasePrice = purchasePrice,
     wearCount = wearCount,
+    wearLimit = wearLimit,
     costPerWear = costPerWear(purchasePrice, wearCount),
+    needsWash = needsWash(wearCount, wearLimit),
     archived = archived,
     deleted = deleted,
     createdAt = createdAt.toIso(),
@@ -64,6 +66,7 @@ fun UserSettingsDocument.toDto(): SettingsDto = SettingsDto(
     units = units,
     notificationsEnabled = notificationsEnabled,
     biometricEnabled = biometricEnabled,
+    defaultWearLimit = defaultWearLimit.toInt(),
 )
 
 fun SettingsDto.toDocument(): UserSettingsDocument = UserSettingsDocument(
@@ -72,6 +75,7 @@ fun SettingsDto.toDocument(): UserSettingsDocument = UserSettingsDocument(
     units = units,
     notificationsEnabled = notificationsEnabled,
     biometricEnabled = biometricEnabled,
+    defaultWearLimit = defaultWearLimit.toLong(),
 )
 
 /* Reference List

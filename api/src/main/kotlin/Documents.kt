@@ -20,8 +20,13 @@ data class UserSettingsDocument(
     var units: String = "METRIC",
     var notificationsEnabled: Boolean = true,
     var biometricEnabled: Boolean = false,
+    // Applied to new items when the request does not name its own limit.
+    var defaultWearLimit: Long = DEFAULT_WEAR_LIMIT,
     var updatedAt: Timestamp? = null,
 )
+
+// Used by both a new item and a new settings document.
+const val DEFAULT_WEAR_LIMIT = 3L
 
 // clothingItems/{itemId} - a root collection, because items are filtered and listed across a whole wardrobe.
 data class ClothingItemDocument(
@@ -35,6 +40,8 @@ data class ClothingItemDocument(
     var purchasePrice: Double? = null,
     var purchaseDate: Timestamp? = null,
     var wearCount: Long = 0,
+    // How many wears before the item is due a wash.
+    var wearLimit: Long = DEFAULT_WEAR_LIMIT,
     var archived: Boolean = false,
     var deleted: Boolean = false,
     var createdAt: Timestamp? = null,
@@ -155,6 +162,7 @@ object Fields {
     const val UPDATED_AT = "updatedAt"
     const val CREATED_AT = "createdAt"
     const val WEAR_COUNT = "wearCount"
+    const val WEAR_LIMIT = "wearLimit"
     const val STATUS = "status"
     const val LISTING_ID = "listingId"
     const val DATE = "date"

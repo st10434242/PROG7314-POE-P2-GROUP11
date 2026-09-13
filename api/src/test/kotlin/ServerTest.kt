@@ -1,6 +1,7 @@
 package com.example
 
 import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.testApplication
 import kotlin.test.Test
@@ -14,6 +15,24 @@ import kotlin.test.assertTrue
 // Built on the Ktor server framework (Ktor, 2026).
 
 class ServerTest {
+    @Test
+    fun `swagger definition is served without authentication`() = testApplication {
+        application {
+            configureSerialization()
+            configureErrorHandling()
+            configureSecurity()
+            configureRouting()
+        }
+
+        val response = client.get("/swagger/documentation.yaml")
+        assertEquals(HttpStatusCode.OK, response.status)
+        val definition = response.bodyAsText()
+        assertTrue(definition.contains("openapi: 3.0.3"))
+        assertTrue(definition.contains("/api/v1/users/me/settings:"))
+        assertTrue(definition.contains("- url: /"))
+        assertFalse(definition.contains("https://runway-api.onrender.com"))
+    }
+
     @Test
     fun `create rejects a blank name`() {
         val body = CreateItemRequest(name = "   ", category = "TOP")

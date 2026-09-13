@@ -40,7 +40,12 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("debug")
-            buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/\"")
+            // Override with -PrunwayApiBaseUrl=https://your-service.onrender.com/
+            val demoApiUrl = providers.gradleProperty("runwayApiBaseUrl")
+                .getOrElse("http://10.0.2.2:8080/")
+            require(demoApiUrl.startsWith("https://") || demoApiUrl.startsWith("http://"))
+            require(demoApiUrl.endsWith("/") && '\"' !in demoApiUrl && '\\' !in demoApiUrl)
+            buildConfigField("String", "API_BASE_URL", "\"$demoApiUrl\"")
         }
 
         release {

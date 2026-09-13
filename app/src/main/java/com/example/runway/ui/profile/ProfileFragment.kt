@@ -34,6 +34,9 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val session = application.container.authSessionStore.currentSession
         binding.profileEmail.text = session?.email ?: getString(R.string.rw_auth_no_session)
+        binding.profileSettingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_settings)
+        }
         binding.profileSignOutButton.setOnClickListener {
             RunwayDialogs.confirm(
                 context = requireContext(),

@@ -12,12 +12,14 @@ fun RunwaySettings.toDto(units: String): SettingsDto = SettingsDto(
     units = units,
     notificationsEnabled = notifyWash || notifySwap || notifyWeather,
     biometricEnabled = biometricsEnabled,
+    defaultWearLimit = defaultWearLimit,
 )
 
 fun SettingsDto.applyTo(local: RunwaySettings): RunwaySettings = local.copy(
     theme = theme.toThemeOption(local.theme),
     language = language.takeIf { it in RunwaySettings.SUPPORTED_LANGUAGES } ?: local.language,
     biometricsEnabled = biometricEnabled,
+    defaultWearLimit = defaultWearLimit,
     notifyWash = notificationsEnabled && local.notifyWash,
     notifySwap = notificationsEnabled && local.notifySwap,
     notifyWeather = notificationsEnabled && local.notifyWeather,

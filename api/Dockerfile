@@ -4,7 +4,7 @@ FROM gradle:8-jdk21 AS build
 WORKDIR /src
 COPY . .
 # buildFatJar is supplied by the Ktor Gradle plugin and packages the application together with every dependency it needs (Ktor, 2026).
-RUN gradle buildFatJar --no-daemon
+RUN sed -i 's/\r$//' gradlew && sh ./gradlew buildFatJar --no-daemon
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app

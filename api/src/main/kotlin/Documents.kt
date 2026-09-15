@@ -20,13 +20,9 @@ data class UserSettingsDocument(
     var units: String = "METRIC",
     var notificationsEnabled: Boolean = true,
     var biometricEnabled: Boolean = false,
-    // Applied to new items when the request does not name its own limit.
     var defaultWearLimit: Long = DEFAULT_WEAR_LIMIT,
     var updatedAt: Timestamp? = null,
 )
-
-// Used by both a new item and a new settings document.
-const val DEFAULT_WEAR_LIMIT = 3L
 
 // clothingItems/{itemId} - a root collection, because items are filtered and listed across a whole wardrobe.
 data class ClothingItemDocument(
@@ -40,7 +36,9 @@ data class ClothingItemDocument(
     var purchasePrice: Double? = null,
     var purchaseDate: Timestamp? = null,
     var wearCount: Long = 0,
-    // How many wears before the item is due a wash.
+    // Wears before the garment is due for a wash. Copied from the owner's
+    // settings when the item is created, so changing the default later does not
+    // silently re-rule every existing garment.
     var wearLimit: Long = DEFAULT_WEAR_LIMIT,
     var archived: Boolean = false,
     var deleted: Boolean = false,
@@ -142,6 +140,8 @@ object Collections {
     const val USERS = "users"
     const val SETTINGS = "settings"
     const val SETTINGS_DOC = "preferences"
+    const val MODEL = "model"
+    const val MODEL_DOC = "profile"
     const val CLOTHING_ITEMS = "clothingItems"
     const val IMAGES = "images"
     const val OUTFITS = "outfits"
@@ -154,6 +154,11 @@ object Collections {
 }
 
 // Field names used in queries.
+// Wears before a garment needs washing, when neither the item nor the user's
+// settings specify one.
+// TODO: confirm this value against the original - see the note in the chat.
+const val DEFAULT_WEAR_LIMIT: Long = 3
+
 object Fields {
     const val OWNER_UID = "ownerUid"
     const val CATEGORY = "category"

@@ -7,7 +7,8 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [ItemEntity::class],
-    version = 2,
+    // 3: items gained imagePath.
+    version = 3,
     exportSchema = true
 )
 abstract class RunwayDatabase : RoomDatabase() {

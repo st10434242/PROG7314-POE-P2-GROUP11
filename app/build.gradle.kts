@@ -109,6 +109,12 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.play.services)
 
+    // Finds the body in the photo the user picks, on the device.
+    implementation(libs.mlkit.pose.detection.accurate)
+
+    // Removes the background from a garment photo, on the device.
+    implementation(libs.mlkit.subject.segmentation)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
 

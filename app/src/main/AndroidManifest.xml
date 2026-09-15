@@ -37,6 +37,21 @@
             </intent-filter>
         </activity>
 
+        <!--
+            Lets the system camera app write one photo into this app's own storage.
+            Not exported: only the app the URI is handed to can use it, and only for
+            the folder named in file_paths.xml.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Component catalog. Not exported - it is only opened from inside the app. -->
         <activity
             android:name=".ui.catalog.CatalogActivity"

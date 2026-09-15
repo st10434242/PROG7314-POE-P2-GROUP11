@@ -20,6 +20,7 @@ fun ItemEntity.toDomain(): Item = Item(
     brand = brand,
     size = size,
     purchasePrice = purchasePrice,
+    imagePath = imagePath,
     wearCount = wearCount,
     costPerWear = costPerWear(purchasePrice, wearCount),
     archived = archived,
@@ -39,6 +40,7 @@ fun Item.toEntity(
     brand = brand,
     size = size,
     purchasePrice = purchasePrice,
+    imagePath = imagePath,
     wearCount = wearCount,
     archived = archived,
     deleted = deleted,
@@ -47,7 +49,9 @@ fun Item.toEntity(
 )
 
 // A row that came from the server is by definition already synced, so pendingSync is false: writing it as true would push the server's own data straight back at it in an endless loop.
-fun ItemDto.toEntity(): ItemEntity = ItemEntity(
+// The API does not carry the photo yet, so the caller passes in whatever path the
+// local row already had. Without that, every sync would erase the user's pictures.
+fun ItemDto.toEntity(existingImagePath: String? = null): ItemEntity = ItemEntity(
     id = id,
     name = name,
     category = category,
@@ -55,6 +59,7 @@ fun ItemDto.toEntity(): ItemEntity = ItemEntity(
     brand = brand,
     size = size,
     purchasePrice = purchasePrice,
+    imagePath = existingImagePath,
     wearCount = wearCount,
     archived = archived,
     deleted = deleted,

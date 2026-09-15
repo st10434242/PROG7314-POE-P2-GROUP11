@@ -14,7 +14,7 @@ import com.example.runway.ui.components.RunwayDialogs
 import com.example.runway.ui.components.RunwayToast
 import kotlinx.coroutines.launch
 
-/** Profile tab with the session logout action. */
+/** Profile tab with the session logout action and the way in to the model screen. */
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
@@ -37,6 +37,10 @@ class ProfileFragment : Fragment() {
         binding.profileSettingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_profile_to_settings)
         }
+        // Entry point for the virtual model screen (Android Open Source Project, 2026).
+        binding.profileModelButton.setOnClickListener {
+            findNavController().navigate(R.id.action_profile_to_model)
+        }
         binding.profileSignOutButton.setOnClickListener {
             RunwayDialogs.confirm(
                 context = requireContext(),
@@ -52,6 +56,8 @@ class ProfileFragment : Fragment() {
 
     private fun signOut() {
         application.container.authSessionStore.clearSession()
+        // The body photo belongs to the person signing out, not to the device.
+        application.container.modelPhotoStore.clear()
         viewLifecycleOwner.lifecycleScope.launch {
             val cleared = application.container.googleAuthClient.signOut()
             val currentBinding = _binding
@@ -69,3 +75,7 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 }
+
+/* Reference List
+Android Open Source Project, 2026. Navigate to a destination. [online] Available at: <https://developer.android.com/guide/navigation/use-graph/navigate> [Accessed 15 September 2026].
+*/

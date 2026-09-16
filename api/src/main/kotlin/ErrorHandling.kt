@@ -22,6 +22,9 @@ data class ApiError(
     val message: String,
 )
 
+// Thrown when the third-party image service fails. Both try-on engines use it.
+class ImageServiceException(message: String) : Exception(message)
+
 // Thrown when a request is well-formed but the data it carries is not valid.
 class ValidationException(message: String) : RuntimeException(message)
 
@@ -74,6 +77,18 @@ fun Application.configureErrorHandling() {
             call.respond(
                 HttpStatusCode.NotFound,
                 ApiError("not_found", cause.message ?: "Not found")
+            )
+        }
+
+        // The image service is a third party. Its failures are not this server's
+        // fault and not the caller's, so they are reported as a bad gateway with
+        // the reason kept, because "no credit left" needs a different action from
+        // "try again shortly".
+        exception<ImageServiceException> { call, cause ->
+            call.application.log.warn("Image service failed", cause)
+            call.respond(
+                HttpStatusCode.BadGateway,
+                ApiError("image_service_failed", cause.message ?: "The image service failed")
             )
         }
 

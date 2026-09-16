@@ -55,6 +55,12 @@ fun Route.itemRoutes(service: ItemService = ItemService()) {
                 call.respond(HttpStatusCode.Created, service.logWear(call.uid(), call.itemId(), body))
             }
         }
+
+        // Wardrobe totals. Counted from the same item data, so it lives with the
+        // item service rather than in a collection of its own (RESTfulAPI.net, n.d.).
+        get("/api/v1/wardrobe/summary") {
+            call.respond(service.summary(call.uid()))
+        }
     }
 }
 

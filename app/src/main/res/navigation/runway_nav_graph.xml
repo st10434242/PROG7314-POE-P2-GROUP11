@@ -37,7 +37,7 @@
         <action
             android:id="@+id/action_signIn_to_home"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/runway_nav_graph"
+            app:popUpTo="@id/signInFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -49,12 +49,12 @@
         <action
             android:id="@+id/action_biometric_to_home"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/runway_nav_graph"
+            app:popUpTo="@id/signInFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_biometric_to_signIn"
             app:destination="@id/signInFragment"
-            app:popUpTo="@id/runway_nav_graph"
+            app:popUpTo="@id/signInFragment"
             app:popUpToInclusive="true" />
     </fragment>
 
@@ -94,7 +94,7 @@
         android:id="@+id/wardrobeFragment"
         android:name="com.example.runway.ui.wardrobe.WardrobeFragment"
         android:label="@string/rw_nav_wardrobe"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_wardrobe">
         <action
             android:id="@+id/action_wardrobe_to_itemDetail"
             app:destination="@id/itemDetailFragment" />
@@ -110,10 +110,15 @@
         android:id="@+id/itemDetailFragment"
         android:name="com.example.runway.ui.itemdetail.ItemDetailFragment"
         android:label="Item Detail"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_item_detail">
+        <!-- Item ids are Firestore document ids, which are strings. -->
         <argument
             android:name="itemId"
             app:argType="string" />
+        <!-- Puts this garment on the model straight away. -->
+        <action
+            android:id="@+id/action_itemDetail_to_model"
+            app:destination="@id/modelFragment" />
         <action
             android:id="@+id/action_itemDetail_to_itemEdit"
             app:destination="@id/itemEditFragment" />
@@ -133,6 +138,7 @@
         android:name="com.example.runway.ui.wardrobe.ItemEditFragment"
         android:label="Edit Item"
         tools:layout="@layout/fragment_stub">
+        <!-- Item ids are Firestore document ids, which are strings. -->
         <argument
             android:name="itemId"
             app:argType="string" />
@@ -143,6 +149,7 @@
         android:name="com.example.runway.ui.wardrobe.ColourMatcherFragment"
         android:label="Colour Matcher"
         tools:layout="@layout/fragment_stub">
+        <!-- Item ids are Firestore document ids, which are strings. -->
         <argument
             android:name="itemId"
             app:argType="string" />
@@ -171,7 +178,7 @@
             android:id="@+id/cameraFragment"
             android:name="com.example.runway.ui.additem.CameraFragment"
             android:label="Camera"
-            tools:layout="@layout/fragment_stub">
+            tools:layout="@layout/fragment_camera">
             <action
                 android:id="@+id/action_camera_to_cutout"
                 app:destination="@id/cutoutFragment" />
@@ -181,7 +188,7 @@
             android:id="@+id/cutoutFragment"
             android:name="com.example.runway.ui.additem.CutoutFragment"
             android:label="Cutout Preview"
-            tools:layout="@layout/fragment_stub">
+            tools:layout="@layout/fragment_cutout">
             <action
                 android:id="@+id/action_cutout_to_tagItem"
                 app:destination="@id/tagItemFragment" />
@@ -191,7 +198,7 @@
             android:id="@+id/tagItemFragment"
             android:name="com.example.runway.ui.additem.TagItemFragment"
             android:label="Tag Item"
-            tools:layout="@layout/fragment_stub">
+            tools:layout="@layout/fragment_tag_item">
             <action
                 android:id="@+id/action_tagItem_to_itemDetail"
                 app:destination="@id/itemDetailFragment"
@@ -207,7 +214,7 @@
         android:id="@+id/outfitsFragment"
         android:name="com.example.runway.ui.outfits.OutfitsFragment"
         android:label="@string/rw_nav_outfits"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_outfits">
         <action
             android:id="@+id/action_outfits_to_builder"
             app:destination="@id/outfitBuilderFragment" />
@@ -233,7 +240,7 @@
         android:id="@+id/outfitDetailFragment"
         android:name="com.example.runway.ui.outfits.OutfitDetailFragment"
         android:label="Outfit Detail"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_outfit_detail">
         <argument
             android:name="outfitId"
             app:argType="string" />
@@ -252,6 +259,9 @@
         android:name="com.example.runway.ui.profile.ProfileFragment"
         android:label="@string/rw_nav_profile"
         tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_to_model"
+            app:destination="@id/modelFragment" />
         <action
             android:id="@+id/action_profile_to_stats"
             app:destination="@id/statsFragment" />
@@ -348,9 +358,8 @@
         tools:layout="@layout/fragment_stub">
         <argument
             android:name="itemId"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:argType="long"
+            android:defaultValue="-1L" />
     </fragment>
 
     <!-- ============================= Bottom sheets ============================= -->
@@ -409,5 +418,18 @@
         android:id="@+id/confirmSheet"
         android:name="com.example.runway.ui.sheets.ConfirmSheet"
         android:label="Confirm" />
+
+    <fragment
+        android:id="@+id/modelFragment"
+        android:name="com.example.runway.ui.model.ModelFragment"
+        android:label="@string/rw_nav_model"
+        tools:layout="@layout/fragment_model">
+        <!-- Optional: a garment to put on as soon as the screen opens. -->
+        <argument
+            android:name="itemId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 
 </navigation>

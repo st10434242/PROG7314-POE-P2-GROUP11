@@ -85,12 +85,13 @@ class OfflineItemRepository(
                     val created = api.createItem(entity.toCreateDto())
                     // Swap the temporary id for the server's real one.
                     dao.hardDelete(entity.id)
-                    dao.upsert(created.toEntity())
+                    // The photo follows the row onto its new server id.
+                    dao.upsert(created.toEntity(entity.imagePath))
                 }
 
                 else -> {
                     val updated = api.updateItem(entity.id, entity.toUpdateDto())
-                    dao.upsert(updated.toEntity())
+                    dao.upsert(updated.toEntity(entity.imagePath))
                 }
             }
         } catch (e: HttpException) {
@@ -117,7 +118,8 @@ class OfflineItemRepository(
 
             // Now that the deletion has been recorded locally, the row can go.
             removed.forEach { dao.hardDelete(it.id) }
-            dao.upsertAll(present.map { it.toEntity() })
+            // Each row keeps whatever photo this device already had for it.
+            dao.upsertAll(present.map { it.toEntity(dao.imagePathFor(it.id)) })
 
             val pageNewest = page.data
                 .mapNotNull { dto -> dto.updatedAt?.let { runCatching { Instant.parse(it) }.getOrNull() } }

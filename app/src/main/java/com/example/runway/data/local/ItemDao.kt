@@ -35,6 +35,10 @@ interface ItemDao {
     @Query("UPDATE items SET deleted = 1, pendingSync = 1, updatedAt = :updatedAt WHERE id = :id")
     suspend fun markDeleted(id: String, updatedAt: Long)
 
+    // Read before a sync overwrites a row, so the local photo survives it.
+    @Query("SELECT imagePath FROM items WHERE id = :id")
+    suspend fun imagePathFor(id: String): String?
+
     // Removes a row outright.
     @Query("DELETE FROM items WHERE id = :id")
     suspend fun hardDelete(id: String)

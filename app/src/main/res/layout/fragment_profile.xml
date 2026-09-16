@@ -27,6 +27,14 @@
         android:text="@string/rw_settings_title" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/profileModelButton"
+        style="@style/Widget.Runway.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/rw_model_title" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/profileSignOutButton"
         style="@style/Widget.Runway.Button"
         android:layout_width="match_parent"

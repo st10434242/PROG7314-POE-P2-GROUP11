@@ -11,6 +11,8 @@ data class Item(
     val brand: String? = null,
     val size: String? = null,
     val purchasePrice: Double? = null,
+    // Absolute path to the garment's photo on this device, once one is taken.
+    val imagePath: String? = null,
     val wearCount: Long = 0,
     // purchasePrice / wearCount.
     val costPerWear: Double? = null,

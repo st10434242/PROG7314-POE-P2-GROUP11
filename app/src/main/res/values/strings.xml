@@ -95,6 +95,19 @@
     <string name="rw_stub_item_detail_body">Photos, tags, wear count and cost-per-wear land here.</string>
     <string name="rw_item_detail_loading">Loading item…</string>
     <string name="rw_item_detail_not_found">This item could not be found.</string>
+
+    <!-- Item detail. -->
+    <string name="rw_item_detail_size">size %1$s</string>
+    <string name="rw_item_detail_wears">Times worn</string>
+    <string name="rw_item_detail_cost_per_wear">Cost per wear</string>
+    <string name="rw_item_detail_rand">R%1$.2f</string>
+    <string name="rw_item_detail_no_cost">\u2014</string>
+    <string name="rw_item_detail_paid">Paid R%1$.2f</string>
+    <string name="rw_item_detail_fit">On you, this should be %1$s.</string>
+    <string name="rw_item_detail_try_on">Try it on your model</string>
+    <string name="rw_item_detail_delete">Remove from wardrobe</string>
+    <string name="rw_item_detail_delete_title">Remove this item?</string>
+    <string name="rw_item_detail_delete_body">It will be taken out of your wardrobe on every device.</string>
     <string name="rw_stub_item_edit_title">Edit item</string>
     <string name="rw_stub_item_edit_body">Editing category, colour, brand, size, material and price lands here.</string>
     <string name="rw_stub_colour_matcher_title">Colour matcher</string>
@@ -112,6 +125,67 @@
     <string name="rw_stub_tag_item_title">Tag item</string>
     <string name="rw_stub_tag_item_body">Category, colour, brand, size, material and price fields land here.</string>
     <string name="rw_tag_item_continue">Save item</string>
+
+    <!-- Add-item flow: photograph the garment, cut it out, tag it, save it. -->
+    <string name="rw_camera_title">Photograph the item</string>
+    <string name="rw_camera_take">Take a photo</string>
+    <string name="rw_camera_retake">Take another</string>
+    <string name="rw_camera_pick">Choose a photo</string>
+    <string name="rw_camera_empty">Lay the garment flat, or hang it against a plain wall, and take a photo.</string>
+    <string name="rw_camera_preview_description">The photo you just took</string>
+
+    <string name="rw_cutout_title">Check the cut-out</string>
+    <string name="rw_cutout_use">Use the cut-out instead of the photo</string>
+    <string name="rw_cutout_failed">The background could not be removed. The photo will be saved as it is.</string>
+    <string name="rw_cutout_retry">Try again</string>
+    <string name="rw_cutout_preview_description">The garment with its background removed</string>
+
+    <string name="rw_tag_item_title">Tag the item</string>
+    <string name="rw_tag_name">Name</string>
+    <string name="rw_tag_category">Category</string>
+    <string name="rw_tag_colour">Colour</string>
+    <string name="rw_tag_brand">Brand</string>
+    <string name="rw_tag_size">Size</string>
+    <string name="rw_tag_price">What it cost</string>
+
+    <!-- Bold label above each text field. -->
+    <string name="rw_tag_name_label">Name</string>
+    <string name="rw_tag_colour_label">Colour</string>
+    <string name="rw_tag_brand_label">Brand</string>
+    <string name="rw_tag_size_label">Size</string>
+    <string name="rw_tag_price_label">What it cost</string>
+
+    <!-- Helper text under each field, visible at all times. -->
+    <string name="rw_tag_name_example">For example: Blue oxford shirt</string>
+    <string name="rw_tag_colour_example">For example: navy</string>
+    <string name="rw_tag_brand_example">For example: Uniqlo</string>
+    <string name="rw_tag_size_example">S, M, L or a number like 32</string>
+    <string name="rw_tag_price_example">Numbers only, for example 349.99</string>
+    <string name="rw_tag_save">Save item</string>
+    <string name="rw_tag_saving">Saving\u2026</string>
+    <string name="rw_tag_saved">Item added to your wardrobe</string>
+
+    <string name="rw_category_top">Top</string>
+    <string name="rw_category_bottom">Bottom</string>
+    <string name="rw_category_outerwear">Outerwear</string>
+    <string name="rw_category_shoes">Shoes</string>
+    <string name="rw_category_other">Other</string>
+
+    <!-- Wardrobe tab. -->
+    <string name="rw_wardrobe_refresh">Refresh</string>
+    <string name="rw_wardrobe_empty_title">Your wardrobe is empty</string>
+    <string name="rw_wardrobe_empty_body">Tap the + button to photograph your first garment.</string>
+    <string name="rw_wardrobe_cost_per_wear">R%1$.2f per wear</string>
+    <string name="rw_wardrobe_worn">Worn %1$d times</string>
+    <string name="rw_wardrobe_never_worn">Not worn yet</string>
+    <string name="rw_wardrobe_pending">Not synced</string>
+    <string name="rw_wardrobe_unsynced">Some items are only on this phone so far.</string>
+    <string name="rw_wardrobe_item_image">Photo of this garment</string>
+
+    <plurals name="rw_wardrobe_count">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
+    </plurals>
 
     <!--Outfits tab pushes-->
     <string name="rw_stub_outfit_builder_title">Outfit builder</string>
@@ -283,4 +357,110 @@
     <string name="rw_settings_reset_body">Every setting goes back to the way it started. Your wardrobe is not affected.</string>
     <string name="rw_settings_reset_done">Settings reset</string>
 
+    <!-- Virtual model (SCRUM-84, 85, 86, 87, 118) -->
+    <string name="rw_model_title">Your model</string>
+    <string name="rw_model_body_shape">Body shape</string>
+    <string name="rw_model_body_type">Build</string>
+    <string name="rw_model_skin_tone">Skin tone</string>
+    <string name="rw_model_height">Height: %1$d cm</string>
+    <string name="rw_model_wardrobe">Try on from your wardrobe</string>
+    <string name="rw_model_save">Save model</string>
+    <string name="rw_model_saving">Saving\u2026</string>
+    <string name="rw_model_saved">Model saved</string>
+    <string name="rw_model_clear">Take everything off</string>
+
+    <!-- Photo-based model. The image stays on this device. -->
+    <string name="rw_model_photo_add">Use my photo</string>
+    <string name="rw_model_photo_replace">Change photo</string>
+    <string name="rw_model_photo_remove">Remove photo</string>
+    <string name="rw_model_photo_analysing">Reading the photo\u2026</string>
+    <string name="rw_model_photo_hint_off">A full-length photo, standing, head to feet. It stays on this phone.</string>
+    <string name="rw_model_photo_hint_on">Clothes are placed on the body found in your photo.</string>
+    <string name="rw_model_photo_suggested">Body type and shape set from your photo. Change them if they look wrong.</string>
+    <string name="rw_model_photo_no_person">No one was found in that photo. Try one with a person standing in it.</string>
+    <string name="rw_model_photo_partial">Only part of the body is visible. Use a photo showing you from head to feet.</string>
+    <string name="rw_model_photo_unreadable">That image could not be read. Try a different one.</string>
+    <string name="rw_model_photo_required">Add a full-length photo of yourself to build your model.</string>
+    <string name="rw_model_photo_read">Photo read. Your build was taken from it.</string>
+    <string name="rw_model_build_detected">From your photo: %1$s build, %2$s shape</string>
+
+    <!-- The sizes the user actually wears, used to judge fit and to drive a try-on. -->
+    <string name="rw_model_top_size">Size you wear on top</string>
+    <string name="rw_model_bottom_size">Size you wear on the bottom</string>
+    <string name="rw_model_weight">Weight: %1$d kg</string>
+    <string name="rw_model_weight_unset">Weight: not set</string>
+    <string name="rw_model_shoe">Shoe size: EU %1$d</string>
+    <string name="rw_model_shoe_unset">Shoe size: not set</string>
+    <string name="rw_model_item_with_size">%1$s (%2$s)</string>
+
+    <string name="rw_model_fit_known">%1$s \u2014 %2$s</string>
+    <string name="rw_model_fit_unknown">%1$s \u2014 no size on this item</string>
+    <string name="rw_model_fit_tight">tight on you</string>
+    <string name="rw_model_fit_snug">a little snug</string>
+    <string name="rw_model_fit_true">your usual size</string>
+    <string name="rw_model_fit_loose">a little loose</string>
+    <string name="rw_model_fit_oversized">oversized on you</string>
+
+    <!-- The photoreal render, produced by the image service through our API. -->
+    <string name="rw_model_render">See it on you properly</string>
+    <string name="rw_model_rendering">Rendering\u2026</string>
+    <string name="rw_model_render_clear">Back to the preview</string>
+    <string name="rw_model_render_working">This takes about twenty seconds per garment.</string>
+    <string name="rw_model_render_needs_photo">Add a photo of yourself to render an outfit.</string>
+    <string name="rw_model_render_needs_garment">Put on a top, bottom or coat that has a photo of its own.</string>
+    <string name="rw_model_render_consent_title">Send your photos to be rendered?</string>
+    <string name="rw_model_render_consent_body">Your body photo and the garment photos are sent to the image service that produces the picture. They are not kept by Runway. Everything else stays on this phone.</string>
+    <string name="rw_model_render_consent_confirm">Render it</string>
+
+    <!-- Saving what is on the model as an outfit. -->
+    <string name="rw_model_save_outfit">Save to outfits</string>
+    <string name="rw_model_saving_outfit">Saving\u2026</string>
+    <string name="rw_model_outfit_saved">Saved to your outfits</string>
+
+    <!-- The outfits tab and the outfit editor. -->
+    <string name="rw_outfits_empty_title">No saved outfits yet</string>
+    <string name="rw_outfits_empty_body">Put clothes on your model, then tap Save to outfits.</string>
+    <string name="rw_outfit_loading">Loading outfit\u2026</string>
+    <string name="rw_outfit_render_description">The render of this outfit</string>
+    <string name="rw_outfit_no_render">No render was saved with this outfit.</string>
+    <string name="rw_outfit_no_render_short">\u2014</string>
+    <string name="rw_outfit_name">Name</string>
+    <string name="rw_outfit_garments">Garments</string>
+    <string name="rw_outfit_no_garments">This outfit has no garments left in it.</string>
+    <string name="rw_outfit_save_changes">Save changes</string>
+    <string name="rw_outfit_saving">Saving\u2026</string>
+    <string name="rw_outfit_saved">Outfit updated</string>
+    <string name="rw_outfit_delete">Delete outfit</string>
+    <string name="rw_outfit_delete_title">Delete this outfit?</string>
+    <string name="rw_outfit_delete_body">The outfit is removed everywhere. Your garments stay in your wardrobe.</string>
+
+    <plurals name="rw_outfit_garment_count">
+        <item quantity="one">%1$d garment</item>
+        <item quantity="other">%1$d garments</item>
+    </plurals>
+
+    <plurals name="rw_model_render_ready">
+        <item quantity="one">Ready to render %1$d garment.</item>
+        <item quantity="other">Ready to render %1$d garments, one after another.</item>
+    </plurals>
+    <string name="rw_model_nothing_on">Nothing on the model yet</string>
+    <string name="rw_model_wearing">Wearing %1$s</string>
+    <string name="rw_model_empty_title">No clothes yet</string>
+    <string name="rw_model_empty_body">Add items to your wardrobe and they will appear here to try on.</string>
+    <string name="rw_model_shape_rectangle">Rectangle</string>
+    <string name="rw_model_shape_triangle">Triangle</string>
+    <string name="rw_model_shape_inverted">Inverted triangle</string>
+    <string name="rw_model_shape_hourglass">Hourglass</string>
+    <string name="rw_model_shape_oval">Oval</string>
+    <string name="rw_model_type_slim">Slim</string>
+    <string name="rw_model_type_average">Average</string>
+    <string name="rw_model_type_athletic">Athletic</string>
+    <string name="rw_model_type_full">Full</string>
+    <string name="rw_model_tone_porcelain">Porcelain</string>
+    <string name="rw_model_tone_light">Light</string>
+    <string name="rw_model_tone_medium">Medium</string>
+    <string name="rw_model_tone_olive">Olive</string>
+    <string name="rw_model_tone_brown">Brown</string>
+    <string name="rw_model_tone_deep">Deep</string>
+    <string name="rw_nav_model">Model</string>
 </resources>

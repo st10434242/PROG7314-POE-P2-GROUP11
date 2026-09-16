@@ -40,6 +40,9 @@ class HuggingFaceTryOn(
     private val space: String = System.getenv(SPACE_ENV)?.takeIf { it.isNotBlank() } ?: DEFAULT_SPACE,
     // Anonymous calls work; a token mainly helps when the Space is busy.
     private val token: String? = System.getenv(TOKEN_ENV),
+    // Each Space names its own function; a mirror may not call it "tryon".
+    private val endpoint: String =
+        System.getenv(ENDPOINT_ENV)?.takeIf { it.isNotBlank() } ?: DEFAULT_ENDPOINT,
 ) : TryOnEngine {
 
     override val name: String get() = "Hugging Face Space $space"
@@ -121,7 +124,7 @@ class HuggingFaceTryOn(
             })
         }
 
-        val response = client.post("$base/call/tryon") {
+        val response = client.post("$base/call/$endpoint") {
             authorise()
             contentType(ContentType.Application.Json)
             setBody(payload.toString())
@@ -140,7 +143,7 @@ class HuggingFaceTryOn(
     // Step three. The stream stays open until the render finishes, so reading it to
     // the end is the wait; no polling loop is needed.
     private suspend fun awaitResult(eventId: String): String {
-        val stream = client.get("$base/call/tryon/$eventId") { authorise() }.bodyAsText()
+        val stream = client.get("$base/call/$endpoint/$eventId") { authorise() }.bodyAsText()
 
         if (stream.contains("event: error")) {
             // The Space sends its errors with no reason attached, so the whole
@@ -148,8 +151,14 @@ class HuggingFaceTryOn(
             // can be seen at all.
             println("Hugging Face Space refused the render. Stream was: ${stream.take(600)}")
             throw ImageServiceException(
-                "The render failed. The free service gives no reason, but it is usually the photos: " +
-                    "the body photo needs one person, head to feet, and the garment needs a plain background."
+                if (token.isNullOrBlank()) {
+                    "The free image service refused the render and gives no reason. It is most often its " +
+                        "shared GPU quota, which runs out quickly without a Hugging Face token. Set " +
+                        "$TOKEN_ENV on the server, or try again later."
+                } else {
+                    "The image service refused the render and gives no reason. The Space may be busy or " +
+                        "down; check that $SPACE_ENV points at a Space that is awake."
+                }
             )
         }
 
@@ -182,6 +191,8 @@ class HuggingFaceTryOn(
         const val DEFAULT_SPACE = "yisol-idm-vton.hf.space"
         const val SPACE_ENV = "HF_TRYON_SPACE"
         const val TOKEN_ENV = "HUGGINGFACE_API_TOKEN"
+        const val ENDPOINT_ENV = "HF_TRYON_ENDPOINT"
+        const val DEFAULT_ENDPOINT = "tryon"
 
         // Fewer steps than the paid model uses: this queue is shared, so finishing
         // matters more than the last few percent of quality.

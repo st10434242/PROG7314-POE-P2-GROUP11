@@ -3,7 +3,7 @@ package com.example.runway.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-// Room entity for a stored garment (IIE, 2026; sqlite.org, n.d.b).
+// Room entity for a stored garment.
 
 // How a garment is stored on the device.
 @Entity(tableName = "items")
@@ -25,8 +25,3 @@ data class ItemEntity(
     val updatedAt: Long,
     val pendingSync: Boolean,
 )
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-sqlite.org, n.d.b. Appropriate Uses For SQLite. [online] Available at: <https://www.sqlite.org/whentouse.html> [Accessed 31 July 2023].
-*/

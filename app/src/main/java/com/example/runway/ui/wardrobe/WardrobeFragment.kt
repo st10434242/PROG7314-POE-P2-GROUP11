@@ -21,7 +21,7 @@ import com.example.runway.ui.items.ItemsViewModel
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.launch
 
-// The wardrobe tab: every garment the user owns (IIE, 2026; Android Open Source Project, 2020c).
+// The wardrobe tab: every garment the user owns.
 // Room is the source of truth, so a newly saved item appears here before the
 // server has heard about it.
 
@@ -101,8 +101,3 @@ class WardrobeFragment : Fragment() {
         _binding = null
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 31 July 2023].
-*/

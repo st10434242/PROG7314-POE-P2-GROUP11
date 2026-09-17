@@ -18,10 +18,10 @@ import java.io.IOException
 import java.time.Instant
 import java.util.UUID
 
-// Offline-first wardrobe repository (IIE, 2026).
-// Room is the source of truth; Retrofit reconciles it with the API (Square, Inc., n.d.).
-// Network work runs off the main thread (Android Open Source Project, 2020b).
-// Uses kotlinx.coroutines for the sync work (JetBrains, 2026).
+// Offline-first wardrobe repository.
+// Room is the source of truth; Retrofit reconciles it with the API.
+// Network work runs off the main thread.
+// Uses kotlinx.coroutines for the sync work.
 class OfflineItemRepository(
     private val dao: ItemDao,
     private val api: RunwayApi,
@@ -146,10 +146,3 @@ class OfflineItemRepository(
         const val HTTP_NOT_FOUND = 404
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-Android Open Source Project, 2020b. Processes and threads overview. [online] Available at: <https://developer.android.com/guide/components/processes-and-threads> [Accessed 31 July 2023].
-JetBrains, 2026. kotlinx.serialization guide. [online] Available at: <https://github.com/Kotlin/kotlinx.serialization> [Accessed 11 September 2026].
-Square, Inc., n.d.. Retrofit: A type-safe HTTP client for Android and Java. [online] Available at: <https://square.github.io/retrofit/> [Accessed 31 July 2023].
-*/

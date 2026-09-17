@@ -59,6 +59,12 @@ interface RunwayApi {
     @POST("api/v1/outfits/{id}/wears")
     suspend fun logOutfitWear(@Path("id") id: String, @Body body: LogOutfitWearDto): OutfitWearDto
 
+    @GET("api/v1/outfits/{id}/ratings")
+    suspend fun getOutfitRatings(@Path("id") id: String): RatingSummaryDto
+
+    @POST("api/v1/outfits/{id}/ratings")
+    suspend fun rateOutfit(@Path("id") id: String, @Body body: CreateRatingDto): RatingDto
+
     @GET("api/v1/wardrobe/summary")
     suspend fun getWardrobeSummary(): WardrobeSummaryDto
 

@@ -121,6 +121,30 @@ data class WardrobeSummaryDto(
 )
 
 @Serializable
+data class RatingDto(
+    val id: String = "",
+    val outfitId: String = "",
+    val score: Long = 0,
+    val note: String? = null,
+    val ratedAt: String? = null,
+)
+
+@Serializable
+data class CreateRatingDto(
+    val score: Int,
+    val note: String? = null,
+)
+
+@Serializable
+data class RatingSummaryDto(
+    val outfitId: String = "",
+    val count: Int = 0,
+    // Null until the outfit has been rated once.
+    val average: Double? = null,
+    val ratings: List<RatingDto> = emptyList(),
+)
+
+@Serializable
 data class UserDto(
     val uid: String = "",
     val displayName: String = "",

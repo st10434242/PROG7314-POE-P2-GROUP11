@@ -140,6 +140,44 @@ class ServerTest {
     }
 
     @Test
+    fun `a rating below one is rejected`() {
+        assertFailsWith<ValidationException> { CreateRatingRequest(score = 0).validate() }
+    }
+
+    @Test
+    fun `a rating above five is rejected`() {
+        assertFailsWith<ValidationException> { CreateRatingRequest(score = 6).validate() }
+    }
+
+    @Test
+    fun `every score from one to five is accepted`() {
+        (1..5).forEach { CreateRatingRequest(score = it).validate() }
+    }
+
+    @Test
+    fun `a rating note has a length limit`() {
+        assertFailsWith<ValidationException> {
+            CreateRatingRequest(score = 4, note = "x".repeat(281)).validate()
+        }
+    }
+
+    @Test
+    fun `a rating may be left without a note`() {
+        CreateRatingRequest(score = 4).validate()
+    }
+
+    @Test
+    fun `the average score is rounded to one decimal place`() {
+        assertEquals(4.3, averageScore(listOf(5L, 4L, 4L)))
+    }
+
+    @Test
+    fun `an outfit with no ratings has no average`() {
+        // Null rather than zero: never rated is not the same as rated badly.
+        assertNull(averageScore(emptyList()))
+    }
+
+    @Test
     fun `health check needs no token`() = testApplication {
         application {
             configureSerialization()

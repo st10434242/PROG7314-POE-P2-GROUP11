@@ -8,7 +8,7 @@ import com.example.runway.domain.model.Item
 import java.time.Instant
 import kotlin.math.roundToLong
 
-// Conversions between DTO, Room entity and domain model (IIE, 2026).
+// Conversions between DTO, Room entity and domain model.
 
 // Conversions between the three representations of a garment (SCRUM-82): ItemDto what the API sends and receives (JSON, ISO-8601 timestamps) ItemEntity what Room stores (String key, epoch millis) Item what the UI reasons about (plain Kotlin) Keeping the conversions in one file means the boundaries between the three are visible in a single place instead of scattered through the repository.
 
@@ -95,7 +95,3 @@ private fun String?.toEpochMillis(): Long =
 private fun costPerWear(price: Double?, wearCount: Long): Double? =
     if (price == null || wearCount <= 0) null
     else ((price / wearCount) * 100).roundToLong() / 100.0
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-*/

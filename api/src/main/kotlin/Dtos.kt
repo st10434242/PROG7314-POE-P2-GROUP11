@@ -225,6 +225,41 @@ data class WardrobeSummaryResponse(
     val needsWashCount: Int = 0,
 )
 
+// How confident the user felt in an outfit, 1 to 5.
+@Serializable
+data class CreateRatingRequest(
+    val score: Int,
+    val note: String? = null,
+) {
+    fun validate() {
+        if (score < MIN_RATING || score > MAX_RATING) {
+            throw ValidationException("score must be between $MIN_RATING and $MAX_RATING")
+        }
+        if (note != null && note.length > MAX_NOTE) {
+            throw ValidationException("note must be $MAX_NOTE characters or fewer")
+        }
+    }
+}
+
+@Serializable
+data class RatingResponse(
+    val id: String,
+    val outfitId: String,
+    val score: Long,
+    val note: String? = null,
+    val ratedAt: String? = null,
+)
+
+// Every rating on one outfit, plus the figures the detail screen shows.
+@Serializable
+data class RatingSummaryResponse(
+    val outfitId: String,
+    val count: Int = 0,
+    // Null until the outfit has been rated once, so the screen can show an empty state.
+    val average: Double? = null,
+    val ratings: List<RatingResponse> = emptyList(),
+)
+
 // Firestore timestamp to ISO-8601, for JSON.
 fun Timestamp?.toIso(): String? = this?.toDate()?.toInstant()?.toString()
 
@@ -253,9 +288,17 @@ fun validateWearLimit(limit: Int?) {
 fun needsWash(wearCount: Long, wearLimit: Long): Boolean =
     wearLimit > 0 && wearCount >= wearLimit
 
+// The average shown on the outfit screen, rounded to one decimal place.
+fun averageScore(scores: List<Long>): Double? =
+    if (scores.isEmpty()) null
+    else Math.round(scores.sum().toDouble() / scores.size * 10.0) / 10.0
+
 private const val MAX_NAME = 120
 const val MIN_WEAR_LIMIT = 1
 const val MAX_WEAR_LIMIT = 60
+const val MIN_RATING = 1
+const val MAX_RATING = 5
+private const val MAX_NOTE = 280
 
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.

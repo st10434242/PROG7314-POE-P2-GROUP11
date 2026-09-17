@@ -20,8 +20,7 @@ import com.example.runway.ui.components.RunwayToast
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.launch
 
-// The outfits tab: every outfit the user has saved from the model screen
-// (IIE, 2026; Android Open Source Project, 2020c).
+// The outfits tab: every outfit the user has saved from the model screen.
 
 class OutfitsFragment : Fragment() {
 
@@ -96,8 +95,3 @@ class OutfitsFragment : Fragment() {
         _binding = null
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 31 July 2023].
-*/

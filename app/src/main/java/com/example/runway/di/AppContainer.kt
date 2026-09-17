@@ -13,15 +13,17 @@ import com.example.runway.data.local.SyncPreferences
 import com.example.runway.data.remote.api.ApiClient
 import com.example.runway.data.repository.ApiModelRepository
 import com.example.runway.data.repository.ApiOutfitRepository
+import com.example.runway.data.repository.ApiRatingRepository
 import com.example.runway.data.repository.OfflineItemRepository
 import com.example.runway.data.repository.TryOnRepository
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.ModelRepository
 import com.example.runway.domain.repository.OutfitRepository
+import com.example.runway.domain.repository.RatingRepository
 import com.example.runway.domain.repository.SettingsRepository
 import com.google.firebase.auth.FirebaseAuth
 
-// Manual dependency container for the Runway app (IIE, 2026).
+// Manual dependency container for the Runway app.
 
 class AppContainer(context: Context) {
     private val appContext = context.applicationContext
@@ -74,6 +76,12 @@ class AppContainer(context: Context) {
         ApiOutfitRepository(ApiClient.api)
     }
 
+    // Confidence ratings for those outfits. Also API-backed, so a rating follows
+    // the user to another device.
+    val ratingRepository: RatingRepository by lazy {
+        ApiRatingRepository(ApiClient.api)
+    }
+
     // The try-on renders that belong to those outfits, kept on this device.
     val outfitRenderStore: OutfitRenderStore by lazy {
         OutfitRenderStore(appContext)
@@ -93,7 +101,3 @@ class AppContainer(context: Context) {
         PreferencesSettingsStore(appContext)
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-*/

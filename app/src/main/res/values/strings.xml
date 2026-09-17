@@ -472,4 +472,29 @@
     <string name="rw_model_tone_brown">Brown</string>
     <string name="rw_model_tone_deep">Deep</string>
     <string name="rw_nav_model">Model</string>
+    <!--Confidence rating-->
+    <string name="rw_confidence_prompt">How did you feel in %1$s?</string>
+    <string name="rw_confidence_prompt_generic">How did you feel in this outfit?</string>
+    <string name="rw_confidence_note_label">Note</string>
+    <string name="rw_confidence_note_hint">Optional</string>
+    <string name="rw_confidence_later">Not now</string>
+    <string name="rw_confidence_save">Save rating</string>
+    <string name="rw_confidence_saving">Saving…</string>
+    <string name="rw_confidence_saved">Rating saved</string>
+    <string name="rw_confidence_1">Not my best</string>
+    <string name="rw_confidence_2">A bit off</string>
+    <string name="rw_confidence_3">Comfortable</string>
+    <string name="rw_confidence_4">Confident</string>
+    <string name="rw_confidence_5">Unstoppable</string>
+
+    <!--Wearing an outfit-->
+    <string name="rw_outfit_wear">Wore this today</string>
+    <string name="rw_outfit_wear_logged">Wear logged</string>
+    <string name="rw_outfit_confidence">Confidence</string>
+    <string name="rw_outfit_confidence_none">Not rated yet</string>
+    <plurals name="rw_outfit_confidence_count">
+        <item quantity="one">%1$s from %2$d rating</item>
+        <item quantity="other">%1$s from %2$d ratings</item>
+    </plurals>
+
 </resources>

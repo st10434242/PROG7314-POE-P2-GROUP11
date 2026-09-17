@@ -31,5 +31,5 @@ fun Route.modelRoutes(service: ModelService = ModelService()) {
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
 Ktor, 2026. Ktor server documentation. [online] Available at: <https://ktor.io/docs/server-create-and-configure.html> [Accessed 14 September 2026].
 OWASP, 2026. Broken access control. [online] Available at: <https://owasp.org/Top10/A01_2021-Broken_Access_Control/> [Accessed 14 September 2026].
-Rouse, M., 2020. RESTful API (REST API). [online] Available at: <https://searchapparchitecture.techtarget.com/definition/RESTful-API> [Accessed 31 July 2023].
+Rouse, M., 2020. RESTful API (REST API). [online] Available at: <https://searchapparchitecture.techtarget.com/definition/RESTful-API> [Accessed 14 September 2026].
 */

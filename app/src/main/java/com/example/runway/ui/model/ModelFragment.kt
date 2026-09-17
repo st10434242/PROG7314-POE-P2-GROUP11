@@ -250,8 +250,6 @@ class ModelFragment : Fragment() {
     }
 
     // A chip per wardrobe item, checked when that garment is on the model.
-    // Rebuilding every chip on every emission destroys the chip the user is
-    // touching, because a tap changes the state and the state redraws the group.
     // The chips are therefore built once per wardrobe and only re-checked after that.
     private fun renderWardrobe(state: ModelUiState) {
         val group = binding.modelWardrobeGroup
@@ -353,6 +351,6 @@ class ModelFragment : Fragment() {
 
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 31 July 2023].
+Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 15 September 2026].
 Android Open Source Project, 2026. Photo picker. [online] Available at: <https://developer.android.com/training/data-storage/shared/photopicker> [Accessed 15 September 2026].
 */

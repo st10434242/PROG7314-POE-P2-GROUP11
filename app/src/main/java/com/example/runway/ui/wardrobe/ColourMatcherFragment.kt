@@ -22,8 +22,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-// Smart colour-matching suggestions for one garment
-// Takes an [com.example.runway.ui.navigation.NavArgs.ITEM_ID] argument.
+// Smart color-matching suggestions for one garment
+// Takes a [com.example.runway.ui.navigation.NavArgs.ITEM_ID] argument.
 
 class ColourMatcherFragment : Fragment() {
 
@@ -53,7 +53,12 @@ class ColourMatcherFragment : Fragment() {
         binding.matcherEmpty.title = getString(R.string.rw_colour_matcher_empty_title)
         binding.matcherEmpty.body = getString(R.string.rw_colour_matcher_empty_body)
 
-        adapter = WardrobeAdapter(viewLifecycleOwner.lifecycleScope, ::openItem)
+        adapter = WardrobeAdapter(
+            scope = viewLifecycleOwner.lifecycleScope,
+            onClick = ::openItem,
+            matchScore = { item -> viewModel.scoreFor(item.id) },
+            onUseInOutfit = ::useInOutfit,
+        )
         binding.matcherList.layoutManager = LinearLayoutManager(requireContext())
         binding.matcherList.adapter = adapter
 
@@ -70,6 +75,16 @@ class ColourMatcherFragment : Fragment() {
         val isEmpty = state.matches.isEmpty() && !state.isLoading
         binding.matcherList.isVisible = !isEmpty
         binding.matcherEmpty.isVisible = isEmpty
+        binding.matcherEmpty.title = getString(
+            if (state.reference != null && state.referenceColour == null) {
+                R.string.rw_colour_matcher_unknown_colour
+            } else R.string.rw_colour_matcher_empty_title
+        )
+        binding.matcherEmpty.body = getString(
+            if (state.reference != null && state.referenceColour == null) {
+                R.string.rw_colour_matcher_unknown_body
+            } else R.string.rw_colour_matcher_empty_body
+        )
 
         val reference = state.reference
         if (reference == null) {
@@ -89,7 +104,8 @@ class ColourMatcherFragment : Fragment() {
         val colour = state.referenceColour
         binding.matcherReferenceSwatch.isVisible = colour != null
         colour?.let { binding.matcherReferenceSwatch.swatchColor = it.argb }
-        binding.matcherReferenceColour.text = colour?.label ?: reference.colour
+        binding.matcherReferenceColour.text = colour?.label
+            ?: getString(R.string.rw_colour_matcher_unknown_colour)
 
         loadPhoto(reference)
     }
@@ -112,6 +128,13 @@ class ColourMatcherFragment : Fragment() {
     private fun openItem(item: Item) {
         findNavController().navigate(
             R.id.action_colourMatcher_to_itemDetail,
+            Bundle().apply { putString(NavArgs.ITEM_ID, item.id) },
+        )
+    }
+
+    private fun useInOutfit(item: Item) {
+        findNavController().navigate(
+            R.id.action_colourMatcher_to_model,
             Bundle().apply { putString(NavArgs.ITEM_ID, item.id) },
         )
     }

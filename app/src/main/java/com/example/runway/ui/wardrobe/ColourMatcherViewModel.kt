@@ -53,6 +53,10 @@ class ColourMatcherViewModel(
             initialValue = ColourMatcherUiState()
         )
 
+    fun scoreFor(itemId: String): Int? = uiState.value.matches
+        .firstOrNull { it.item.id == itemId }
+        ?.score
+
     // Same category is left out, and since scores tie often the least worn wins
     private fun rank(reference: Item, colour: ItemColour, wardrobe: List<Item>): List<ColourMatch> =
         wardrobe

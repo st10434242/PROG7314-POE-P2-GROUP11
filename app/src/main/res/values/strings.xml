@@ -116,6 +116,10 @@
     <string name="rw_colour_matcher_lead">Pieces in your wardrobe that complement %1$s.</string>
     <string name="rw_colour_matcher_empty_title">No matches yet</string>
     <string name="rw_colour_matcher_empty_body">Add more items and their colours will be compared against this one.</string>
+    <string name="rw_colour_matcher_score">%1$d%% match</string>
+    <string name="rw_colour_matcher_use_in_outfit">Use in outfit</string>
+    <string name="rw_colour_matcher_unknown_colour">Colour unavailable</string>
+    <string name="rw_colour_matcher_unknown_body">This item has no recognised colour, so matching is unavailable. Edit the item to add a supported colour.</string>
 
     <string name="rw_stub_laundry_title">Laundry basket</string>
     <string name="rw_stub_laundry_body">Wear limits and wash reminders land here.</string>

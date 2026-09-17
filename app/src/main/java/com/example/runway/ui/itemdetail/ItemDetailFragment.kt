@@ -64,11 +64,13 @@ class ItemDetailFragment : Fragment() {
                 if (state.isLoading) R.string.rw_item_detail_loading else R.string.rw_item_detail_not_found
             )
             binding.detailTryOnButton.isEnabled = false
+            binding.detailFindMatchesButton.isEnabled = false
             binding.detailDeleteButton.isEnabled = false
             return
         }
 
         binding.detailTryOnButton.isEnabled = true
+        binding.detailFindMatchesButton.isEnabled = true
         binding.detailDeleteButton.isEnabled = true
 
         binding.detailHeader.title = item.name
@@ -98,6 +100,7 @@ class ItemDetailFragment : Fragment() {
         loadPhoto(item)
 
         binding.detailTryOnButton.setOnClickListener { tryOn(item) }
+        binding.detailFindMatchesButton.setOnClickListener { findMatches(item) }
         binding.detailDeleteButton.setOnClickListener { confirmDelete(item) }
     }
 
@@ -139,6 +142,14 @@ class ItemDetailFragment : Fragment() {
     private fun tryOn(item: Item) {
         findNavController().navigate(
             R.id.action_itemDetail_to_model,
+            bundleOf(NavArgs.ITEM_ID to item.id),
+        )
+    }
+
+    // This garment becomes the reference the colour matcher scores everything else against.
+    private fun findMatches(item: Item) {
+        findNavController().navigate(
+            R.id.action_itemDetail_to_colourMatcher,
             bundleOf(NavArgs.ITEM_ID to item.id),
         )
     }

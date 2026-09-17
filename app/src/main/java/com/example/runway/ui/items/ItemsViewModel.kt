@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-// ViewModel for the wardrobe list (IIE, 2026).
-// Synchronisation runs off the main thread (Android Open Source Project, 2020b).
+// ViewModel for the wardrobe list.
+// Synchronisation runs off the main thread.
 
 class ItemsViewModel(
     private val repository: ItemRepository
@@ -69,7 +69,7 @@ class ItemsViewModel(
     fun refresh() {
         viewModelScope.launch {
             syncing.value = true
-            repository.refresh().onFailure { actionError.value = it.toUserMessage() }
+            repository.refresh().onFailure { actionError.value = it.toUserMessage(queuesOffline = true) }
             syncing.value = false
         }
     }
@@ -134,8 +134,3 @@ class ItemsViewModel(
         }
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-Android Open Source Project, 2020b. Processes and threads overview. [online] Available at: <https://developer.android.com/guide/components/processes-and-threads> [Accessed 31 July 2023].
-*/

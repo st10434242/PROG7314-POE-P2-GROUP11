@@ -1,6 +1,6 @@
 package com.example.runway.domain.model
 
-// Domain model for a wardrobe garment (IIE, 2026).
+// Domain model for a wardrobe garment.
 
 // A garment in the user's wardrobe - the model everything above the data layer reasons about.
 data class Item(
@@ -22,7 +22,3 @@ data class Item(
     // True when this item has local changes the server has not accepted yet.
     val pendingSync: Boolean = false,
 )
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-*/

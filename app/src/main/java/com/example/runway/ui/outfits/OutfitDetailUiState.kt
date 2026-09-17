@@ -3,6 +3,7 @@ package com.example.runway.ui.outfits
 import android.graphics.Bitmap
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.model.Outfit
+import com.example.runway.domain.model.RatingSummary
 
 // Screen state for one saved outfit (IIE, 2026).
 
@@ -12,6 +13,9 @@ data class OutfitDetailUiState(
     val garments: List<Item> = emptyList(),
     val render: Bitmap? = null,
     val name: String = "",
+    val ratings: RatingSummary = RatingSummary(),
+    // Set once a wear is logged, so the screen knows to ask for a rating.
+    val wearLoggedAt: Long? = null,
     val isLoading: Boolean = true,
     val isSaving: Boolean = false,
     val savedAt: Long? = null,

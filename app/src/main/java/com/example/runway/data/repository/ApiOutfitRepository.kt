@@ -1,5 +1,6 @@
 package com.example.runway.data.repository
 
+import com.example.runway.data.remote.api.LogOutfitWearDto
 import com.example.runway.data.remote.api.OutfitDto
 import com.example.runway.data.remote.api.OutfitItemDto
 import com.example.runway.data.remote.api.RunwayApi
@@ -38,6 +39,10 @@ class ApiOutfitRepository(
 
     override suspend fun delete(id: String): Result<Unit> = runCatching {
         api.deleteOutfit(id)
+    }
+
+    override suspend fun logWear(id: String): Result<Unit> = runCatching {
+        api.logOutfitWear(id, LogOutfitWearDto())
     }
 }
 

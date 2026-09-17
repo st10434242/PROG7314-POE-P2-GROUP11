@@ -170,6 +170,8 @@ object Fields {
     const val WEAR_LIMIT = "wearLimit"
     const val STATUS = "status"
     const val LISTING_ID = "listingId"
+    const val OUTFIT_ID = "outfitId"
+    const val RATED_AT = "ratedAt"
     const val DATE = "date"
 }
 

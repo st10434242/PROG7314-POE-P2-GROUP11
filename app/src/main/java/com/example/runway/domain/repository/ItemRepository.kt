@@ -3,7 +3,7 @@ package com.example.runway.domain.repository
 import com.example.runway.domain.model.Item
 import kotlinx.coroutines.flow.Flow
 
-// Repository contract the ViewModels depend on (IIE, 2026).
+// Repository contract the ViewModels depend on.
 
 interface ItemRepository {
     fun observeItems(): Flow<List<Item>>
@@ -17,7 +17,3 @@ interface ItemRepository {
     // Pulls changes from the API and pushes anything queued locally.
     suspend fun refresh(): Result<Unit>
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-*/

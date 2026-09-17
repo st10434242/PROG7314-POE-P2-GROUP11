@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-// Room data access object for the wardrobe (IIE, 2026; sqlite.org, n.d.b).
+// Room data access object for the wardrobe.
 
 @Dao
 interface ItemDao {
@@ -43,8 +43,3 @@ interface ItemDao {
     @Query("DELETE FROM items WHERE id = :id")
     suspend fun hardDelete(id: String)
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-sqlite.org, n.d.b. Appropriate Uses For SQLite. [online] Available at: <https://www.sqlite.org/whentouse.html> [Accessed 31 July 2023].
-*/

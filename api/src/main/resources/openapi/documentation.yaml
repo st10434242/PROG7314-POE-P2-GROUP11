@@ -21,6 +21,7 @@ tags:
   - name: Health
   - name: Items
   - name: Outfits
+  - name: Ratings
   - name: Wardrobe
   - name: Users
   - name: Model
@@ -348,6 +349,52 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '404': { $ref: '#/components/responses/NotFound' }
 
+  /api/v1/outfits/{id}/ratings:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Ratings]
+      summary: Every confidence rating on this outfit
+      description: Returns the ratings newest first, with the count and average.
+      security:
+        - firebaseAuth: []
+      responses:
+        '200':
+          description: The outfit's ratings
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RatingSummary' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    post:
+      tags: [Ratings]
+      summary: Rate how confident the outfit felt
+      description: >
+        Scored 1 to 5. The rating is attached to the caller from their token, and
+        the outfit must belong to them.
+      security:
+        - firebaseAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [score]
+              properties:
+                score: { type: integer, minimum: 1, maximum: 5, example: 4 }
+                note: { type: string, nullable: true, maxLength: 280 }
+      responses:
+        '201':
+          description: The rating that was stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Rating' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
   /api/v1/users/me:
     get:
       tags: [Users]
@@ -627,6 +674,30 @@ components:
         totalWears: { type: integer, example: 184 }
         totalValue: { type: number, format: double, example: 18450.00 }
         needsWashCount: { type: integer, example: 3 }
+
+    Rating:
+      type: object
+      properties:
+        id: { type: string }
+        outfitId: { type: string }
+        score: { type: integer, example: 4 }
+        note: { type: string, nullable: true }
+        ratedAt: { type: string, format: date-time }
+
+    RatingSummary:
+      type: object
+      properties:
+        outfitId: { type: string }
+        count: { type: integer, example: 5 }
+        average:
+          type: number
+          format: double
+          nullable: true
+          example: 4.2
+          description: Null until the outfit has been rated once.
+        ratings:
+          type: array
+          items: { $ref: '#/components/schemas/Rating' }
 
     Wear:
       type: object

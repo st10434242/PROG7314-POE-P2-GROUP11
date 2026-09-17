@@ -7,9 +7,14 @@ import java.net.SocketTimeoutException
 
 private val json = Json { ignoreUnknownKeys = true }
 
-fun Throwable.toUserMessage(): String = when (this) {
+// Only wardrobe items queue in Room, so only those callers may promise a later sync.
+fun Throwable.toUserMessage(queuesOffline: Boolean = false): String = when (this) {
     is SocketTimeoutException -> "The server took too long to answer. Please try again."
-    is IOException -> "You are offline. Changes are saved and will sync later."
+    is IOException -> if (queuesOffline) {
+        "You are offline. Changes are saved and will sync later."
+    } else {
+        "You are offline. Please try again once you have a connection."
+    }
     is HttpException -> serverMessage() ?: statusMessage(code())
     else -> "Something went wrong. Please try again."
 }

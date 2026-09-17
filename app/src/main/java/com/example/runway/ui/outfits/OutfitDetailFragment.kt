@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.runway.R
 import com.example.runway.databinding.FragmentOutfitDetailBinding
+import com.example.runway.domain.model.RatingSummary
+import com.example.runway.ui.navigation.NavArgs
+import com.example.runway.ui.sheets.ConfidenceSheet
 import com.example.runway.ui.components.RunwayDialogs
 import com.example.runway.ui.components.RunwayToast
 import com.google.android.material.chip.Chip
@@ -60,6 +64,12 @@ class OutfitDetailFragment : Fragment() {
 
         binding.outfitSaveButton.setOnClickListener { viewModel.onSave() }
         binding.outfitDeleteButton.setOnClickListener { confirmDelete() }
+        binding.outfitWearButton.setOnClickListener { viewModel.onWoreToday() }
+
+        // The sheet saves the rating itself, so we just reload once it closes.
+        parentFragmentManager.setFragmentResultListener(
+            ConfidenceSheet.TAG, viewLifecycleOwner
+        ) { _, _ -> viewModel.onRatingsChanged() }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -88,6 +98,14 @@ class OutfitDetailFragment : Fragment() {
         binding.outfitNoRender.isVisible = state.render == null && !state.isLoading
 
         renderGarments(state)
+        renderConfidence(state.ratings)
+
+        // A logged wear is what prompts for a rating.
+        if (state.wearLoggedAt != null) {
+            viewModel.onWearHandled()
+            RunwayToast.show(requireView(), getString(R.string.rw_outfit_wear_logged))
+            openConfidenceSheet()
+        }
 
         binding.outfitSaveButton.isEnabled = state.hasChanges && !state.isSaving
         binding.outfitSaveButton.setText(
@@ -104,6 +122,28 @@ class OutfitDetailFragment : Fragment() {
         }
 
         applyingState = false
+    }
+
+    private fun renderConfidence(ratings: RatingSummary) {
+        binding.outfitConfidenceStars.rating = ratings.roundedAverage
+        binding.outfitConfidenceLabel.text = if (ratings.hasRatings) {
+            resources.getQuantityString(
+                R.plurals.rw_outfit_confidence_count,
+                ratings.count,
+                ratings.average.toString(),
+                ratings.count,
+            )
+        } else {
+            getString(R.string.rw_outfit_confidence_none)
+        }
+    }
+
+    private fun openConfidenceSheet() {
+        val outfitId = viewModel.uiState.value.outfit?.id ?: return
+        findNavController().navigate(
+            R.id.action_outfitDetail_to_confidenceSheet,
+            bundleOf(NavArgs.OUTFIT_ID to outfitId),
+        )
     }
 
     // A chip per garment; the close icon takes it out of the outfit.

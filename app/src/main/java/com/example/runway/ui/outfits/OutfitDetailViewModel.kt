@@ -14,6 +14,7 @@ import com.example.runway.data.remote.api.toUserMessage
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.OutfitRepository
+import com.example.runway.domain.repository.RatingRepository
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,7 @@ class OutfitDetailViewModel(
     private val outfitRepository: OutfitRepository,
     private val itemRepository: ItemRepository,
     private val renderStore: OutfitRenderStore,
+    private val ratingRepository: RatingRepository,
 ) : ViewModel() {
 
     private val outfitId: String = checkNotNull(savedStateHandle[NavArgs.OUTFIT_ID]) {
@@ -38,7 +40,10 @@ class OutfitDetailViewModel(
     private val _uiState = MutableStateFlow(OutfitDetailUiState())
     val uiState: StateFlow<OutfitDetailUiState> = _uiState.asStateFlow()
 
-    init { load() }
+    init {
+        load()
+        loadRatings()
+    }
 
     private fun load() {
         viewModelScope.launch {
@@ -64,6 +69,31 @@ class OutfitDetailViewModel(
                 }
         }
     }
+
+    // Ratings load separately from the outfit so a rating failure cannot blank the screen.
+    private fun loadRatings() {
+        viewModelScope.launch {
+            ratingRepository.listForOutfit(outfitId)
+                .onSuccess { summary -> _uiState.update { it.copy(ratings = summary) } }
+        }
+    }
+
+    // Called when the sheet closes, so a new rating shows without leaving the screen.
+    fun onRatingsChanged() = loadRatings()
+
+    fun onWoreToday() {
+        viewModelScope.launch {
+            outfitRepository.logWear(outfitId)
+                .onSuccess {
+                    _uiState.update { it.copy(wearLoggedAt = System.currentTimeMillis()) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(errorMessage = e.toUserMessage()) }
+                }
+        }
+    }
+
+    fun onWearHandled() = _uiState.update { it.copy(wearLoggedAt = null) }
 
     fun onNameChanged(value: String) = _uiState.update { it.copy(name = value) }
 
@@ -120,6 +150,7 @@ class OutfitDetailViewModel(
                     outfitRepository = app.container.outfitRepository,
                     itemRepository = app.container.itemRepository,
                     renderStore = app.container.outfitRenderStore,
+                    ratingRepository = app.container.ratingRepository,
                 )
             }
         }

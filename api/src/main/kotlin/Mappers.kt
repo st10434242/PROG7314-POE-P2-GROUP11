@@ -52,6 +52,14 @@ fun OutfitItemDto.toDocument(generatedId: String): OutfitItemDocument = OutfitIt
     zIndex = zIndex,
 )
 
+fun ConfidenceRatingDocument.toResponse(): RatingResponse = RatingResponse(
+    id = id,
+    outfitId = outfitId,
+    score = score,
+    note = note,
+    ratedAt = ratedAt.toIso(),
+)
+
 fun UserDocument.toResponse(): UserResponse = UserResponse(
     uid = uid,
     displayName = displayName,

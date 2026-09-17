@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-// ViewModel for one garment's detail screen (IIE, 2026; Android Open Source Project, 2020c).
+// ViewModel for one garment's detail screen.
 
 class ItemDetailViewModel(
     savedStateHandle: SavedStateHandle,
@@ -51,8 +51,3 @@ class ItemDetailViewModel(
         }
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-Android Open Source Project, 2020c. Fragments. [online] Available at: <https://developer.android.com/guide/components/fragments> [Accessed 31 July 2023].
-*/

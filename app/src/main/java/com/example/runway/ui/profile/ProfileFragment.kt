@@ -37,7 +37,7 @@ class ProfileFragment : Fragment() {
         binding.profileSettingsButton.setOnClickListener {
             findNavController().navigate(R.id.action_profile_to_settings)
         }
-        // Entry point for the virtual model screen (Android Open Source Project, 2026).
+        // Entry point for the virtual model screen.
         binding.profileModelButton.setOnClickListener {
             findNavController().navigate(R.id.action_profile_to_model)
         }
@@ -75,7 +75,3 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 }
-
-/* Reference List
-Android Open Source Project, 2026. Navigate to a destination. [online] Available at: <https://developer.android.com/guide/navigation/use-graph/navigate> [Accessed 15 September 2026].
-*/

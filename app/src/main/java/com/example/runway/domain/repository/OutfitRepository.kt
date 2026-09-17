@@ -17,6 +17,9 @@ interface OutfitRepository {
     suspend fun update(outfit: Outfit): Result<Outfit>
 
     suspend fun delete(id: String): Result<Unit>
+
+    // Counts a wear against every garment in the outfit.
+    suspend fun logWear(id: String): Result<Unit>
 }
 
 /* Reference List

@@ -12,7 +12,9 @@ fun Application.configureRouting() {
 
         healthRoutes()
         itemRoutes()
+        wardrobeRoutes()
         outfitRoutes()
+        ratingRoutes()
         userRoutes()
         modelRoutes()
         tryOnRoutes()

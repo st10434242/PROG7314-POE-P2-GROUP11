@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-// Smart colour-matching suggestions for one garment (IIE, 2026).
+// Smart colour-matching suggestions for one garment
 // Takes an [com.example.runway.ui.navigation.NavArgs.ITEM_ID] argument.
 
 class ColourMatcherFragment : Fragment() {
@@ -62,13 +63,19 @@ class ColourMatcherFragment : Fragment() {
                 if (state.isLoading) R.string.rw_item_detail_loading else R.string.rw_item_detail_not_found
             )
             binding.matcherReferenceColour.text = null
+            binding.matcherReferenceSwatch.isVisible = false
             binding.matcherLead.text = null
             return
         }
 
         binding.matcherReferenceName.text = reference.name
-        binding.matcherReferenceColour.text = reference.colour
         binding.matcherLead.text = getString(R.string.rw_colour_matcher_lead, reference.name)
+
+        // The swatch only appears once the tag resolves to a colour we can score.
+        val colour = state.referenceColour
+        binding.matcherReferenceSwatch.isVisible = colour != null
+        colour?.let { binding.matcherReferenceSwatch.swatchColor = it.argb }
+        binding.matcherReferenceColour.text = colour?.label ?: reference.colour
 
         loadPhoto(reference)
     }
@@ -93,7 +100,3 @@ class ColourMatcherFragment : Fragment() {
         _binding = null
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-*/

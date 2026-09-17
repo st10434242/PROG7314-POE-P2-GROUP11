@@ -12,9 +12,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.runway.R
 import com.example.runway.databinding.FragmentColourMatcherBinding
 import com.example.runway.domain.model.Item
+import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,6 +31,8 @@ class ColourMatcherFragment : Fragment() {
     private val binding get() = requireNotNull(_binding)
 
     private val viewModel: ColourMatcherViewModel by viewModels { ColourMatcherViewModel.Factory }
+
+    private lateinit var adapter: WardrobeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +53,10 @@ class ColourMatcherFragment : Fragment() {
         binding.matcherEmpty.title = getString(R.string.rw_colour_matcher_empty_title)
         binding.matcherEmpty.body = getString(R.string.rw_colour_matcher_empty_body)
 
+        adapter = WardrobeAdapter(viewLifecycleOwner.lifecycleScope, ::openItem)
+        binding.matcherList.layoutManager = LinearLayoutManager(requireContext())
+        binding.matcherList.adapter = adapter
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect(::render)
@@ -57,6 +65,12 @@ class ColourMatcherFragment : Fragment() {
     }
 
     private fun render(state: ColourMatcherUiState) {
+        adapter.submitList(state.matches.map { it.item })
+
+        val isEmpty = state.matches.isEmpty() && !state.isLoading
+        binding.matcherList.isVisible = !isEmpty
+        binding.matcherEmpty.isVisible = isEmpty
+
         val reference = state.reference
         if (reference == null) {
             binding.matcherReferenceName.text = getString(
@@ -95,8 +109,16 @@ class ColourMatcherFragment : Fragment() {
         }
     }
 
+    private fun openItem(item: Item) {
+        findNavController().navigate(
+            R.id.action_colourMatcher_to_itemDetail,
+            Bundle().apply { putString(NavArgs.ITEM_ID, item.id) },
+        )
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.matcherList.adapter = null
         _binding = null
     }
 }

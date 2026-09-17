@@ -70,10 +70,20 @@
         android:paddingTop="12dp"
         android:textColor="?android:attr/textColorSecondary" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/matcherList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="88dp" />
+
     <com.example.runway.ui.components.EmptyStateView
         android:id="@+id/matcherEmpty"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:visibility="gone" />
 
 </LinearLayout>

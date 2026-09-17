@@ -9,12 +9,15 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.viewModelScope
 import com.example.runway.RunwayApplication
+import com.example.runway.domain.model.ColourMatch
+import com.example.runway.domain.model.ColourMatcher
+import com.example.runway.domain.model.Item
 import com.example.runway.domain.model.ItemColour
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 // The garment the user came from is the reference every other item is measured against.
@@ -27,11 +30,20 @@ class ColourMatcherViewModel(
         "ColourMatcherViewModel requires a ${NavArgs.ITEM_ID} argument"
     }
 
-    val uiState: StateFlow<ColourMatcherUiState> = repository.observeItem(itemId)
-        .map {
+    val uiState: StateFlow<ColourMatcherUiState> =
+        combine(
+            repository.observeItem(itemId),
+            repository.observeItems(),
+        ) { reference, wardrobe ->
+            val colour = ItemColour.parse(reference?.colour)
             ColourMatcherUiState(
-                reference = it,
-                referenceColour = ItemColour.parse(it?.colour),
+                reference = reference,
+                referenceColour = colour,
+                matches = if (reference == null || colour == null) {
+                    emptyList()
+                } else {
+                    rank(reference, colour, wardrobe)
+                },
                 isLoading = false,
             )
         }
@@ -40,6 +52,18 @@ class ColourMatcherViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = ColourMatcherUiState()
         )
+
+    // Same category is left out, and since scores tie often the least worn wins
+    private fun rank(reference: Item, colour: ItemColour, wardrobe: List<Item>): List<ColourMatch> =
+        wardrobe
+            .filter { it.id != reference.id && !it.category.equals(reference.category, ignoreCase = true) }
+            .mapNotNull { item ->
+                ItemColour.parse(item.colour)?.let { candidate ->
+                    val relationship = ColourMatcher.relate(colour, candidate)
+                    ColourMatch(item, relationship, relationship.score)
+                }
+            }
+            .sortedWith(compareByDescending<ColourMatch> { it.score }.thenBy { it.item.wearCount })
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

@@ -62,6 +62,25 @@
             android:text="@string/rw_wardrobe_pending"
             android:textColor="?android:attr/textColorSecondary"
             android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/wardrobeItemMatchScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/wardrobeItemUseInOutfit"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:minHeight="0dp"
+            android:text="@string/rw_colour_matcher_use_in_outfit"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

@@ -49,6 +49,25 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNav.setupWithNavController(navController)
 
+        // The center menu entry is intentionally only a spacer for the FAB. Keep
+        // it inert while making the four real destinations explicit top-level
+        // navigation targets.
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment,
+                R.id.wardrobeFragment,
+                R.id.outfitsFragment,
+                R.id.profileFragment -> {
+                    if (navController.currentDestination?.id != item.itemId) {
+                        navController.navigate(item.itemId)
+                    }
+                    true
+                }
+                R.id.fabSpacer -> false
+                else -> false
+            }
+        }
+
         navController.addOnDestinationChangedListener { _, destination, _ ->
             Log.d(TAG, "navigated to ${destination.label ?: destination.id}")
             val showChrome = destination.id !in CHROMELESS_DESTINATIONS

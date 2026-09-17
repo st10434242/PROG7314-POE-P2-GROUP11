@@ -156,6 +156,9 @@
         <action
             android:id="@+id/action_colourMatcher_to_itemDetail"
             app:destination="@id/itemDetailFragment" />
+        <action
+            android:id="@+id/action_colourMatcher_to_model"
+            app:destination="@id/modelFragment" />
     </fragment>
 
     <fragment

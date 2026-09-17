@@ -26,6 +26,8 @@ import java.io.File
 class WardrobeAdapter(
     private val scope: CoroutineScope,
     private val onClick: (Item) -> Unit,
+    private val matchScore: (Item) -> Int? = { null },
+    private val onUseInOutfit: ((Item) -> Unit)? = null,
 ) : ListAdapter<Item, WardrobeAdapter.ItemViewHolder>(DIFF) {
 
     // Small enough to be safe on a low-memory device, large enough for a screenful.
@@ -75,6 +77,16 @@ class WardrobeAdapter(
             // Marks a row the server has not accepted yet, so "it saved" and "it
             // synced" are visibly different things.
             binding.wardrobeItemPending.isVisible = item.pendingSync
+
+            val score = matchScore(item)
+            binding.wardrobeItemMatchScore.isVisible = score != null
+            binding.wardrobeItemMatchScore.text = score?.let {
+                binding.root.context.getString(R.string.rw_colour_matcher_score, it)
+            }
+            binding.wardrobeItemUseInOutfit.isVisible = onUseInOutfit != null
+            binding.wardrobeItemUseInOutfit.setOnClickListener {
+                onUseInOutfit?.invoke(item)
+            }
 
             loadThumbnail(item)
         }

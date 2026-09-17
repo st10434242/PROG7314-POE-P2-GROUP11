@@ -30,7 +30,7 @@ import java.util.UUID
 // Renders a try-on on a public Hugging Face Space (IIE, 2026; Hugging Face, 2026).
 // The Space runs the same IDM-VTON model as the paid option and costs nothing, at
 // the price of waiting in a shared queue.
-//
+
 // The Space speaks Gradio 4's HTTP protocol, which is three steps:
 //   1. POST /upload            - hand over the files, get server-side paths back
 //   2. POST /call/tryon        - start the job, get an event id back
@@ -78,7 +78,7 @@ class HuggingFaceTryOn(
         return client.get(imageUrl) { authorise() }.readRawBytes()
     }
 
-    // Step one. The Space stores the file and answers with the path it stored it at.
+    //The Space stores the file and answers with the path it stored it at.
     private suspend fun upload(bytes: ByteArray, fileName: String): String {
         val response = client.post("$base/upload?upload_id=${UUID.randomUUID()}") {
             authorise()
@@ -104,7 +104,7 @@ class HuggingFaceTryOn(
             ?: throw ImageServiceException("The image service returned no upload path")
     }
 
-    // Step two. The seven arguments are the Space's own inputs, in its own order.
+    //The seven arguments are the Space's own inputs, in its own order.
     private suspend fun start(personPath: String, garmentPath: String, description: String): String {
         val payload = buildJsonObject {
             put("data", buildJsonArray {
@@ -140,7 +140,7 @@ class HuggingFaceTryOn(
             ?: throw ImageServiceException("The image service did not start the job")
     }
 
-    // Step three. The stream stays open until the render finishes, so reading it to
+    // The stream stays open until the render finishes, so reading it to
     // the end is the wait; no polling loop is needed.
     private suspend fun awaitResult(eventId: String): String {
         val stream = client.get("$base/call/$endpoint/$eventId") { authorise() }.bodyAsText()

@@ -49,7 +49,7 @@ class AddItemViewModel(
 
     fun newCaptureFile() = imageStore.newCaptureFile()
 
-    // Step one hands over whatever the camera or the picker produced.
+    //hands over whatever the camera or the picker produced.
     fun onPhotoTaken(uri: Uri) {
         _state.update { it.copy(isProcessing = true, cutoutFailed = false, errorMessage = null) }
         viewModelScope.launch {
@@ -62,7 +62,7 @@ class AddItemViewModel(
         }
     }
 
-    // Step two. A failure here is not fatal: the original photo is still usable.
+    //A failure here is not fatal: the original photo is still usable.
     fun onCutOut() {
         val source = _state.value.original ?: return
         _state.update { it.copy(isProcessing = true, cutoutFailed = false) }
@@ -79,7 +79,7 @@ class AddItemViewModel(
 
     fun onUseCutout(use: Boolean) = _state.update { it.copy(useCutout = use) }
 
-    // Step three. The photo is written first so the saved row can point at it.
+    // The photo is written first so the saved row can point at it.
     fun onSave(
         name: String,
         category: String,

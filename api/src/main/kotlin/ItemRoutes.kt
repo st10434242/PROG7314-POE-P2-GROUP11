@@ -72,6 +72,6 @@ private const val DEFAULT_LIMIT = 50
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
 Ktor, 2026. Ktor server documentation. [online] Available at: <https://ktor.io/docs/server-create-and-configure.html> [Accessed 11 September 2026].
-RESTfulAPI.net, n.d.. What is REST. [online] Available at: <https://restfulapi.net/> [Accessed 31 July 2023].
-Rouse, M., 2020. RESTful API (REST API). [online] Available at: <https://searchapparchitecture.techtarget.com/definition/RESTful-API> [Accessed 31 July 2023].
+RESTfulAPI.net, n.d.. What is REST. [online] Available at: <https://restfulapi.net/> [Accessed 11 September 2026].
+Rouse, M., 2020. RESTful API (REST API). [online] Available at: <https://searchapparchitecture.techtarget.com/definition/RESTful-API> [Accessed 11 September 2026].
 */

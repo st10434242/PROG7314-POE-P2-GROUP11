@@ -60,13 +60,16 @@ class WardrobeAdapter(
             binding.root.setOnClickListener { onClick(item) }
             binding.wardrobeItemName.text = item.name
 
-            binding.wardrobeItemMeta.text = listOfNotNull(
+            binding.wardrobeItemMeta.text = item.purchasePrice?.let {
+                binding.root.context.getString(R.string.rw_wardrobe_price, it)
+            } ?: listOfNotNull(
                 item.category.lowercase().replaceFirstChar { it.uppercase() },
                 item.size?.takeIf { it.isNotBlank() },
                 item.brand?.takeIf { it.isNotBlank() },
             ).joinToString(" · ")
 
             binding.wardrobeItemStat.text = when {
+                item.purchasePrice != null -> ""
                 item.costPerWear != null ->
                     binding.root.context.getString(R.string.rw_wardrobe_cost_per_wear, item.costPerWear)
                 item.wearCount > 0 ->

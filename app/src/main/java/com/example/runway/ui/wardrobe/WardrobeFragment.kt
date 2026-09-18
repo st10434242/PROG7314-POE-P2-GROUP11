@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.widget.doAfterTextChanged
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,7 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.runway.R
 import com.example.runway.databinding.FragmentWardrobeBinding
 import com.example.runway.ui.components.RunwayToast
@@ -20,6 +22,7 @@ import com.example.runway.ui.items.ItemsUiState
 import com.example.runway.ui.items.ItemsViewModel
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.launch
+import com.google.android.material.chip.Chip
 
 // The wardrobe tab: every garment the user owns.
 // Room is the source of truth, so a newly saved item appears here before the
@@ -33,6 +36,8 @@ class WardrobeFragment : Fragment() {
     private val viewModel: ItemsViewModel by viewModels { ItemsViewModel.Factory }
 
     private lateinit var adapter: WardrobeAdapter
+    private var query = ""
+    private var selectedCategory = "All"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,10 +52,17 @@ class WardrobeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = WardrobeAdapter(viewLifecycleOwner.lifecycleScope, ::openItem)
-        binding.wardrobeList.layoutManager = LinearLayoutManager(requireContext())
+        binding.wardrobeList.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.wardrobeList.adapter = adapter
 
-        binding.wardrobeRefreshButton.setOnClickListener { viewModel.refresh() }
+        buildCategoryChips()
+        binding.wardrobeSearch.doAfterTextChanged { query = it?.toString().orEmpty(); render(viewModel.uiState.value) }
+        binding.wardrobeFilterButton.setOnClickListener {
+            findNavController().navigate(R.id.action_wardrobe_to_filterSheet)
+        }
+        binding.wardrobeSortButton.setOnClickListener {
+            findNavController().navigate(R.id.action_wardrobe_to_sortSheet)
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -60,18 +72,31 @@ class WardrobeFragment : Fragment() {
     }
 
     private fun render(state: ItemsUiState) {
-        adapter.submitList(state.items)
+        val visibleItems = state.items
+            .filter { item ->
+                selectedCategory == "All" || categoryMatches(item.category, selectedCategory)
+            }
+            .filter { item ->
+                val needle = query.trim()
+                needle.isBlank() || listOf(item.name, item.brand, item.colour, item.category)
+                    .filterNotNull()
+                    .any { value -> value.contains(needle, ignoreCase = true) }
+            }
+            .sortedByDescending { it.updatedAt }
 
-        val isEmpty = state.items.isEmpty() && !state.isLoading
+        adapter.submitList(visibleItems)
+
+        val isEmpty = visibleItems.isEmpty() && !state.isLoading
         binding.wardrobeList.isVisible = !isEmpty
         binding.wardrobeEmpty.isVisible = isEmpty
         if (isEmpty) {
             binding.wardrobeEmpty.title = getString(R.string.rw_wardrobe_empty_title)
-            binding.wardrobeEmpty.body = getString(R.string.rw_wardrobe_empty_body)
+            binding.wardrobeEmpty.body = if (state.items.isEmpty()) {
+                getString(R.string.rw_wardrobe_empty_body)
+            } else {
+                getString(R.string.rw_wardrobe_no_matches)
+            }
         }
-
-        binding.wardrobeProgress.isVisible = state.isSyncing
-        binding.wardrobeRefreshButton.isEnabled = !state.isSyncing
 
         binding.wardrobeCount.text = resources.getQuantityString(
             R.plurals.rw_wardrobe_count, state.items.size, state.items.size
@@ -85,6 +110,44 @@ class WardrobeFragment : Fragment() {
             RunwayToast.show(requireView(), it)
             viewModel.onErrorShown()
         }
+    }
+
+    private fun buildCategoryChips() {
+        listOf("All", "Tops", "Bottoms", "Outerwear", "Dresses", "Shoes", "Other")
+            .forEach { label ->
+                val chip = Chip(requireContext()).apply {
+                    text = label
+                    isCheckable = true
+                    isChecked = label == "All"
+                    setTextAppearance(R.style.TextAppearance_Runway_Button_Small)
+                    setChipStyle()
+                    setOnClickListener {
+                        selectedCategory = label
+                        render(viewModel.uiState.value)
+                    }
+                }
+                binding.wardrobeCategories.addView(chip)
+            }
+    }
+
+    private fun categoryMatches(itemCategory: String, chipCategory: String): Boolean {
+        val normalized = itemCategory.trim().uppercase()
+        return when (chipCategory) {
+            "Tops" -> normalized == "TOP" || normalized == "TOPS"
+            "Bottoms" -> normalized == "BOTTOM" || normalized == "BOTTOMS"
+            "Outerwear" -> normalized == "OUTERWEAR"
+            "Dresses" -> normalized == "DRESS" || normalized == "DRESSES"
+            "Shoes" -> normalized == "SHOES" || normalized == "SHOE"
+            "Other" -> normalized !in setOf("TOP", "TOPS", "BOTTOM", "BOTTOMS", "OUTERWEAR", "DRESS", "DRESSES", "SHOES", "SHOE")
+            else -> false
+        }
+    }
+
+    private fun Chip.setChipStyle() {
+        setChipBackgroundColorResource(R.color.rw_chip_background_state)
+        chipStrokeColor = resources.getColorStateList(R.color.rw_chip_stroke, null)
+        setTextColor(resources.getColorStateList(R.color.rw_chip_text, null))
+        chipStrokeWidth = resources.getDimension(R.dimen.rw_border_width)
     }
 
     private fun openItem(itemId: com.example.runway.domain.model.Item) {

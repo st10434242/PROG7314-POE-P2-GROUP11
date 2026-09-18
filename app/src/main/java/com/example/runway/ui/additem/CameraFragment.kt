@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
@@ -41,7 +40,10 @@ class CameraFragment : Fragment() {
         if (saved && uri != null) viewModel.onPhotoTaken(uri) else pendingCaptureUri = null
     }
 
-    private val pickPhoto = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+    // GetContent is supported by the system document picker on older Android
+    // versions as well as newer devices, so choosing a photo cannot fail when
+    // the newer Photo Picker provider is unavailable.
+    private val pickPhoto = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let { viewModel.onPhotoTaken(it) }
     }
 
@@ -62,7 +64,7 @@ class CameraFragment : Fragment() {
 
         binding.cameraTakeButton.setOnClickListener { takePhoto() }
         binding.cameraPickButton.setOnClickListener {
-            pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            pickPhoto.launch("image/*")
         }
         binding.cameraContinueButton.setOnClickListener {
             findNavController().navigate(R.id.action_camera_to_cutout)

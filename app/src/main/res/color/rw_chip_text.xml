@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Chip label colour. -->
+<!-- Wardrobe chip labels stay black in both states. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="?attr/colorOnPrimary" android:state_checked="true" />
-    <item android:color="?attr/colorOnSurfaceVariant" />
+    <item android:color="@color/rw_fg" android:state_checked="true" />
+    <item android:color="@color/rw_fg" />
 </selector>

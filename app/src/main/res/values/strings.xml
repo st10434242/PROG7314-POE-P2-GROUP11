@@ -190,6 +190,11 @@
     <string name="rw_wardrobe_pending">Not synced</string>
     <string name="rw_wardrobe_unsynced">Some items are only on this phone so far.</string>
     <string name="rw_wardrobe_item_image">Photo of this garment</string>
+    <string name="rw_wardrobe_search">Search by name, brand or colour</string>
+    <string name="rw_wardrobe_filter">Filter wardrobe</string>
+    <string name="rw_wardrobe_sort">Sort wardrobe</string>
+    <string name="rw_wardrobe_no_matches">No items match your search or category.</string>
+    <string name="rw_wardrobe_price">R%1$.0f</string>
 
     <plurals name="rw_wardrobe_count">
         <item quantity="one">%1$d item</item>

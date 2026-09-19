@@ -3,18 +3,25 @@ package com.example.runway.fake
 import com.example.runway.domain.model.Outfit
 import com.example.runway.domain.repository.OutfitRepository
 
-// In-memory outfits, enough for the confidence sheet to read a name.
+// In-memory outfits for the confidence sheet and the Home screen.
 class FakeOutfitRepository(
     private var outfit: Outfit = Outfit(id = "outfit-1", name = "Friday dinner"),
 ) : OutfitRepository {
 
     var wearCount = 0
         private set
+    var lastWornId: String? = null
+        private set
 
     var getError: Throwable? = null
     var wearError: Throwable? = null
+    var listError: Throwable? = null
 
-    override suspend fun list(): Result<List<Outfit>> = Result.success(listOf(outfit))
+    // Set this to hand back more than the one outfit.
+    var outfits: List<Outfit>? = null
+
+    override suspend fun list(): Result<List<Outfit>> =
+        listError?.let { Result.failure(it) } ?: Result.success(outfits ?: listOf(outfit))
 
     override suspend fun get(id: String): Result<Outfit> =
         getError?.let { Result.failure(it) } ?: Result.success(outfit)
@@ -30,6 +37,7 @@ class FakeOutfitRepository(
 
     override suspend fun logWear(id: String): Result<Unit> {
         wearCount++
+        lastWornId = id
         return wearError?.let { Result.failure(it) } ?: Result.success(Unit)
     }
 }

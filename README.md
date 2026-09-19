@@ -214,10 +214,19 @@ Set **Settings → Build, Execution, Deployment → Build Tools → Gradle → G
 JDK** to Temurin 21 if the build complains about the JDK. Then Run on an
 emulator running API 26 or higher.
 
-The debug build points at `http://10.0.2.2:8080`, which is how the emulator
-reaches the host machine's `localhost`. The release build points at the deployed
-URL. Both are set as `API_BASE_URL` in `app/build.gradle.kts`; no code names a
-host.
+Which API the app uses is set by one line at the top of `app/build.gradle.kts`:
+
+```kotlin
+val useHostedApi = true
+```
+
+- `true` - the hosted API at `https://prog7314-poe-p2-group11.onrender.com/`.
+  Use this on a physical phone.
+- `false` - an API running on this machine, reached at `http://10.0.2.2:8080`,
+  which is how the emulator reaches the host's `localhost`. Emulator only.
+
+Sync Gradle after changing it. The chosen URL becomes `BuildConfig.API_BASE_URL`;
+no other code names a host.
 
 ### 3. Confirm the two halves are talking
 

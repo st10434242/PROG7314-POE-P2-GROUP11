@@ -66,7 +66,7 @@
         android:id="@+id/homeFragment"
         android:name="com.example.runway.ui.home.HomeFragment"
         android:label="@string/rw_nav_home"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_home_to_weather"
             app:destination="@id/weatherFragment" />
@@ -82,6 +82,13 @@
         <action
             android:id="@+id/action_home_to_outfitDetail"
             app:destination="@id/outfitDetailFragment" />
+        <action
+            android:id="@+id/action_home_to_stats"
+            app:destination="@id/statsFragment" />
+        <!-- "Wear this" on today's pick asks for a confidence rating. -->
+        <action
+            android:id="@+id/action_home_to_confidenceSheet"
+            app:destination="@id/confidenceSheet" />
     </fragment>
 
     <fragment

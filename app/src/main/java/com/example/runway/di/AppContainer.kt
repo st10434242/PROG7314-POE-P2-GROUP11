@@ -13,14 +13,18 @@ import com.example.runway.data.local.SyncPreferences
 import com.example.runway.data.remote.api.ApiClient
 import com.example.runway.data.repository.ApiModelRepository
 import com.example.runway.data.repository.ApiOutfitRepository
+import com.example.runway.data.repository.ApiProfileRepository
 import com.example.runway.data.repository.ApiRatingRepository
+import com.example.runway.data.repository.ApiWardrobeRepository
 import com.example.runway.data.repository.OfflineItemRepository
 import com.example.runway.data.repository.TryOnRepository
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.ModelRepository
 import com.example.runway.domain.repository.OutfitRepository
+import com.example.runway.domain.repository.ProfileRepository
 import com.example.runway.domain.repository.RatingRepository
 import com.example.runway.domain.repository.SettingsRepository
+import com.example.runway.domain.repository.WardrobeRepository
 import com.google.firebase.auth.FirebaseAuth
 
 // Manual dependency container for the Runway app.
@@ -80,6 +84,15 @@ class AppContainer(context: Context) {
     // the user to another device.
     val ratingRepository: RatingRepository by lazy {
         ApiRatingRepository(ApiClient.api)
+    }
+
+    // Totals for the Home and Profile stat tiles.
+    val wardrobeRepository: WardrobeRepository by lazy {
+        ApiWardrobeRepository(ApiClient.api)
+    }
+
+    val profileRepository: ProfileRepository by lazy {
+        ApiProfileRepository(ApiClient.api)
     }
 
     // The try-on renders that belong to those outfits, kept on this device.

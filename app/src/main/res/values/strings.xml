@@ -62,8 +62,6 @@
     <!--Stub screens-->
     <!-- Placeholders proving the shell works. Each is replaced by the teammate
          who owns that screen's ticket. -->
-    <string name="rw_stub_home_title">Home</string>
-    <string name="rw_stub_home_body">The dashboard, weather suggestions and today\'s outfit land here.</string>
     <string name="rw_stub_wardrobe_title">Wardrobe</string>
     <string name="rw_stub_wardrobe_body">Your wardrobe grid, search and filters land here.</string>
     <string name="rw_stub_outfits_title">Outfits</string>
@@ -501,5 +499,52 @@
         <item quantity="one">%1$s from %2$d rating</item>
         <item quantity="other">%1$s from %2$d ratings</item>
     </plurals>
+
+    <!--Home-->
+    <string name="rw_home_greeting_morning">Good morning</string>
+    <string name="rw_home_greeting_afternoon">Good afternoon</string>
+    <string name="rw_home_greeting_evening">Good evening</string>
+    <string name="rw_home_notifications">Notifications</string>
+    <string name="rw_home_weather_title">Weather suggestions</string>
+    <string name="rw_home_weather_body">See what to wear for today\'s weather</string>
+    <plurals name="rw_home_laundry_alert">
+        <item quantity="one">%d item needs a wash</item>
+        <item quantity="other">%d items need a wash</item>
+    </plurals>
+    <string name="rw_home_laundry_body">Tap to open your laundry basket</string>
+    <string name="rw_home_todays_pick">Today\'s pick</string>
+    <plurals name="rw_home_pieces">
+        <item quantity="one">%d piece</item>
+        <item quantity="other">%d pieces</item>
+    </plurals>
+    <string name="rw_home_suggest_another">Suggest another</string>
+    <string name="rw_home_wear_this">Wear this</string>
+    <string name="rw_home_wearing">Logging…</string>
+    <string name="rw_home_empty_wardrobe_title">Your wardrobe is empty</string>
+    <string name="rw_home_empty_wardrobe_body">Add your first piece to start getting outfit picks.</string>
+    <string name="rw_home_add_first_item">Add your first item</string>
+    <string name="rw_home_no_outfits_title">No outfits yet</string>
+    <string name="rw_home_no_outfits_body">Put an outfit together and it will show up here as a daily pick.</string>
+    <string name="rw_home_go_to_outfits">Go to outfits</string>
+    <string name="rw_home_outfits_failed_title">Couldn\'t load your outfits</string>
+    <string name="rw_home_outfits_failed_body">Check your connection and try again.</string>
+    <string name="rw_home_retry">Try again</string>
+    <string name="rw_home_quick_stats">Quick stats</string>
+    <string name="rw_home_recently_added">Recently added</string>
+    <string name="rw_home_see_all">See all</string>
+    <string name="rw_stat_items">Items</string>
+    <string name="rw_stat_outfits">Outfits</string>
+    <string name="rw_stat_wears">Wears</string>
+    <string name="rw_stat_value">Value</string>
+    <string name="rw_stat_unknown">–</string>
+
+    <!--Profile-->
+    <string name="rw_profile_member_since">Member since %1$s</string>
+    <string name="rw_profile_insights">Insights</string>
+    <string name="rw_profile_model">Virtual model</string>
+    <string name="rw_profile_swap_market">Swap market</string>
+    <string name="rw_profile_my_listings">My listings</string>
+    <string name="rw_profile_notifications">Notifications</string>
+    <string name="rw_profile_laundry">Laundry basket</string>
 
 </resources>

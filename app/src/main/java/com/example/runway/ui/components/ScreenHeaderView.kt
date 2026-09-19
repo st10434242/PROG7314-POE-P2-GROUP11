@@ -61,7 +61,10 @@ class ScreenHeaderView @JvmOverloads constructor(
 
     /** Shows or hides the back button. Hiding keeps its space so the title does not shift. */
     fun setShowBack(show: Boolean) {
-        binding.headerBack.visibility = if (show) View.VISIBLE else View.INVISIBLE
+        binding.headerBack.visibility = if (show) View.VISIBLE else View.GONE
+        // Without a back button the title lines up with the screen content below it.
+        val start = resources.getDimensionPixelSize(if (show) R.dimen.rw_space_8 else R.dimen.rw_space_12)
+        setPaddingRelative(start, paddingTop, paddingEnd, paddingBottom)
     }
 
     /** Called when the back button is tapped. Also shows it if it was hidden. */

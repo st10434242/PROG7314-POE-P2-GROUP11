@@ -8,6 +8,14 @@ plugins {
     alias(libs.plugins.google.services)
 }
 
+// Which API the app talks to. Set to false to use the API running on this PC instead.
+val useHostedApi = true
+
+val hostedApiUrl = "https://prog7314-poe-p2-group11.onrender.com/"
+// 10.0.2.2 is how the emulator reaches this PC's localhost. Only works on an emulator.
+val localApiUrl = "http://10.0.2.2:8080/"
+val apiBaseUrl = if (useHostedApi) hostedApiUrl else localApiUrl
+
 android {
     namespace = "com.example.runway"
     compileSdk = 37
@@ -21,8 +29,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // The deployed API. Used by every build type unless overridden below.
-        buildConfigField("String", "API_BASE_URL", "\"https://runway-api.onrender.com/\"")
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
     }
 
     // Every machine normally signs debug builds with its own ~/.android/debug.keystore,
@@ -40,12 +47,6 @@ android {
     buildTypes {
         debug {
             signingConfig = signingConfigs.getByName("debug")
-            // Override with -PrunwayApiBaseUrl=https://your-service.onrender.com/
-            val demoApiUrl = providers.gradleProperty("runwayApiBaseUrl")
-                .getOrElse("http://10.0.2.2:8080/")
-            require(demoApiUrl.startsWith("https://") || demoApiUrl.startsWith("http://"))
-            require(demoApiUrl.endsWith("/") && '\"' !in demoApiUrl && '\\' !in demoApiUrl)
-            buildConfigField("String", "API_BASE_URL", "\"$demoApiUrl\"")
         }
 
         release {

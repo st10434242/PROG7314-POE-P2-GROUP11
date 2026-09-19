@@ -33,7 +33,9 @@
         tools:layout="@layout/fragment_signin">
         <action
             android:id="@+id/action_signIn_to_biometric"
-            app:destination="@id/biometricFragment" />
+            app:destination="@id/biometricFragment"
+            app:popUpTo="@id/signInFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_signIn_to_home"
             app:destination="@id/homeFragment"
@@ -49,12 +51,12 @@
         <action
             android:id="@+id/action_biometric_to_home"
             app:destination="@id/homeFragment"
-            app:popUpTo="@id/signInFragment"
+            app:popUpTo="@id/biometricFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_biometric_to_signIn"
             app:destination="@id/signInFragment"
-            app:popUpTo="@id/signInFragment"
+            app:popUpTo="@id/biometricFragment"
             app:popUpToInclusive="true" />
     </fragment>
 

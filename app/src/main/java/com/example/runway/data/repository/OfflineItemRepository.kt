@@ -3,7 +3,7 @@ package com.example.runway.data.repository
 import android.util.Log
 import com.example.runway.data.local.ItemDao
 import com.example.runway.data.local.ItemEntity
-import com.example.runway.data.local.SyncPreferences
+import com.example.runway.data.local.SyncStore
 import com.example.runway.data.mapper.toCreateDto
 import com.example.runway.data.mapper.toDomain
 import com.example.runway.data.mapper.toEntity
@@ -25,7 +25,7 @@ import java.util.UUID
 class OfflineItemRepository(
     private val dao: ItemDao,
     private val api: RunwayApi,
-    private val syncPreferences: SyncPreferences,
+    private val syncPreferences: SyncStore,
     // Supplies the signed-in user's id.
     private val currentUid: () -> String?,
 ) : ItemRepository {
@@ -34,6 +34,8 @@ class OfflineItemRepository(
 
     override fun observeItem(id: String): Flow<Item?> =
         dao.observeById(id).map { it?.toDomain() }
+
+    override fun observePendingCount(): Flow<Int> = dao.observePendingCount()
 
     override suspend fun save(item: Item) {
         val entity = item
@@ -106,7 +108,8 @@ class OfflineItemRepository(
 
     // Pulls everything that changed since the last successful sync, a page at a time.
     private suspend fun pull(uid: String) {
-        val since = syncPreferences.lastSyncedAt(uid)
+        // With nothing stored locally the cursor is meaningless, so fetch everything.
+        val since = if (dao.count() == 0) null else syncPreferences.lastSyncedAt(uid)
 
         var cursor: String? = null
         var newest: Instant? = since?.let { runCatching { Instant.parse(it) }.getOrNull() }

@@ -189,7 +189,96 @@ class ServerTest {
         val response = client.get("/health")
         assertEquals(HttpStatusCode.OK, response.status)
     }
+
+    // SCRUM-142: input validation added for the planner and the outfit builder.
+
+    @Test
+    fun `an item name over the limit is rejected`() {
+        val body = CreateItemRequest(name = "a".repeat(121), category = "TOP")
+        assertFailsWith<ValidationException> { body.validate() }
+    }
+
+    @Test
+    fun `an item needs a category`() {
+        assertFailsWith<ValidationException> { CreateItemRequest(name = "Coat", category = " ").validate() }
+    }
+
+    @Test
+    fun `a new outfit needs a name`() {
+        assertFailsWith<ValidationException> { CreateOutfitRequest(name = "  ").validate() }
+    }
+
+    @Test
+    fun `every garment on a new outfit needs an item id`() {
+        val body = CreateOutfitRequest(name = "Friday", items = listOf(OutfitItemDto(clothingItemId = "")))
+        assertFailsWith<ValidationException> { body.validate() }
+    }
+
+    @Test
+    fun `a new outfit with its canvas layout is accepted`() {
+        CreateOutfitRequest(
+            name = "Friday",
+            occasion = "Evening",
+            items = listOf(OutfitItemDto(clothingItemId = "shirt", x = 0.3, y = 0.4, scale = 1.2, rotation = -10.0)),
+        ).validate()
+    }
+
+    @Test
+    fun `plan dates must be YYYY-MM-DD`() {
+        assertEquals(java.time.LocalDate.of(2026, 9, 22), parsePlanDate("2026-09-22"))
+        assertFailsWith<ValidationException> { parsePlanDate("22/09/2026") }
+        assertFailsWith<ValidationException> { parsePlanDate("2026-9-2") }
+        assertFailsWith<ValidationException> { parsePlanDate("2026-02-30") }
+        assertFailsWith<ValidationException> { parsePlanDate(null) }
+    }
+
+    @Test
+    fun `a plan needs an outfit`() {
+        assertFailsWith<ValidationException> { SetPlanRequest(outfitId = " ").validate() }
+        SetPlanRequest(outfitId = "o1").validate()
+    }
+
+    @Test
+    fun `a plan range can't run backwards`() {
+        val from = java.time.LocalDate.of(2026, 9, 22)
+        assertFailsWith<ValidationException> { validatePlanRange(from, from.minusDays(1)) }
+    }
+
+    @Test
+    fun `a plan range is capped so one call can't ask for years`() {
+        val from = java.time.LocalDate.of(2026, 9, 1)
+        validatePlanRange(from, from.plusDays(MAX_PLAN_RANGE_DAYS))
+        assertFailsWith<ValidationException> { validatePlanRange(from, from.plusDays(MAX_PLAN_RANGE_DAYS + 1)) }
+    }
+
+    @Test
+    fun `planner endpoints need a token`() = testApplication {
+        application {
+            configureSerialization()
+            configureErrorHandling()
+            configureSecurity()
+            configureRouting()
+        }
+
+        val response = client.get("/api/v1/plans?from=2026-09-01&to=2026-09-30")
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
+    fun `the planner is in the API docs`() = testApplication {
+        application {
+            configureSerialization()
+            configureErrorHandling()
+            configureSecurity()
+            configureRouting()
+        }
+
+        val definition = client.get("/swagger/documentation.yaml").bodyAsText()
+        assertTrue(definition.contains("/api/v1/plans:"))
+        assertTrue(definition.contains("/api/v1/plans/{date}:"))
+    }
 }
+
 
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.

@@ -10,9 +10,11 @@ import com.example.runway.data.local.OutfitRenderStore
 import com.example.runway.data.local.PreferencesSettingsStore
 import com.example.runway.data.local.RunwayDatabase
 import com.example.runway.data.local.SyncPreferences
+import com.example.runway.data.network.ConnectivityObserver
 import com.example.runway.data.remote.api.ApiClient
 import com.example.runway.data.repository.ApiModelRepository
 import com.example.runway.data.repository.ApiOutfitRepository
+import com.example.runway.data.repository.ApiPlanRepository
 import com.example.runway.data.repository.ApiProfileRepository
 import com.example.runway.data.repository.ApiRatingRepository
 import com.example.runway.data.repository.ApiWardrobeRepository
@@ -21,6 +23,7 @@ import com.example.runway.data.repository.TryOnRepository
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.ModelRepository
 import com.example.runway.domain.repository.OutfitRepository
+import com.example.runway.domain.repository.PlanRepository
 import com.example.runway.domain.repository.ProfileRepository
 import com.example.runway.domain.repository.RatingRepository
 import com.example.runway.domain.repository.SettingsRepository
@@ -86,6 +89,11 @@ class AppContainer(context: Context) {
         ApiRatingRepository(ApiClient.api)
     }
 
+    // The outfit planner. API-backed so plans show up on every device.
+    val planRepository: PlanRepository by lazy {
+        ApiPlanRepository(ApiClient.api)
+    }
+
     // Totals for the Home and Profile stat tiles.
     val wardrobeRepository: WardrobeRepository by lazy {
         ApiWardrobeRepository(ApiClient.api)
@@ -108,6 +116,10 @@ class AppContainer(context: Context) {
 
     val authSessionStore: AuthSessionStore by lazy {
         AuthSessionStore(appContext)
+    }
+
+    val connectivity: ConnectivityObserver by lazy {
+        ConnectivityObserver(appContext)
     }
 
     val settingsRepository: SettingsRepository by lazy {

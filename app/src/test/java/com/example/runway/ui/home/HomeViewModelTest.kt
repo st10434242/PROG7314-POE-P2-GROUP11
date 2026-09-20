@@ -7,6 +7,7 @@ import com.example.runway.domain.model.Outfit
 import com.example.runway.domain.model.WardrobeSummary
 import com.example.runway.fake.FakeItemRepository
 import com.example.runway.fake.FakeOutfitRepository
+import com.example.runway.fake.FakePlanRepository
 import com.example.runway.fake.FakeWardrobeRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -26,6 +27,7 @@ class HomeViewModelTest {
     private val items = FakeItemRepository()
     private val outfits = FakeOutfitRepository()
     private val wardrobe = FakeWardrobeRepository()
+    private val plans = FakePlanRepository()
 
     private var now = LocalDateTime.of(2026, 9, 19, 9, 0)
 
@@ -42,6 +44,7 @@ class HomeViewModelTest {
         itemRepository = items,
         outfitRepository = outfits,
         wardrobeRepository = wardrobe,
+        planRepository = plans,
         currentSession = { currentSession },
         clock = { now },
     )
@@ -225,5 +228,30 @@ class HomeViewModelTest {
             "You are offline. Please try again once you have a connection.",
             vm.uiState.value.errorMessage,
         )
+    }
+
+    @Test
+    fun `an outfit planned for today beats the daily rotation`() = runTest {
+        outfits.outfits = listOf(outfit("a"), outfit("b"), outfit("c"))
+        plans.plans[now.toLocalDate()] = "b"
+        val vm = viewModel()
+        vm.refresh()
+
+        assertEquals("b", vm.uiState.value.todaysPick?.id)
+        assertTrue(vm.uiState.value.isPlanned)
+        // The plan is the plan, so there's nothing else to suggest.
+        assertFalse(vm.uiState.value.canSuggestAnother)
+    }
+
+    @Test
+    fun `a planner that can't be reached falls back to the rotation`() = runTest {
+        outfits.outfits = listOf(outfit("a"), outfit("b"))
+        plans.listError = IOException("offline")
+        val vm = viewModel()
+        vm.refresh()
+
+        assertFalse(vm.uiState.value.isPlanned)
+        assertTrue(vm.uiState.value.todaysPick != null)
+        assertFalse(vm.uiState.value.outfitsFailed)
     }
 }

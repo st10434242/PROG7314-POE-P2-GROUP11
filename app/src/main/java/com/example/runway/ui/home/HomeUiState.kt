@@ -23,6 +23,10 @@ data class HomeUiState(
     val recentItems: List<Item> = emptyList(),
     val hasItems: Boolean = false,
     val todaysPick: Outfit? = null,
+    // True when today's pick came from the planner rather than the daily rotation.
+    val isPlanned: Boolean = false,
+    // Photo paths for the pick's collage.
+    val itemsById: Map<String, Item> = emptyMap(),
     // Whether there is more than one outfit to cycle through.
     val canSuggestAnother: Boolean = false,
     val isLoadingOutfits: Boolean = true,

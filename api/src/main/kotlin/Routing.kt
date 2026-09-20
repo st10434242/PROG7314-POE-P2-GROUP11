@@ -15,6 +15,7 @@ fun Application.configureRouting() {
         wardrobeRoutes()
         outfitRoutes()
         ratingRoutes()
+        planRoutes()
         userRoutes()
         modelRoutes()
         tryOnRoutes()

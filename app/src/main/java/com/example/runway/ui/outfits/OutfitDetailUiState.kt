@@ -17,6 +17,8 @@ data class OutfitDetailUiState(
     // Set once a wear is logged, so the screen knows to ask for a rating.
     val wearLoggedAt: Long? = null,
     val isLoading: Boolean = true,
+    // True when the outfit itself couldn't be fetched, so there's nothing to show.
+    val loadFailed: Boolean = false,
     val isSaving: Boolean = false,
     val savedAt: Long? = null,
     val deleted: Boolean = false,

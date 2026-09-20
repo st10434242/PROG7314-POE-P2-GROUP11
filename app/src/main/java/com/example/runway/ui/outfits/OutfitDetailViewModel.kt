@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.runway.RunwayApplication
-import com.example.runway.data.local.OutfitRenderStore
+import com.example.runway.data.local.RenderStore
 import com.example.runway.data.remote.api.toUserMessage
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.repository.ItemRepository
@@ -29,7 +29,7 @@ class OutfitDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val outfitRepository: OutfitRepository,
     private val itemRepository: ItemRepository,
-    private val renderStore: OutfitRenderStore,
+    private val renderStore: RenderStore,
     private val ratingRepository: RatingRepository,
 ) : ViewModel() {
 
@@ -45,7 +45,14 @@ class OutfitDetailViewModel(
         loadRatings()
     }
 
+    // Called when the builder has just changed this outfit.
+    fun reload() {
+        load()
+        loadRatings()
+    }
+
     private fun load() {
+        _uiState.update { it.copy(loadFailed = false) }
         viewModelScope.launch {
             outfitRepository.get(outfitId)
                 .onSuccess { outfit ->
@@ -65,7 +72,11 @@ class OutfitDetailViewModel(
                     }
                 }
                 .onFailure { e ->
-                    _uiState.update { it.copy(isLoading = false, errorMessage = e.toUserMessage()) }
+                    _uiState.update {
+                        // Nothing loaded yet means a retry screen; otherwise keep what's shown and say so.
+                        if (it.outfit == null) it.copy(isLoading = false, loadFailed = true)
+                        else it.copy(isLoading = false, errorMessage = e.toUserMessage())
+                    }
                 }
         }
     }

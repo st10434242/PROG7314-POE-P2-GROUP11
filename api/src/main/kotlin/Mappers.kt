@@ -86,6 +86,14 @@ fun SettingsDto.toDocument(): UserSettingsDocument = UserSettingsDocument(
     defaultWearLimit = defaultWearLimit.toLong(),
 )
 
+// Stored as midnight UTC, so reading it back in UTC gives the same calendar day.
+fun OutfitPlanDocument.toResponse(): PlanResponse = PlanResponse(
+    id = id,
+    date = date?.toDate()?.toInstant()?.atZone(java.time.ZoneOffset.UTC)?.toLocalDate()?.toString().orEmpty(),
+    outfitId = outfitId,
+    status = status,
+)
+
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
 Freeman, J., 2019. What is JSON? A better format for data exchange. [online] Available at: <https://www.infoworld.com/article/3222851/what-is-json-a-better-format-for-data-exchange.html> [Accessed 31 July 2023].

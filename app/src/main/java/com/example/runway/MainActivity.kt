@@ -8,10 +8,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.runway.databinding.ActivityMainBinding
+import com.example.runway.ui.components.SyncBannerView
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 /**
  * The app's single Activity. Hosts the whole nav graph - auth (splash / onboarding /
@@ -34,6 +40,35 @@ class MainActivity : AppCompatActivity() {
         applyWindowInsets()
         setUpNavigation()
         setUpFab()
+        watchConnection()
+    }
+
+    // Shows the offline banner, and syncs whatever was queued as soon as the connection is back.
+    private fun watchConnection() {
+        val container = (application as RunwayApplication).container
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                var wasOffline = false
+                combine(container.connectivity.isOnline, container.itemRepository.observePendingCount()) { online, queued ->
+                    online to queued
+                }.collect { (online, queued) ->
+                    when {
+                        !online -> {
+                            wasOffline = true
+                            binding.syncBanner.state = SyncBannerView.State.Offline(queued)
+                        }
+                        wasOffline -> {
+                            wasOffline = false
+                            Log.d(TAG, "back online, syncing $queued queued changes")
+                            binding.syncBanner.state = SyncBannerView.State.Syncing
+                            container.itemRepository.refresh()
+                            binding.syncBanner.state = SyncBannerView.State.Idle
+                        }
+                        else -> binding.syncBanner.state = SyncBannerView.State.Idle
+                    }
+                }
+            }
+        }
     }
 
     /** Connects the bottom navigation bar to the nav graph and hides the shell chrome

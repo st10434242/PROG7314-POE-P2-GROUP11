@@ -19,9 +19,12 @@ data class ItemEntity(
     // so a row that arrives from a sync must not overwrite it with null.
     val imagePath: String?,
     val wearCount: Long,
+    val wearLimit: Int?,
+    val needsWash: Boolean,
     val archived: Boolean,
     val deleted: Boolean,
     // Epoch milliseconds.
     val updatedAt: Long,
+    val createdAt: Long,
     val pendingSync: Boolean,
 )

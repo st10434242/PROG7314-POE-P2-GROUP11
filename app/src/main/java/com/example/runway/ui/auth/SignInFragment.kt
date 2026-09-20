@@ -1,6 +1,7 @@
 package com.example.runway.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import com.example.runway.R
 import com.example.runway.RunwayApplication
 import com.example.runway.data.auth.SignInOutcome
 import com.example.runway.databinding.FragmentSigninBinding
+import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
+import com.google.android.material.progressindicator.IndeterminateDrawable
 import kotlinx.coroutines.launch
 
 // Google sign-in screen for the Runway app (IIE, 2026; Android Open Source Project, 2020c).
@@ -40,11 +43,14 @@ class SignInFragment : Fragment() {
         biometricAvailable = isBiometricAvailable()
         binding.authFingerprintSwitch.isChecked = biometricAvailable
         binding.authFingerprintSwitch.isEnabled = biometricAvailable
+        // Say why the switch is off rather than just greying it out.
+        binding.authFingerprintUnavailable.isVisible = !biometricAvailable
 
         binding.authGoogleButton.setOnClickListener { startSignIn() }
     }
 
     private fun startSignIn() {
+        Log.d(TAG, "sign in started")
         binding.authError.isVisible = false
         setBusy(true)
 
@@ -53,6 +59,7 @@ class SignInFragment : Fragment() {
             val outcome = googleAuthClient.signIn(requireActivity())
             if (_binding == null) return@launch
             setBusy(false)
+            Log.d(TAG, "sign in finished: ${outcome::class.simpleName}")
 
             when (outcome) {
                 is SignInOutcome.Success -> onSignedIn(outcome)
@@ -77,11 +84,24 @@ class SignInFragment : Fragment() {
         } else {
             R.id.action_signIn_to_home
         }
+        Log.d(TAG, if (useBiometric) "signed in, going to biometric" else "signed in, going home")
         findNavController().navigate(destination)
     }
 
+    // Swaps the Google logo for a spinner while the account sheet is up, like the mockup.
     private fun setBusy(busy: Boolean) {
-        binding.authGoogleButton.isEnabled = !busy
+        val button = binding.authGoogleButton
+        button.isEnabled = !busy
+        if (busy) {
+            val spec = CircularProgressIndicatorSpec(requireContext(), null)
+            spec.indicatorSize = resources.getDimensionPixelSize(R.dimen.rw_space_20)
+            spec.trackThickness = resources.getDimensionPixelSize(R.dimen.rw_border_width) * 2
+            button.icon = IndeterminateDrawable.createCircularDrawable(requireContext(), spec)
+            button.setText(R.string.rw_auth_signing_in)
+        } else {
+            button.setIconResource(R.drawable.ic_rw_google)
+            button.setText(R.string.rw_auth_google_button)
+        }
     }
 
     private fun showError(messageRes: Int) {
@@ -97,6 +117,10 @@ class SignInFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private companion object {
+        const val TAG = "SignInFragment"
     }
 }
 

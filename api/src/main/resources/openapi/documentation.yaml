@@ -22,6 +22,7 @@ tags:
   - name: Items
   - name: Outfits
   - name: Ratings
+  - name: Planner
   - name: Wardrobe
   - name: Users
   - name: Model
@@ -395,6 +396,74 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '404': { $ref: '#/components/responses/NotFound' }
 
+  /api/v1/plans:
+    get:
+      tags: [Planner]
+      summary: Planned outfits between two days
+      description: Both days are included. A range can cover at most 62 days.
+      security:
+        - firebaseAuth: []
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema: { type: string, format: date, example: '2026-09-01' }
+        - name: to
+          in: query
+          required: true
+          schema: { type: string, format: date, example: '2026-10-12' }
+      responses:
+        '200':
+          description: The plans in the range, earliest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Plan' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/v1/plans/{date}:
+    parameters:
+      - name: date
+        in: path
+        required: true
+        schema: { type: string, format: date, example: '2026-09-22' }
+    put:
+      tags: [Planner]
+      summary: Plan an outfit for a day
+      description: >
+        Replaces whatever was planned for that day. The outfit must belong to the
+        caller.
+      security:
+        - firebaseAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [outfitId]
+              properties:
+                outfitId: { type: string }
+      responses:
+        '200':
+          description: The plan that was stored
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Plan' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Planner]
+      summary: Clear a day
+      description: Clearing a day that has nothing planned still succeeds.
+      security:
+        - firebaseAuth: []
+      responses:
+        '204':
+          description: The day is clear
+        '400': { $ref: '#/components/responses/BadRequest' }
+
   /api/v1/users/me:
     get:
       tags: [Users]
@@ -698,6 +767,14 @@ components:
         ratings:
           type: array
           items: { $ref: '#/components/schemas/Rating' }
+
+    Plan:
+      type: object
+      properties:
+        id: { type: string }
+        date: { type: string, format: date, example: '2026-09-22' }
+        outfitId: { type: string }
+        status: { type: string, example: PLANNED }
 
     Wear:
       type: object

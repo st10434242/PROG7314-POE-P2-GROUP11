@@ -143,6 +143,7 @@
 
             <!-- Today's pick -->
             <com.example.runway.ui.components.SectionHeaderView
+                android:id="@+id/homePickHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:rwTitle="@string/rw_home_todays_pick" />
@@ -177,27 +178,10 @@
                         android:orientation="horizontal"
                         android:padding="@dimen/rw_space_12">
 
-                        <FrameLayout
+                        <com.example.runway.ui.outfits.OutfitThumbnailView
+                            android:id="@+id/homePickThumb"
                             android:layout_width="120dp"
-                            android:layout_height="160dp"
-                            android:background="@drawable/rw_bg_card">
-
-                            <ImageView
-                                android:id="@+id/homePickImage"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:contentDescription="@string/rw_outfit_render_description"
-                                android:scaleType="fitCenter" />
-
-                            <TextView
-                                android:id="@+id/homePickNoRender"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:text="@string/rw_outfit_no_render_short"
-                                android:textAppearance="@style/TextAppearance.Runway.Caption" />
-                        </FrameLayout>
+                            android:layout_height="150dp" />
 
                         <LinearLayout
                             android:layout_width="0dp"

@@ -68,6 +68,15 @@ interface RunwayApi {
     @GET("api/v1/wardrobe/summary")
     suspend fun getWardrobeSummary(): WardrobeSummaryDto
 
+    @GET("api/v1/plans")
+    suspend fun getPlans(@Query("from") from: String, @Query("to") to: String): List<PlanDto>
+
+    @PUT("api/v1/plans/{date}")
+    suspend fun setPlan(@Path("date") date: String, @Body body: SetPlanDto): PlanDto
+
+    @DELETE("api/v1/plans/{date}")
+    suspend fun clearPlan(@Path("date") date: String)
+
     @GET("api/v1/users/me")
     suspend fun getProfile(): UserDto
 

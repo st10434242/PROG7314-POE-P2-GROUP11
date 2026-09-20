@@ -98,6 +98,17 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:id="@+id/authFingerprintUnavailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/rw_auth_fingerprint_unavailable"
+            android:textAppearance="@style/TextAppearance.Runway.Caption"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
             android:id="@+id/authError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

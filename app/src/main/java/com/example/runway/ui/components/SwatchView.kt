@@ -38,6 +38,13 @@ class SwatchView @JvmOverloads constructor(
             circle.setColor(value)
         }
 
+    // Thick accent ring, used by colour pickers to show which one is chosen.
+    var picked: Boolean = false
+        set(value) {
+            field = value
+            applyStroke()
+        }
+
     var swatchSize: Int
         get() = sizePx
         set(value) {
@@ -52,9 +59,16 @@ class SwatchView @JvmOverloads constructor(
 
     /** Sets the border, resolving its colour from the theme since GradientDrawable needs a literal colour. */
     private fun applyStroke() {
-        circle.setStroke(
-            resources.getDimensionPixelSize(R.dimen.rw_border_width),
-            MaterialColors.getColor(this, com.google.android.material.R.attr.colorOutline),
-        )
+        if (picked) {
+            circle.setStroke(
+                resources.getDimensionPixelSize(R.dimen.rw_border_width) * 3,
+                MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary),
+            )
+        } else {
+            circle.setStroke(
+                resources.getDimensionPixelSize(R.dimen.rw_border_width),
+                MaterialColors.getColor(this, com.google.android.material.R.attr.colorOutline),
+            )
+        }
     }
 }

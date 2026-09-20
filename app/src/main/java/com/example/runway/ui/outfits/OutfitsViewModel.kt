@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.runway.RunwayApplication
 import com.example.runway.data.remote.api.toUserMessage
+import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.OutfitRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +20,20 @@ import kotlinx.coroutines.launch
 
 class OutfitsViewModel(
     private val repository: OutfitRepository,
+    itemRepository: ItemRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(OutfitsUiState())
     val uiState: StateFlow<OutfitsUiState> = _uiState.asStateFlow()
 
-    init { refresh() }
+    init {
+        refresh()
+        viewModelScope.launch {
+            itemRepository.observeItems().collect { items ->
+                _uiState.update { it.copy(itemsById = items.associateBy { item -> item.id }) }
+            }
+        }
+    }
 
     // Reloaded on every return to the tab, because an outfit may have been saved
     // from the model screen or edited since this list was last read.
@@ -33,10 +42,14 @@ class OutfitsViewModel(
         viewModelScope.launch {
             repository.list()
                 .onSuccess { outfits ->
-                    _uiState.update { it.copy(outfits = outfits, isLoading = false, errorMessage = null) }
+                    _uiState.update { it.copy(outfits = outfits, isLoading = false, loadFailed = false, errorMessage = null) }
                 }
                 .onFailure { e ->
-                    _uiState.update { it.copy(isLoading = false, errorMessage = e.toUserMessage()) }
+                    // With nothing on screen yet, show a retry. Otherwise keep the list and just say so.
+                    _uiState.update {
+                        if (it.outfits.isEmpty()) it.copy(isLoading = false, loadFailed = true)
+                        else it.copy(isLoading = false, errorMessage = e.toUserMessage())
+                    }
                 }
         }
     }
@@ -47,7 +60,7 @@ class OutfitsViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as RunwayApplication
-                OutfitsViewModel(app.container.outfitRepository)
+                OutfitsViewModel(app.container.outfitRepository, app.container.itemRepository)
             }
         }
     }

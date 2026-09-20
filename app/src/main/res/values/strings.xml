@@ -37,6 +37,7 @@
     <string name="rw_auth_no_session">Your session is no longer available. Please sign in again.</string>
     <string name="rw_auth_logo_content_description">Runway logo</string>
     <string name="rw_auth_fingerprint_unavailable">Fingerprint unlock is not available on this device.</string>
+    <string name="rw_auth_signing_in">Signing in…</string>
 
     <string name="rw_profile_sign_out">Sign out</string>
     <string name="rw_profile_sign_out_title">Sign out of Runway?</string>
@@ -52,7 +53,7 @@
     <string name="rw_rating_current" tools:ignore="PluralsCandidate">Rated %1$d out of %2$d</string>
 
     <!--Sync banner-->
-    <string name="rw_sync_offline">Offline — changes are queued</string>
+    <string name="rw_sync_offline">You are offline</string>
     <plurals name="rw_sync_queued">
         <item quantity="one">Offline — %d change queued</item>
         <item quantity="other">Offline — %d changes queued</item>
@@ -164,7 +165,16 @@
 
     <!-- Helper text under each field, visible at all times. -->
     <string name="rw_tag_name_example">For example: Blue oxford shirt</string>
-    <string name="rw_tag_colour_example">For example: navy</string>
+    <string name="rw_tag_colour_none">Pick the closest colour</string>
+    <string name="rw_tag_hint">Only the name is required</string>
+    <string name="rw_tag_wear_limit">Wears before washing</string>
+    <string name="rw_tag_wear_limit_hint">You\'ll get a laundry reminder once it\'s been worn this many times.</string>
+    <string name="rw_tag_wear_less">Fewer wears</string>
+    <string name="rw_tag_wear_more">More wears</string>
+    <string name="rw_tag_name_required">Required</string>
+    <string name="rw_tag_error_name_long">Keep the name under %1$d characters</string>
+    <string name="rw_tag_error_price_number">Use numbers only, like 349.99</string>
+    <string name="rw_tag_error_price_negative">A price can\'t be negative</string>
     <string name="rw_tag_brand_example">For example: Uniqlo</string>
     <string name="rw_tag_size_example">S, M, L or a number like 32</string>
     <string name="rw_tag_price_example">Numbers only, for example 349.99</string>
@@ -200,8 +210,6 @@
     </plurals>
 
     <!--Outfits tab pushes-->
-    <string name="rw_stub_outfit_builder_title">Outfit builder</string>
-    <string name="rw_stub_outfit_builder_body">The drag-and-drop outfit canvas lands here.</string>
     <string name="rw_stub_outfit_detail_title">Outfit detail</string>
     <string name="rw_stub_outfit_detail_body">Outfit pieces, wear tracking and the confidence rating land here.</string>
 
@@ -231,9 +239,7 @@
     <string name="rw_sheet_sort_title">Sort</string>
     <string name="rw_sheet_sort_body">Sort order options land here.</string>
     <string name="rw_sheet_day_detail_title">Day detail</string>
-    <string name="rw_sheet_day_detail_body">The outfit planned for this day lands here.</string>
     <string name="rw_sheet_pick_outfit_title">Pick an outfit</string>
-    <string name="rw_sheet_pick_outfit_body">Choosing an outfit to schedule lands here.</string>
     <string name="rw_sheet_confidence_title">Rate today\'s confidence</string>
     <string name="rw_sheet_confidence_body">The confidence-rating control lands here.</string>
     <string name="rw_sheet_confirm_title">Are you sure?</string>
@@ -546,5 +552,73 @@
     <string name="rw_profile_my_listings">My listings</string>
     <string name="rw_profile_notifications">Notifications</string>
     <string name="rw_profile_laundry">Laundry basket</string>
+
+    <!--Outfit builder-->
+    <string name="rw_builder_new_title">New outfit</string>
+    <string name="rw_builder_edit_title">Edit outfit</string>
+    <string name="rw_builder_hint">Drag pieces around to lay the outfit out</string>
+    <string name="rw_builder_save">Save outfit</string>
+    <string name="rw_builder_saving">Saving…</string>
+    <string name="rw_builder_saved">Outfit saved</string>
+    <string name="rw_builder_default_name">New outfit</string>
+    <string name="rw_builder_empty_title">Start with a piece</string>
+    <string name="rw_builder_empty_body">Pick something from your wardrobe below and it lands here.</string>
+    <string name="rw_builder_layer_up">Bring forward</string>
+    <string name="rw_builder_layer_down">Send backward</string>
+    <string name="rw_builder_remove">Take off the canvas</string>
+    <string name="rw_builder_size">Size</string>
+    <string name="rw_builder_rotate">Rotate</string>
+    <string name="rw_builder_name">Name</string>
+    <string name="rw_builder_name_placeholder">For example: Friday dinner</string>
+    <string name="rw_builder_occasion">Occasion</string>
+    <string name="rw_builder_add_pieces">Add pieces</string>
+    <string name="rw_builder_add_new">New item</string>
+    <string name="rw_builder_tray_empty">Nothing in this category yet.</string>
+    <string name="rw_builder_load_failed_title">Couldn\'t open this outfit</string>
+    <string name="rw_builder_load_failed_body">Check your connection and try again.</string>
+    <string name="rw_occasion_casual">Casual</string>
+    <string name="rw_occasion_work">Work</string>
+    <string name="rw_occasion_evening">Evening</string>
+    <string name="rw_occasion_sport">Sport</string>
+    <string name="rw_occasion_formal">Formal</string>
+
+    <!--Planner-->
+    <string name="rw_outfits_tab_outfits">Outfits</string>
+    <string name="rw_outfits_tab_planner">Planner</string>
+    <string name="rw_outfits_new">New outfit</string>
+    <string name="rw_outfits_failed_title">Couldn\'t load your outfits</string>
+    <string name="rw_outfits_failed_body">Check your connection and try again.</string>
+    <string name="rw_outfits_empty_body_builder">Build one from your wardrobe, or dress your virtual model and save it.</string>
+    <plurals name="rw_outfits_pieces">
+        <item quantity="one">%d piece</item>
+        <item quantity="other">%d pieces</item>
+    </plurals>
+    <string name="rw_planner_previous_month">Previous month</string>
+    <string name="rw_planner_next_month">Next month</string>
+    <string name="rw_planner_upcoming">Upcoming</string>
+    <string name="rw_planner_nothing_upcoming">Nothing planned yet. Tap a day to plan an outfit.</string>
+    <string name="rw_planner_failed_title">Couldn\'t load your planner</string>
+    <string name="rw_planner_failed_body">Check your connection and try again.</string>
+    <string name="rw_plan_today">Today</string>
+    <string name="rw_plan_tomorrow">Tomorrow</string>
+    <string name="rw_plan_nothing_title">Nothing planned</string>
+    <string name="rw_plan_nothing_body">Pick an outfit for this day.</string>
+    <string name="rw_plan_pick">Pick an outfit</string>
+    <string name="rw_plan_change">Change outfit</string>
+    <string name="rw_plan_clear">Clear day</string>
+    <string name="rw_plan_cleared">Day cleared</string>
+    <string name="rw_plan_planned_for">Planned for %1$s</string>
+    <string name="rw_plan_replaces">Replaces %1$s</string>
+    <string name="rw_plan_schedule_title">Schedule this outfit</string>
+    <string name="rw_plan_no_outfits_title">No outfits to plan yet</string>
+    <string name="rw_plan_no_outfits_body">Save an outfit first, then plan it here.</string>
+    <string name="rw_plan_load_failed">Couldn\'t load this. Check your connection and try again.</string>
+    <string name="rw_plan_saving">Saving…</string>
+    <string name="rw_home_planned_today">Planned for today</string>
+    <string name="rw_outfit_schedule">Schedule</string>
+    <string name="rw_outfit_edit">Edit outfit</string>
+
+    <string name="rw_outfit_load_failed_title">Couldn\'t open this outfit</string>
+    <string name="rw_outfit_load_failed_body">Check your connection and try again.</string>
 
 </resources>

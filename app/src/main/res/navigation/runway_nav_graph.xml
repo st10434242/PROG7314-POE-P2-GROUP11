@@ -242,10 +242,18 @@
         android:id="@+id/outfitBuilderFragment"
         android:name="com.example.runway.ui.outfits.OutfitBuilderFragment"
         android:label="Outfit Builder"
-        tools:layout="@layout/fragment_stub">
+        tools:layout="@layout/fragment_outfit_builder">
+        <!-- Set when editing an existing outfit, empty for a new one. -->
+        <argument
+            android:name="outfitId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_builder_to_outfitDetail"
-            app:destination="@id/outfitDetailFragment" />
+            app:destination="@id/outfitDetailFragment"
+            app:popUpTo="@id/outfitBuilderFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -262,6 +270,9 @@
         <action
             android:id="@+id/action_outfitDetail_to_pickOutfitSheet"
             app:destination="@id/pickOutfitSheet" />
+        <action
+            android:id="@+id/action_outfitDetail_to_builder"
+            app:destination="@id/outfitBuilderFragment" />
     </fragment>
 
     <!-- ============================= Profile tab ============================= -->
@@ -398,7 +409,9 @@
             app:destination="@id/outfitDetailFragment" />
         <action
             android:id="@+id/action_dayDetailSheet_to_pickOutfitSheet"
-            app:destination="@id/pickOutfitSheet" />
+            app:destination="@id/pickOutfitSheet"
+            app:popUpTo="@id/dayDetailSheet"
+            app:popUpToInclusive="true" />
     </dialog>
 
     <dialog

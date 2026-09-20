@@ -68,6 +68,11 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    // Lets unit tests run code that logs with android.util.Log instead of crashing.
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 // Room exports its schema so migrations are reviewable in a pull request.

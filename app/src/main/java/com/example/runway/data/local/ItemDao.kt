@@ -39,6 +39,14 @@ interface ItemDao {
     @Query("SELECT imagePath FROM items WHERE id = :id")
     suspend fun imagePathFor(id: String): String?
 
+    // An empty table means a fresh install or a rebuilt cache, so the next sync pulls everything.
+    @Query("SELECT COUNT(*) FROM items")
+    suspend fun count(): Int
+
+    // How many local changes are still waiting for the server, for the offline banner.
+    @Query("SELECT COUNT(*) FROM items WHERE pendingSync = 1")
+    fun observePendingCount(): Flow<Int>
+
     // Removes a row outright.
     @Query("DELETE FROM items WHERE id = :id")
     suspend fun hardDelete(id: String)

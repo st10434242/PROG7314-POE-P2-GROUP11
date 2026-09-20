@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.runway.RunwayApplication
 import com.example.runway.data.image.SubjectCutout
 import com.example.runway.data.local.ItemImageStore
-import com.example.runway.domain.model.Item
+import com.example.runway.domain.model.ItemDraft
 import com.example.runway.domain.repository.ItemRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -80,16 +80,10 @@ class AddItemViewModel(
     fun onUseCutout(use: Boolean) = _state.update { it.copy(useCutout = use) }
 
     // The photo is written first so the saved row can point at it.
-    fun onSave(
-        name: String,
-        category: String,
-        colour: String?,
-        brand: String?,
-        size: String?,
-        purchasePrice: Double?,
-    ) {
-        if (name.isBlank()) {
-            _state.update { it.copy(errorMessage = "Give the item a name") }
+    fun onSave(draft: ItemDraft) {
+        // The button is disabled until the draft is valid, so this is just a safety net.
+        if (!draft.isValid) {
+            _state.update { it.copy(errorMessage = "Check the highlighted fields") }
             return
         }
         _state.update { it.copy(isSaving = true, errorMessage = null) }
@@ -97,16 +91,7 @@ class AddItemViewModel(
         viewModelScope.launch {
             runCatching {
                 val path = _state.value.chosen?.let { imageStore.saveCutout(it) }
-                val item = Item(
-                    name = name.trim(),
-                    category = category,
-                    colour = colour?.trim()?.takeIf { it.isNotEmpty() },
-                    brand = brand?.trim()?.takeIf { it.isNotEmpty() },
-                    size = size?.trim()?.takeIf { it.isNotEmpty() },
-                    purchasePrice = purchasePrice,
-                    imagePath = path,
-                )
-                repository.save(item)
+                repository.save(draft.toItem(path))
             }.onSuccess {
                 // The repository assigns the id, so the flow closes back to the
                 // wardrobe rather than trying to open a detail screen for an id

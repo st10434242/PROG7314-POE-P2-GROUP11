@@ -22,9 +22,12 @@ fun ItemEntity.toDomain(): Item = Item(
     purchasePrice = purchasePrice,
     imagePath = imagePath,
     wearCount = wearCount,
+    wearLimit = wearLimit,
+    needsWash = needsWash,
     costPerWear = costPerWear(purchasePrice, wearCount),
     archived = archived,
     updatedAt = updatedAt,
+    createdAt = createdAt,
     pendingSync = pendingSync,
 )
 
@@ -42,9 +45,13 @@ fun Item.toEntity(
     purchasePrice = purchasePrice,
     imagePath = imagePath,
     wearCount = wearCount,
+    wearLimit = wearLimit,
+    needsWash = needsWash,
     archived = archived,
     deleted = deleted,
     updatedAt = updatedAt,
+    // A brand new item has no creation time yet, so it gets this save's time.
+    createdAt = if (createdAt == 0L) updatedAt else createdAt,
     pendingSync = pendingSync,
 )
 
@@ -61,9 +68,12 @@ fun ItemDto.toEntity(existingImagePath: String? = null): ItemEntity = ItemEntity
     purchasePrice = purchasePrice,
     imagePath = existingImagePath,
     wearCount = wearCount,
+    wearLimit = wearLimit.toInt(),
+    needsWash = needsWash,
     archived = archived,
     deleted = deleted,
     updatedAt = updatedAt.toEpochMillis(),
+    createdAt = createdAt.toEpochMillis(),
     pendingSync = false,
 )
 
@@ -74,6 +84,7 @@ fun ItemEntity.toCreateDto(): CreateItemDto = CreateItemDto(
     brand = brand,
     size = size,
     purchasePrice = purchasePrice,
+    wearLimit = wearLimit,
 )
 
 fun ItemEntity.toUpdateDto(): UpdateItemDto = UpdateItemDto(
@@ -83,6 +94,7 @@ fun ItemEntity.toUpdateDto(): UpdateItemDto = UpdateItemDto(
     brand = brand,
     size = size,
     purchasePrice = purchasePrice,
+    wearLimit = wearLimit,
     archived = archived,
 )
 

@@ -15,6 +15,7 @@ import com.example.runway.domain.model.WardrobeSummary
 import com.example.runway.domain.model.firstNameOf
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.OutfitRepository
+import com.example.runway.domain.repository.PlanRepository
 import com.example.runway.domain.repository.WardrobeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +28,7 @@ class HomeViewModel(
     private val itemRepository: ItemRepository,
     private val outfitRepository: OutfitRepository,
     private val wardrobeRepository: WardrobeRepository,
+    private val planRepository: PlanRepository,
     private val currentSession: () -> AuthSession?,
     private val clock: () -> LocalDateTime = LocalDateTime::now,
 ) : ViewModel() {
@@ -37,6 +39,8 @@ class HomeViewModel(
     private var items: List<Item> = emptyList()
     private var outfits: List<Outfit>? = null
     private var liveSummary: WardrobeSummary? = null
+    // Today's planned outfit, if there is one.
+    private var planned: Outfit? = null
     // How many times "suggest another" has been tapped.
     private var skip = 0
 
@@ -55,7 +59,8 @@ class HomeViewModel(
                 items = latest.filterNot { it.archived }
                 _uiState.update {
                     it.copy(
-                        recentItems = items.sortedByDescending { item -> item.updatedAt }.take(RECENT_LIMIT),
+                        recentItems = items.sortedByDescending { item -> item.addedAt() }.take(RECENT_LIMIT),
+                        itemsById = items.associateBy { item -> item.id },
                         hasItems = items.isNotEmpty(),
                         summary = currentSummary(),
                     )
@@ -105,11 +110,17 @@ class HomeViewModel(
             outfitRepository.list()
                 .onSuccess { loaded ->
                     outfits = loaded
+                    // A planner failure just means falling back to the daily rotation.
+                    val today = clock().toLocalDate()
+                    val plan = planRepository.between(today, today).getOrNull()?.firstOrNull()
+                    planned = plan?.let { p -> loaded.firstOrNull { it.id == p.outfitId } }
                     _uiState.update {
                         it.copy(
                             isLoadingOutfits = false,
                             todaysPick = pickForToday(),
-                            canSuggestAnother = wearable().size > 1,
+                            isPlanned = planned != null,
+                            // The plan is the plan, so there's nothing else to suggest.
+                            canSuggestAnother = planned == null && wearable().size > 1,
                             summary = currentSummary(),
                         )
                     }
@@ -138,10 +149,14 @@ class HomeViewModel(
 
     // Same outfit all day, a different one tomorrow.
     private fun pickForToday(): Outfit? {
+        planned?.let { return it }
         val choices = wearable()
         if (choices.isEmpty()) return null
         return choices[(clock().dayOfYear + skip) % choices.size]
     }
+
+    // Items saved before createdAt existed fall back to their last change.
+    private fun Item.addedAt(): Long = if (createdAt > 0) createdAt else updatedAt
 
     companion object {
         const val RECENT_LIMIT = 8
@@ -154,6 +169,7 @@ class HomeViewModel(
                     itemRepository = container.itemRepository,
                     outfitRepository = container.outfitRepository,
                     wardrobeRepository = container.wardrobeRepository,
+                    planRepository = container.planRepository,
                     currentSession = { container.authSessionStore.currentSession },
                 )
             }

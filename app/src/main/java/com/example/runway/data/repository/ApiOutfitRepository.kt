@@ -6,6 +6,7 @@ import com.example.runway.data.remote.api.OutfitItemDto
 import com.example.runway.data.remote.api.RunwayApi
 import com.example.runway.data.remote.api.UpdateOutfitDto
 import com.example.runway.domain.model.Outfit
+import com.example.runway.domain.model.OutfitLayer
 import com.example.runway.domain.repository.OutfitRepository
 
 // Saved outfits, read and written through the Runway REST API (IIE, 2026; Square, Inc., n.d.).
@@ -31,6 +32,7 @@ class ApiOutfitRepository(
             outfit.id,
             UpdateOutfitDto(
                 name = outfit.name,
+                occasion = outfit.occasion,
                 coverImagePath = outfit.renderPath,
                 items = outfit.toItemDtos(),
             ),
@@ -46,26 +48,51 @@ class ApiOutfitRepository(
     }
 }
 
-// The API stores a placement per garment; this app only needs the order, so the
-// position fields are left at their defaults and zIndex carries the order.
-private fun Outfit.toItemDtos(): List<OutfitItemDto> =
-    itemIds.mapIndexed { index, itemId ->
-        OutfitItemDto(clothingItemId = itemId, zIndex = index.toLong())
+// itemIds decides what is in the outfit. layers only adds where each garment sits, so a
+// garment removed on the detail screen can't leave a stray layer behind.
+private fun Outfit.toItemDtos(): List<OutfitItemDto> {
+    val placed = layers.associateBy { it.itemId }
+    return itemIds.mapIndexed { index, itemId ->
+        val layer = placed[itemId]
+        OutfitItemDto(
+            clothingItemId = itemId,
+            x = layer?.x?.toDouble() ?: 0.0,
+            y = layer?.y?.toDouble() ?: 0.0,
+            scale = layer?.scale?.toDouble() ?: 1.0,
+            rotation = layer?.rotation?.toDouble() ?: 0.0,
+            zIndex = layer?.z?.toLong() ?: index.toLong(),
+        )
     }
+}
 
 private fun Outfit.toCreateDto(): OutfitDto = OutfitDto(
     name = name,
+    occasion = occasion,
     coverImagePath = renderPath,
     items = toItemDtos(),
 )
 
-private fun OutfitDto.toDomain(): Outfit = Outfit(
-    id = id,
-    name = name,
-    itemIds = items.sortedBy { it.zIndex }.map { it.clothingItemId },
-    renderPath = coverImagePath,
-    updatedAt = updatedAt,
-)
+private fun OutfitDto.toDomain(): Outfit {
+    val ordered = items.sortedBy { it.zIndex }
+    return Outfit(
+        id = id,
+        name = name,
+        itemIds = ordered.map { it.clothingItemId },
+        renderPath = coverImagePath,
+        updatedAt = updatedAt,
+        occasion = occasion,
+        layers = ordered.map {
+            OutfitLayer(
+                itemId = it.clothingItemId,
+                x = it.x.toFloat(),
+                y = it.y.toFloat(),
+                scale = it.scale.toFloat(),
+                rotation = it.rotation.toFloat(),
+                z = it.zIndex.toInt(),
+            )
+        },
+    )
+}
 
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.

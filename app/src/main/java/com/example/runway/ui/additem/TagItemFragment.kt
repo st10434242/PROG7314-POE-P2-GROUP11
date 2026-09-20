@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -11,12 +13,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.runway.R
+import com.example.runway.RunwayApplication
 import com.example.runway.databinding.FragmentTagItemBinding
+import com.example.runway.domain.model.ItemColour
+import com.example.runway.domain.model.ItemDraft
+import com.example.runway.domain.model.RunwaySettings
 import com.example.runway.ui.components.RunwayToast
+import com.example.runway.ui.components.SwatchView
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
-// Final step of adding an item: name it, say what it is, and save (IIE, 2026).
+// Final step of adding an item: name it, say what it is, and save.
 // Category is a fixed list because the model preview and the API both key off it.
 
 class TagItemFragment : Fragment() {
@@ -27,6 +34,8 @@ class TagItemFragment : Fragment() {
     private val viewModel: AddItemViewModel by activityViewModels { AddItemViewModel.Factory }
 
     private var category: String = CATEGORIES.first()
+    private var colour: ItemColour? = null
+    private var wearLimit: Int = RunwaySettings.DEFAULT_WEAR_LIMIT
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,13 +49,34 @@ class TagItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (savedInstanceState != null) {
+            category = savedInstanceState.getString(KEY_CATEGORY) ?: category
+            colour = ItemColour.parse(savedInstanceState.getString(KEY_COLOUR))
+            wearLimit = savedInstanceState.getInt(KEY_WEAR_LIMIT, wearLimit)
+        } else {
+            // Starts from whatever the user picked in Settings.
+            val settings = (requireActivity().application as RunwayApplication).container.settingsRepository
+            wearLimit = settings.currentSettings().defaultWearLimit
+        }
+
         binding.tagHeader.title = getString(R.string.rw_tag_item_title)
+        binding.tagHeader.subtitle = getString(R.string.rw_tag_hint)
         binding.tagHeader.onBackClick { findNavController().navigateUp() }
 
         buildCategoryChips()
+        buildPalette()
         binding.tagPreview.setImageBitmap(viewModel.state.value.chosen)
 
-        binding.tagSaveButton.setOnClickListener { save() }
+        binding.tagWearLess.setOnClickListener { changeWearLimit(-1) }
+        binding.tagWearMore.setOnClickListener { changeWearLimit(1) }
+
+        binding.tagNameInput.doAfterTextChanged { validate() }
+        binding.tagPriceInput.doAfterTextChanged { validate() }
+        binding.tagSaveButton.setOnClickListener { viewModel.onSave(currentDraft()) }
+
+        showWearLimit()
+        showColour()
+        validate()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -55,33 +85,103 @@ class TagItemFragment : Fragment() {
         }
     }
 
-    private fun buildCategoryChips() = CATEGORIES.forEachIndexed { index, value ->
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_CATEGORY, category)
+        outState.putString(KEY_COLOUR, colour?.label)
+        outState.putInt(KEY_WEAR_LIMIT, wearLimit)
+    }
+
+    private fun buildCategoryChips() = CATEGORIES.forEach { value ->
         binding.tagCategoryGroup.addView(
             Chip(requireContext(), null, com.google.android.material.R.attr.chipStyle).apply {
                 text = getString(labelFor(value))
                 isCheckable = true
-                isChecked = index == 0
+                isChecked = value == category
                 setOnCheckedChangeListener { _, checked -> if (checked) category = value }
             }
         )
     }
 
-    private fun save() = viewModel.onSave(
+    private fun buildPalette() {
+        val size = resources.getDimensionPixelSize(R.dimen.rw_space_32)
+        val gap = resources.getDimensionPixelSize(R.dimen.rw_space_8)
+
+        ItemColour.entries.forEach { option ->
+            val swatch = SwatchView(requireContext()).apply {
+                swatchColor = option.argb
+                swatchSize = size
+                contentDescription = option.label
+                setOnClickListener {
+                    // Tapping the chosen colour again clears it, since colour is optional.
+                    colour = if (colour == option) null else option
+                    showColour()
+                }
+            }
+            val params = LinearLayout.LayoutParams(size, size).apply { marginEnd = gap }
+            binding.tagColourPalette.addView(swatch, params)
+        }
+    }
+
+    private fun showColour() {
+        val palette = binding.tagColourPalette
+        for (i in 0 until palette.childCount) {
+            (palette.getChildAt(i) as SwatchView).picked = ItemColour.entries[i] == colour
+        }
+        binding.tagColourName.text = colour?.label ?: getString(R.string.rw_tag_colour_none)
+    }
+
+    private fun changeWearLimit(by: Int) {
+        wearLimit = (wearLimit + by).coerceIn(RunwaySettings.MIN_WEAR_LIMIT, RunwaySettings.MAX_WEAR_LIMIT)
+        showWearLimit()
+    }
+
+    private fun showWearLimit() {
+        binding.tagWearLimit.text = wearLimit.toString()
+        binding.tagWearLess.isEnabled = wearLimit > RunwaySettings.MIN_WEAR_LIMIT
+        binding.tagWearMore.isEnabled = wearLimit < RunwaySettings.MAX_WEAR_LIMIT
+    }
+
+    private fun currentDraft() = ItemDraft(
         name = binding.tagNameInput.text?.toString().orEmpty(),
         category = category,
-        colour = binding.tagColourInput.text?.toString(),
-        brand = binding.tagBrandInput.text?.toString(),
-        size = binding.tagSizeInput.text?.toString(),
-        // A blank or unparseable price is simply no price, not an error.
-        purchasePrice = binding.tagPriceInput.text?.toString()?.toDoubleOrNull(),
+        colour = colour,
+        brand = binding.tagBrandInput.text?.toString().orEmpty(),
+        size = binding.tagSizeInput.text?.toString().orEmpty(),
+        priceText = binding.tagPriceInput.text?.toString().orEmpty(),
+        wearLimit = wearLimit,
     )
 
+    // A missing name only disables Save; the other problems are shown on the field.
+    private fun validate() {
+        val problems = currentDraft().problems
+
+        binding.tagNameLayout.error = if (ItemDraft.Problem.NAME_TOO_LONG in problems) {
+            getString(R.string.rw_tag_error_name_long, ItemDraft.MAX_NAME)
+        } else {
+            null
+        }
+        binding.tagNameLayout.helperText = if (ItemDraft.Problem.NAME_MISSING in problems) {
+            getString(R.string.rw_tag_name_required)
+        } else {
+            getString(R.string.rw_tag_name_example)
+        }
+
+        binding.tagPriceLayout.error = when {
+            ItemDraft.Problem.PRICE_NOT_A_NUMBER in problems -> getString(R.string.rw_tag_error_price_number)
+            ItemDraft.Problem.PRICE_NEGATIVE in problems -> getString(R.string.rw_tag_error_price_negative)
+            else -> null
+        }
+
+        binding.tagSaveButton.isEnabled = problems.isEmpty() && !viewModel.state.value.isSaving
+    }
+
     private fun render(state: AddItemState) {
-        binding.tagSaveButton.isEnabled = !state.isSaving
+        binding.tagSaveButton.isEnabled = currentDraft().isValid && !state.isSaving
         binding.tagSaveButton.setText(if (state.isSaving) R.string.rw_tag_saving else R.string.rw_tag_save)
 
         state.errorMessage?.let {
-            RunwayToast.show(requireView(), it)
+            RunwayToast.show(requireView(), it, R.drawable.ic_rw_alert)
             viewModel.onMessageShown()
         }
 
@@ -110,9 +210,9 @@ class TagItemFragment : Fragment() {
     private companion object {
         // The four the model preview can draw, plus a catch-all.
         val CATEGORIES = listOf("TOP", "BOTTOM", "OUTERWEAR", "SHOES", "OTHER")
+
+        const val KEY_CATEGORY = "category"
+        const val KEY_COLOUR = "colour"
+        const val KEY_WEAR_LIMIT = "wearLimit"
     }
 }
-
-/* Reference List
-IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
-*/

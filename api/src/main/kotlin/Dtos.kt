@@ -3,6 +3,9 @@ package com.example
 import com.google.cloud.Timestamp
 import kotlinx.serialization.Serializable
 import java.time.Instant
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
+import java.time.temporal.ChronoUnit
 
 // Request and response DTOs for the Runway REST API (IIE, 2026; Tagliaferri, 2016).
 // Serialisation is driven by annotations (Kotlin Foundation, 2023).
@@ -307,3 +310,42 @@ JetBrains, 2026. kotlinx.serialization guide. [online] Available at: <https://gi
 Kotlin Foundation, 2023. Annotations. [online] Available at: <https://kotlinlang.org/docs/annotations.html> [Accessed 31 July 2023].
 Tagliaferri, L., 2016. An Introduction to JSON. [online] Available at: <https://www.digitalocean.com/community/tutorials/an-introduction-to-json> [Accessed 31 July 2023].
 */
+
+// Body of PUT /api/v1/plans/{date}.
+@Serializable
+data class SetPlanRequest(
+    val outfitId: String = "",
+) {
+    fun validate() {
+        if (outfitId.isBlank()) throw ValidationException("outfitId is required")
+    }
+}
+
+@Serializable
+data class PlanResponse(
+    val id: String,
+    // The day the outfit is planned for, as YYYY-MM-DD.
+    val date: String,
+    val outfitId: String,
+    val status: String,
+)
+
+// Plans belong to a calendar day, so dates travel as YYYY-MM-DD rather than full timestamps.
+fun parsePlanDate(value: String?): LocalDate {
+    if (value.isNullOrBlank()) throw ValidationException("A date is required, in the form YYYY-MM-DD")
+    return try {
+        LocalDate.parse(value)
+    } catch (e: DateTimeParseException) {
+        throw ValidationException("'$value' is not a date in the form YYYY-MM-DD")
+    }
+}
+
+// Keeps one request from asking for years of plans at once.
+fun validatePlanRange(from: LocalDate, to: LocalDate) {
+    if (to.isBefore(from)) throw ValidationException("to must be on or after from")
+    if (ChronoUnit.DAYS.between(from, to) > MAX_PLAN_RANGE_DAYS) {
+        throw ValidationException("A range can cover at most $MAX_PLAN_RANGE_DAYS days")
+    }
+}
+
+const val MAX_PLAN_RANGE_DAYS = 62L

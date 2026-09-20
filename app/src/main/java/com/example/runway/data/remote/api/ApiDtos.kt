@@ -177,6 +177,20 @@ data class ApiErrorDto(
     val message: String = "",
 )
 
+@Serializable
+data class PlanDto(
+    val id: String = "",
+    // YYYY-MM-DD
+    val date: String = "",
+    val outfitId: String = "",
+    val status: String = "",
+)
+
+@Serializable
+data class SetPlanDto(
+    val outfitId: String,
+)
+
 /* Reference List
 IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.
 JetBrains, 2026. kotlinx.serialization guide. [online] Available at: <https://github.com/Kotlin/kotlinx.serialization> [Accessed 11 September 2026].

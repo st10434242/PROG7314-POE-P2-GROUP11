@@ -18,6 +18,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <com.example.runway.ui.components.EmptyStateView
+            android:id="@+id/outfitLoadFailed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:rwBody="@string/rw_outfit_load_failed_body"
+            app:rwIcon="@drawable/ic_rw_wifi_off"
+            app:rwTitle="@string/rw_outfit_load_failed_title" />
+
         <ImageView
             android:id="@+id/outfitRenderImage"
             android:layout_width="match_parent"
@@ -25,6 +34,15 @@
             android:contentDescription="@string/rw_outfit_render_description"
             android:padding="16dp"
             android:scaleType="fitCenter" />
+
+        <!-- Outfits made in the builder have no render, so their layout is drawn instead. -->
+        <com.example.runway.ui.outfits.OutfitThumbnailView
+            android:id="@+id/outfitCollage"
+            android:layout_width="256dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/outfitNoRender"
@@ -124,6 +142,16 @@
             android:layout_marginTop="12dp"
             android:text="@string/rw_outfit_wear"
             app:icon="@drawable/ic_rw_check" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/outfitScheduleButton"
+            style="@style/Widget.Runway.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/rw_outfit_schedule"
+            app:icon="@drawable/ic_rw_calendar" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/outfitSaveButton"

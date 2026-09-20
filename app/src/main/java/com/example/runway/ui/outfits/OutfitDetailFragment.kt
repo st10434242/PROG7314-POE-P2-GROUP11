@@ -65,6 +65,25 @@ class OutfitDetailFragment : Fragment() {
         binding.outfitSaveButton.setOnClickListener { viewModel.onSave() }
         binding.outfitDeleteButton.setOnClickListener { confirmDelete() }
         binding.outfitWearButton.setOnClickListener { viewModel.onWoreToday() }
+        binding.outfitLoadFailed.setAction(
+            com.google.android.material.button.MaterialButton(requireContext()).apply {
+                setText(R.string.rw_home_retry)
+                setOnClickListener { viewModel.reload() }
+            }
+        )
+        binding.outfitScheduleButton.setOnClickListener {
+            val id = viewModel.uiState.value.outfit?.id ?: return@setOnClickListener
+            findNavController().navigate(R.id.action_outfitDetail_to_pickOutfitSheet, bundleOf(NavArgs.OUTFIT_ID to id))
+        }
+        binding.outfitDetailHeader.addAction(R.drawable.ic_rw_edit, getString(R.string.rw_outfit_edit)) {
+            val id = viewModel.uiState.value.outfit?.id ?: return@addAction
+            findNavController().navigate(R.id.action_outfitDetail_to_builder, bundleOf(NavArgs.OUTFIT_ID to id))
+        }
+
+        // The builder saves the edit itself, so this screen only needs to reload.
+        parentFragmentManager.setFragmentResultListener(
+            OutfitBuilderFragment.RESULT_KEY, viewLifecycleOwner
+        ) { _, _ -> viewModel.reload() }
 
         // The sheet saves the rating itself, so we just reload once it closes.
         parentFragmentManager.setFragmentResultListener(
@@ -93,9 +112,25 @@ class OutfitDetailFragment : Fragment() {
             binding.outfitNameInput.setText(state.name)
         }
 
+        binding.outfitDetailHeader.subtitle = state.outfit?.occasion
+
+        binding.outfitLoadFailed.isVisible = state.loadFailed
+        if (state.loadFailed) binding.outfitDetailHeader.title = getString(R.string.rw_outfit_load_failed_title)
+        binding.outfitWearButton.isEnabled = state.outfit != null
+        binding.outfitDeleteButton.isEnabled = state.outfit != null
+
         binding.outfitRenderImage.setImageBitmap(state.render)
         binding.outfitRenderImage.isVisible = state.render != null
-        binding.outfitNoRender.isVisible = state.render == null && !state.isLoading
+        // No render usually means it came from the builder, so draw its layout instead.
+        val showCollage = state.render == null && state.outfit != null && state.garments.isNotEmpty()
+        binding.outfitCollage.isVisible = showCollage
+        if (showCollage) {
+            binding.outfitCollage.bind(
+                state.outfit, state.garments.associateBy { it.id }, viewLifecycleOwner.lifecycleScope
+            )
+        }
+        binding.outfitNoRender.isVisible = state.render == null && !showCollage && !state.isLoading
+        binding.outfitScheduleButton.isEnabled = state.outfit != null
 
         renderGarments(state)
         renderConfidence(state.ratings)

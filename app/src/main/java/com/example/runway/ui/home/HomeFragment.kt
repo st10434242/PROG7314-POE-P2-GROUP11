@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.runway.R
-import com.example.runway.RunwayApplication
 import com.example.runway.databinding.FragmentHomeBinding
 import com.example.runway.domain.model.Outfit
 import com.example.runway.domain.model.WardrobeSummary
@@ -33,8 +32,6 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels { HomeViewModel.Factory }
 
     private lateinit var recentAdapter: RecentItemsAdapter
-    // So the render is only decoded again when the pick actually changes.
-    private var shownRenderPath: String? = null
     // Which empty message is showing, so its button isn't rebuilt on every update.
     private var shownEmpty: Int = 0
 
@@ -121,6 +118,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun renderPick(state: HomeUiState) {
+        binding.homePickHeader.title = getString(
+            if (state.isPlanned) R.string.rw_home_planned_today else R.string.rw_home_todays_pick
+        )
         val pick = state.todaysPick
         binding.homePickLoading.isVisible = state.isLoadingOutfits && pick == null
         binding.homePickCard.isVisible = pick != null
@@ -183,24 +183,7 @@ class HomeFragment : Fragment() {
         binding.homeWearButton.isEnabled = !state.isWearing
         binding.homeWearButton.setText(if (state.isWearing) R.string.rw_home_wearing else R.string.rw_home_wear_this)
 
-        loadRender(pick.renderPath)
-    }
-
-    private fun loadRender(path: String?) {
-        if (path == shownRenderPath && binding.homePickImage.drawable != null) return
-        shownRenderPath = path
-        binding.homePickImage.setImageDrawable(null)
-        binding.homePickNoRender.isVisible = true
-        if (path.isNullOrBlank()) return
-
-        val store = (requireActivity().application as RunwayApplication).container.outfitRenderStore
-        viewLifecycleOwner.lifecycleScope.launch {
-            val bitmap = store.load(path) ?: return@launch
-            // The pick may have changed while this was decoding.
-            if (shownRenderPath != path) return@launch
-            _binding?.homePickImage?.setImageBitmap(bitmap)
-            _binding?.homePickNoRender?.isVisible = false
-        }
+        binding.homePickThumb.bind(pick, state.itemsById, viewLifecycleOwner.lifecycleScope)
     }
 
     private fun renderStats(summary: WardrobeSummary) {
@@ -224,7 +207,6 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        shownRenderPath = null
         shownEmpty = 0
         _binding = null
     }

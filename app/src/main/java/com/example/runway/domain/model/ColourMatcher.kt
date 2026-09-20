@@ -41,8 +41,13 @@ object ColourMatcher {
         return min(gap, 360f - gap)
     }
 
-    private fun hsl(colour: ItemColour) =
-        FloatArray(3).also { ColorUtils.colorToHSL(colour.argb, it) }
+    // Splits the channels by hand so this works in unit tests, where android.graphics.Color is only a stub.
+    private fun hsl(colour: ItemColour): FloatArray {
+        val argb = colour.argb
+        return FloatArray(3).also {
+            ColorUtils.RGBToHSL((argb shr 16) and 0xFF, (argb shr 8) and 0xFF, argb and 0xFF, it)
+        }
+    }
 }
 
 /* Reference List

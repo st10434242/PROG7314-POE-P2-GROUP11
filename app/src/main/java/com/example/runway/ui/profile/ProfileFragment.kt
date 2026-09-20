@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/** Profile tab with the session logout action and the way in to the model screen. */
+/** Profile tab: who is signed in, the wardrobe totals, and where everything else lives. */
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
@@ -42,8 +42,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.profileInsightsRow.onClick { findNavController().navigate(R.id.action_profile_to_stats) }
-        // Entry point for the virtual model screen.
-        binding.profileModelRow.onClick { findNavController().navigate(R.id.action_profile_to_model) }
         binding.profileSwapRow.onClick { findNavController().navigate(R.id.action_profile_to_swapMarket) }
         binding.profileListingsRow.onClick { findNavController().navigate(R.id.action_profile_to_myListings) }
         binding.profileNotificationsRow.onClick { findNavController().navigate(R.id.action_profile_to_notifications) }
@@ -96,8 +94,6 @@ class ProfileFragment : Fragment() {
 
     private fun signOut() {
         application.container.authSessionStore.clearSession()
-        // The body photo belongs to the person signing out, not to the device.
-        application.container.modelPhotoStore.clear()
         viewLifecycleOwner.lifecycleScope.launch {
             val cleared = application.container.googleAuthClient.signOut()
             val currentBinding = _binding

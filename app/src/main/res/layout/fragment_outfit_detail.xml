@@ -27,31 +27,24 @@
             app:rwIcon="@drawable/ic_rw_wifi_off"
             app:rwTitle="@string/rw_outfit_load_failed_title" />
 
-        <ImageView
-            android:id="@+id/outfitRenderImage"
-            android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:contentDescription="@string/rw_outfit_render_description"
-            android:padding="16dp"
-            android:scaleType="fitCenter" />
 
-        <!-- Outfits made in the builder have no render, so their layout is drawn instead. -->
+        <!-- The outfit drawn the way it was laid out in the builder. -->
         <com.example.runway.ui.outfits.OutfitThumbnailView
             android:id="@+id/outfitCollage"
             android:layout_width="256dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/outfitNoRender"
+            android:id="@+id/outfitNoGarmentsPreview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingHorizontal="32dp"
             android:paddingVertical="24dp"
-            android:text="@string/rw_outfit_no_render"
+            android:text="@string/rw_outfit_no_preview"
             android:textColor="?android:attr/textColorSecondary"
             android:visibility="gone" />
 

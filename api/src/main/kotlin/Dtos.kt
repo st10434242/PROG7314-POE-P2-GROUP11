@@ -127,7 +127,6 @@ data class OutfitResponse(
     val name: String,
     val occasion: String? = null,
     val season: String? = null,
-    val coverImagePath: String? = null,
     val items: List<OutfitItemDto> = emptyList(),
     val createdAt: String? = null,
     val updatedAt: String? = null,
@@ -138,7 +137,6 @@ data class CreateOutfitRequest(
     val name: String,
     val occasion: String? = null,
     val season: String? = null,
-    val coverImagePath: String? = null,
     val items: List<OutfitItemDto> = emptyList(),
 ) {
     fun validate() {
@@ -184,7 +182,6 @@ data class UpdateOutfitRequest(
     val name: String? = null,
     val occasion: String? = null,
     val season: String? = null,
-    val coverImagePath: String? = null,
     val items: List<OutfitItemDto>? = null,
 ) {
     fun validate() {
@@ -195,9 +192,7 @@ data class UpdateOutfitRequest(
         if (items != null && items.any { it.clothingItemId.isBlank() }) {
             throw ValidationException("every outfit item needs a clothingItemId")
         }
-        if (name == null && occasion == null && season == null &&
-            coverImagePath == null && items == null
-        ) {
+        if (name == null && occasion == null && season == null && items == null) {
             throw ValidationException("Provide at least one field to update")
         }
     }

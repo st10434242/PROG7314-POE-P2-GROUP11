@@ -33,8 +33,6 @@ retrofit = "2.11.0"
 okhttp = "4.12.0"
 kotlinxSerialization = "1.8.0"
 
-# --- On-device pose detection, for the photo-based model (SCRUM-85) ---
-mlkitPoseDetection = "18.0.0-beta5"
 # Lifts a garment off its background for the wardrobe preview.
 mlkitSubjectSegmentation = "16.0.0-beta1"
 
@@ -99,7 +97,6 @@ retrofit-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "con
 # Logs full request and response bodies in debug builds only (Square, 2026).
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-mlkit-pose-detection-accurate = { group = "com.google.mlkit", name = "pose-detection-accurate", version.ref = "mlkitPoseDetection" }
 mlkit-subject-segmentation = { group = "com.google.android.gms", name = "play-services-mlkit-subject-segmentation", version.ref = "mlkitSubjectSegmentation" }
 
 [plugins]

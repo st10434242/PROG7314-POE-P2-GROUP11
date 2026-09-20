@@ -57,7 +57,6 @@ class OutfitService(firestore: Firestore? = null) {
             name = body.name.trim(),
             occasion = body.occasion,
             season = body.season,
-            coverImagePath = body.coverImagePath,
             deleted = false,
             createdAt = now,
             updatedAt = now,
@@ -89,7 +88,6 @@ class OutfitService(firestore: Firestore? = null) {
             body.name?.let { put("name", it.trim()) }
             body.occasion?.let { put("occasion", it) }
             body.season?.let { put("season", it) }
-            body.coverImagePath?.let { put("coverImagePath", it) }
             put(Fields.UPDATED_AT, Timestamp.now())
         }
         batch.update(ref, changes)

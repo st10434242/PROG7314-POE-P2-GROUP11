@@ -124,10 +124,10 @@
         <argument
             android:name="itemId"
             app:argType="string" />
-        <!-- Puts this garment on the model straight away. -->
+        <!-- Starts a new outfit with this garment already on the canvas. -->
         <action
-            android:id="@+id/action_itemDetail_to_model"
-            app:destination="@id/modelFragment" />
+            android:id="@+id/action_itemDetail_to_builder"
+            app:destination="@id/outfitBuilderFragment" />
         <action
             android:id="@+id/action_itemDetail_to_itemEdit"
             app:destination="@id/itemEditFragment" />
@@ -166,8 +166,8 @@
             android:id="@+id/action_colourMatcher_to_itemDetail"
             app:destination="@id/itemDetailFragment" />
         <action
-            android:id="@+id/action_colourMatcher_to_model"
-            app:destination="@id/modelFragment" />
+            android:id="@+id/action_colourMatcher_to_builder"
+            app:destination="@id/outfitBuilderFragment" />
     </fragment>
 
     <fragment
@@ -249,6 +249,12 @@
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
+        <!-- Set when the builder was opened from a garment. -->
+        <argument
+            android:name="itemId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_builder_to_outfitDetail"
             app:destination="@id/outfitDetailFragment"
@@ -282,9 +288,6 @@
         android:name="com.example.runway.ui.profile.ProfileFragment"
         android:label="@string/rw_nav_profile"
         tools:layout="@layout/fragment_profile">
-        <action
-            android:id="@+id/action_profile_to_model"
-            app:destination="@id/modelFragment" />
         <action
             android:id="@+id/action_profile_to_stats"
             app:destination="@id/statsFragment" />
@@ -444,17 +447,5 @@
         android:name="com.example.runway.ui.sheets.ConfirmSheet"
         android:label="Confirm" />
 
-    <fragment
-        android:id="@+id/modelFragment"
-        android:name="com.example.runway.ui.model.ModelFragment"
-        android:label="@string/rw_nav_model"
-        tools:layout="@layout/fragment_model">
-        <!-- Optional: a garment to put on as soon as the screen opens. -->
-        <argument
-            android:name="itemId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
 
 </navigation>

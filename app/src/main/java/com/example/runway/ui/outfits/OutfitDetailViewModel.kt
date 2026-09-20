@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.runway.RunwayApplication
-import com.example.runway.data.local.RenderStore
 import com.example.runway.data.remote.api.toUserMessage
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.repository.ItemRepository
@@ -29,7 +28,6 @@ class OutfitDetailViewModel(
     savedStateHandle: SavedStateHandle,
     private val outfitRepository: OutfitRepository,
     private val itemRepository: ItemRepository,
-    private val renderStore: RenderStore,
     private val ratingRepository: RatingRepository,
 ) : ViewModel() {
 
@@ -66,7 +64,6 @@ class OutfitDetailViewModel(
                             outfit = outfit,
                             garments = garments,
                             name = outfit.name,
-                            render = renderStore.load(outfit.renderPath),
                             isLoading = false,
                         )
                     }
@@ -138,12 +135,9 @@ class OutfitDetailViewModel(
     }
 
     fun onDelete() {
-        val renderPath = _uiState.value.outfit?.renderPath
         viewModelScope.launch {
             outfitRepository.delete(outfitId)
                 .onSuccess {
-                    // The render is this device's copy, so it goes with the outfit.
-                    renderStore.delete(renderPath)
                     _uiState.update { it.copy(deleted = true) }
                 }
                 .onFailure { e -> _uiState.update { it.copy(errorMessage = e.toUserMessage()) } }
@@ -160,7 +154,6 @@ class OutfitDetailViewModel(
                     savedStateHandle = createSavedStateHandle(),
                     outfitRepository = app.container.outfitRepository,
                     itemRepository = app.container.itemRepository,
-                    renderStore = app.container.outfitRenderStore,
                     ratingRepository = app.container.ratingRepository,
                 )
             }

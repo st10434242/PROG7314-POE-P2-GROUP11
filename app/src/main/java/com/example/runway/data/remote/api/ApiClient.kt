@@ -26,9 +26,8 @@ object ApiClient {
                 // Request and response headers in Logcat while developing.
                 addInterceptor(
                     HttpLoggingInterceptor().apply {
-                        // HEADERS, not BODY: a try-on request carries photos as
-                        // base64, and writing megabytes of it to Logcat stalls the
-                        // app for minutes and truncates the log.
+                        // HEADERS, not BODY: response bodies can be long and
+                        // Logcat truncates them anyway.
                         level = HttpLoggingInterceptor.Level.HEADERS
                         redactHeader("Authorization")
                     }
@@ -41,18 +40,6 @@ object ApiClient {
 
     val api: RunwayApi = retrofit(okHttpClient)
 
-    // A virtual try-on runs a diffusion model: twenty seconds for one garment and
-    // roughly twice that for two. The ordinary sixty-second read timeout would cut
-    // it off, so that one call gets a client of its own rather than making every
-    // other request wait three minutes before giving up.
-    private val renderHttpClient: OkHttpClient = okHttpClient.newBuilder()
-        .readTimeout(RENDER_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .writeTimeout(RENDER_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .callTimeout(RENDER_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .build()
-
-    val renderApi: RunwayApi = retrofit(renderHttpClient)
-
     private fun retrofit(client: OkHttpClient): RunwayApi = Retrofit.Builder()
         .baseUrl(BuildConfig.API_BASE_URL)
         .client(client)
@@ -63,7 +50,6 @@ object ApiClient {
     private const val CONTENT_TYPE = "application/json"
     private const val CONNECT_TIMEOUT_SECONDS = 20L
     private const val READ_TIMEOUT_SECONDS = 60L
-    private const val RENDER_TIMEOUT_SECONDS = 240L
 }
 
 /* Reference List

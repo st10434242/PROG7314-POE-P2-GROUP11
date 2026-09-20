@@ -26,7 +26,6 @@ fun OutfitDocument.toResponse(items: List<OutfitItemDocument>): OutfitResponse =
     name = name,
     occasion = occasion,
     season = season,
-    coverImagePath = coverImagePath,
     items = items.map { it.toDto() },
     createdAt = createdAt.toIso(),
     updatedAt = updatedAt.toIso(),

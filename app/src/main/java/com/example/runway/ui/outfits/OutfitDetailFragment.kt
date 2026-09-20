@@ -24,7 +24,7 @@ import com.example.runway.ui.components.RunwayToast
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
 
-// One saved outfit: its render, its name and its garments, all editable
+// One saved outfit: its layout, its name and its garments, all editable
 // (IIE, 2026; Android Open Source Project, 2020c).
 // Takes an [com.example.runway.ui.navigation.NavArgs.OUTFIT_ID] argument.
 
@@ -119,17 +119,14 @@ class OutfitDetailFragment : Fragment() {
         binding.outfitWearButton.isEnabled = state.outfit != null
         binding.outfitDeleteButton.isEnabled = state.outfit != null
 
-        binding.outfitRenderImage.setImageBitmap(state.render)
-        binding.outfitRenderImage.isVisible = state.render != null
-        // No render usually means it came from the builder, so draw its layout instead.
-        val showCollage = state.render == null && state.outfit != null && state.garments.isNotEmpty()
+        val showCollage = state.outfit != null && state.garments.isNotEmpty()
         binding.outfitCollage.isVisible = showCollage
         if (showCollage) {
             binding.outfitCollage.bind(
                 state.outfit, state.garments.associateBy { it.id }, viewLifecycleOwner.lifecycleScope
             )
         }
-        binding.outfitNoRender.isVisible = state.render == null && !showCollage && !state.isLoading
+        binding.outfitNoGarmentsPreview.isVisible = !showCollage && !state.isLoading && !state.loadFailed
         binding.outfitScheduleButton.isEnabled = state.outfit != null
 
         renderGarments(state)
@@ -192,7 +189,7 @@ class OutfitDetailFragment : Fragment() {
             group.addView(
                 Chip(requireContext(), null, com.google.android.material.R.attr.chipStyle).apply {
                     text = if (item.size.isNullOrBlank()) item.name else getString(
-                        R.string.rw_model_item_with_size, item.name, item.size
+                        R.string.rw_outfit_item_with_size, item.name, item.size
                     )
                     isCloseIconVisible = true
                     setOnCloseIconClickListener { viewModel.onRemoveGarment(item) }

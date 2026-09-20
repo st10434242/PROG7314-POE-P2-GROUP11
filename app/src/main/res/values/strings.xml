@@ -102,8 +102,7 @@
     <string name="rw_item_detail_rand">R%1$.2f</string>
     <string name="rw_item_detail_no_cost">\u2014</string>
     <string name="rw_item_detail_paid">Paid R%1$.2f</string>
-    <string name="rw_item_detail_fit">On you, this should be %1$s.</string>
-    <string name="rw_item_detail_try_on">Try it on your model</string>
+    <string name="rw_item_detail_use_in_outfit">Use in an outfit</string>
     <string name="rw_item_detail_find_matches">Find matches</string>
     <string name="rw_item_detail_delete">Remove from wardrobe</string>
     <string name="rw_item_detail_delete_title">Remove this item?</string>
@@ -375,73 +374,13 @@
     <string name="rw_settings_reset_body">Every setting goes back to the way it started. Your wardrobe is not affected.</string>
     <string name="rw_settings_reset_done">Settings reset</string>
 
-    <!-- Virtual model (SCRUM-84, 85, 86, 87, 118) -->
-    <string name="rw_model_title">Your model</string>
-    <string name="rw_model_body_shape">Body shape</string>
-    <string name="rw_model_body_type">Build</string>
-    <string name="rw_model_skin_tone">Skin tone</string>
-    <string name="rw_model_height">Height: %1$d cm</string>
-    <string name="rw_model_wardrobe">Try on from your wardrobe</string>
-    <string name="rw_model_save">Save model</string>
-    <string name="rw_model_saving">Saving\u2026</string>
-    <string name="rw_model_saved">Model saved</string>
-    <string name="rw_model_clear">Take everything off</string>
-
     <!-- Photo-based model. The image stays on this device. -->
-    <string name="rw_model_photo_add">Use my photo</string>
-    <string name="rw_model_photo_replace">Change photo</string>
-    <string name="rw_model_photo_remove">Remove photo</string>
-    <string name="rw_model_photo_analysing">Reading the photo\u2026</string>
-    <string name="rw_model_photo_hint_off">A full-length photo, standing, head to feet. It stays on this phone.</string>
-    <string name="rw_model_photo_hint_on">Clothes are placed on the body found in your photo.</string>
-    <string name="rw_model_photo_suggested">Body type and shape set from your photo. Change them if they look wrong.</string>
-    <string name="rw_model_photo_no_person">No one was found in that photo. Try one with a person standing in it.</string>
-    <string name="rw_model_photo_partial">Only part of the body is visible. Use a photo showing you from head to feet.</string>
-    <string name="rw_model_photo_unreadable">That image could not be read. Try a different one.</string>
-    <string name="rw_model_photo_required">Add a full-length photo of yourself to build your model.</string>
-    <string name="rw_model_photo_read">Photo read. Your build was taken from it.</string>
-    <string name="rw_model_build_detected">From your photo: %1$s build, %2$s shape</string>
-
-    <!-- The sizes the user actually wears, used to judge fit and to drive a try-on. -->
-    <string name="rw_model_top_size">Size you wear on top</string>
-    <string name="rw_model_bottom_size">Size you wear on the bottom</string>
-    <string name="rw_model_weight">Weight: %1$d kg</string>
-    <string name="rw_model_weight_unset">Weight: not set</string>
-    <string name="rw_model_shoe">Shoe size: EU %1$d</string>
-    <string name="rw_model_shoe_unset">Shoe size: not set</string>
-    <string name="rw_model_item_with_size">%1$s (%2$s)</string>
-
-    <string name="rw_model_fit_known">%1$s \u2014 %2$s</string>
-    <string name="rw_model_fit_unknown">%1$s \u2014 no size on this item</string>
-    <string name="rw_model_fit_tight">tight on you</string>
-    <string name="rw_model_fit_snug">a little snug</string>
-    <string name="rw_model_fit_true">your usual size</string>
-    <string name="rw_model_fit_loose">a little loose</string>
-    <string name="rw_model_fit_oversized">oversized on you</string>
-
-    <!-- The photoreal render, produced by the image service through our API. -->
-    <string name="rw_model_render">See it on you properly</string>
-    <string name="rw_model_rendering">Rendering\u2026</string>
-    <string name="rw_model_render_clear">Back to the preview</string>
-    <string name="rw_model_render_working">This takes about twenty seconds per garment.</string>
-    <string name="rw_model_render_needs_photo">Add a photo of yourself to render an outfit.</string>
-    <string name="rw_model_render_needs_garment">Put on a top, bottom or coat that has a photo of its own.</string>
-    <string name="rw_model_render_consent_title">Send your photos to be rendered?</string>
-    <string name="rw_model_render_consent_body">Your body photo and the garment photos are sent to the image service that produces the picture. They are not kept by Runway. Everything else stays on this phone.</string>
-    <string name="rw_model_render_consent_confirm">Render it</string>
-
-    <!-- Saving what is on the model as an outfit. -->
-    <string name="rw_model_save_outfit">Save to outfits</string>
-    <string name="rw_model_saving_outfit">Saving\u2026</string>
-    <string name="rw_model_outfit_saved">Saved to your outfits</string>
 
     <!-- The outfits tab and the outfit editor. -->
     <string name="rw_outfits_empty_title">No saved outfits yet</string>
-    <string name="rw_outfits_empty_body">Put clothes on your model, then tap Save to outfits.</string>
     <string name="rw_outfit_loading">Loading outfit\u2026</string>
-    <string name="rw_outfit_render_description">The render of this outfit</string>
-    <string name="rw_outfit_no_render">No render was saved with this outfit.</string>
-    <string name="rw_outfit_no_render_short">\u2014</string>
+    <string name="rw_outfit_no_preview">Add garments to see this outfit laid out.</string>
+    <string name="rw_outfit_item_with_size">%1$s (%2$s)</string>
     <string name="rw_outfit_name">Name</string>
     <string name="rw_outfit_garments">Garments</string>
     <string name="rw_outfit_no_garments">This outfit has no garments left in it.</string>
@@ -457,30 +396,6 @@
         <item quantity="other">%1$d garments</item>
     </plurals>
 
-    <plurals name="rw_model_render_ready">
-        <item quantity="one">Ready to render %1$d garment.</item>
-        <item quantity="other">Ready to render %1$d garments, one after another.</item>
-    </plurals>
-    <string name="rw_model_nothing_on">Nothing on the model yet</string>
-    <string name="rw_model_wearing">Wearing %1$s</string>
-    <string name="rw_model_empty_title">No clothes yet</string>
-    <string name="rw_model_empty_body">Add items to your wardrobe and they will appear here to try on.</string>
-    <string name="rw_model_shape_rectangle">Rectangle</string>
-    <string name="rw_model_shape_triangle">Triangle</string>
-    <string name="rw_model_shape_inverted">Inverted triangle</string>
-    <string name="rw_model_shape_hourglass">Hourglass</string>
-    <string name="rw_model_shape_oval">Oval</string>
-    <string name="rw_model_type_slim">Slim</string>
-    <string name="rw_model_type_average">Average</string>
-    <string name="rw_model_type_athletic">Athletic</string>
-    <string name="rw_model_type_full">Full</string>
-    <string name="rw_model_tone_porcelain">Porcelain</string>
-    <string name="rw_model_tone_light">Light</string>
-    <string name="rw_model_tone_medium">Medium</string>
-    <string name="rw_model_tone_olive">Olive</string>
-    <string name="rw_model_tone_brown">Brown</string>
-    <string name="rw_model_tone_deep">Deep</string>
-    <string name="rw_nav_model">Model</string>
     <!--Confidence rating-->
     <string name="rw_confidence_prompt">How did you feel in %1$s?</string>
     <string name="rw_confidence_prompt_generic">How did you feel in this outfit?</string>
@@ -547,7 +462,6 @@
     <!--Profile-->
     <string name="rw_profile_member_since">Member since %1$s</string>
     <string name="rw_profile_insights">Insights</string>
-    <string name="rw_profile_model">Virtual model</string>
     <string name="rw_profile_swap_market">Swap market</string>
     <string name="rw_profile_my_listings">My listings</string>
     <string name="rw_profile_notifications">Notifications</string>
@@ -588,7 +502,7 @@
     <string name="rw_outfits_new">New outfit</string>
     <string name="rw_outfits_failed_title">Couldn\'t load your outfits</string>
     <string name="rw_outfits_failed_body">Check your connection and try again.</string>
-    <string name="rw_outfits_empty_body_builder">Build one from your wardrobe, or dress your virtual model and save it.</string>
+    <string name="rw_outfits_empty_body_builder">Build one from the garments in your wardrobe.</string>
     <plurals name="rw_outfits_pieces">
         <item quantity="one">%d piece</item>
         <item quantity="other">%d pieces</item>

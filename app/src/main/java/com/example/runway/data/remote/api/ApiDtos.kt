@@ -81,7 +81,6 @@ data class OutfitDto(
     val name: String = "",
     val occasion: String? = null,
     val season: String? = null,
-    val coverImagePath: String? = null,
     val items: List<OutfitItemDto> = emptyList(),
     val createdAt: String? = null,
     val updatedAt: String? = null,
@@ -93,7 +92,6 @@ data class UpdateOutfitDto(
     val name: String? = null,
     val occasion: String? = null,
     val season: String? = null,
-    val coverImagePath: String? = null,
     val items: List<OutfitItemDto>? = null,
 )
 

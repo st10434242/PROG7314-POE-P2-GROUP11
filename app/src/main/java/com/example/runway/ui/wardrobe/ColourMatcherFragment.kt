@@ -132,9 +132,10 @@ class ColourMatcherFragment : Fragment() {
         )
     }
 
+    // Starts a new outfit with this garment already on the canvas.
     private fun useInOutfit(item: Item) {
         findNavController().navigate(
-            R.id.action_colourMatcher_to_model,
+            R.id.action_colourMatcher_to_builder,
             Bundle().apply { putString(NavArgs.ITEM_ID, item.id) },
         )
     }

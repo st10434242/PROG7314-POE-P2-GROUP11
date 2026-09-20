@@ -1,6 +1,5 @@
 package com.example.runway.ui.outfits
 
-import android.graphics.Bitmap
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.model.Outfit
 import com.example.runway.domain.model.RatingSummary
@@ -11,7 +10,6 @@ data class OutfitDetailUiState(
     val outfit: Outfit? = null,
     // The garments in the outfit, resolved from the wardrobe so they have names.
     val garments: List<Item> = emptyList(),
-    val render: Bitmap? = null,
     val name: String = "",
     val ratings: RatingSummary = RatingSummary(),
     // Set once a wear is logged, so the screen knows to ask for a rating.

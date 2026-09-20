@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- One garment in full: its photo, what it is, what it has cost, and the way on to the model. -->
+<!-- One garment in full: its photo, what it is, what it has cost, and the way in to the builder. -->
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -70,22 +70,15 @@
                 android:layout_weight="1" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/detailFit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
-            android:textColor="?android:attr/textColorSecondary" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/detailTryOnButton"
+            android:id="@+id/detailUseInOutfitButton"
             style="@style/Widget.Runway.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="20dp"
-            android:text="@string/rw_item_detail_try_on" />
+            android:text="@string/rw_item_detail_use_in_outfit" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/detailFindMatchesButton"

@@ -86,17 +86,8 @@ interface RunwayApi {
     // PUT, not PATCH: the settings screen always sends the complete object.
     @PUT("api/v1/users/me/settings")
     suspend fun saveSettings(@Body body: SettingsDto): SettingsDto
-    // A render takes tens of seconds, so this is called through the long-timeout
-    // client rather than the ordinary one.
-    @POST("api/v1/tryon")
-    suspend fun renderTryOn(@Body body: TryOnRequestDto): TryOnResponseDto
 
-    @GET("api/v1/users/me/model")
-    suspend fun getModelProfile(): ModelProfileDto
 
-    // PUT, not PATCH: the model screen always sends the complete profile.
-    @PUT("api/v1/users/me/model")
-    suspend fun saveModelProfile(@Body body: ModelProfileDto): ModelProfileDto
 }
 
 /* Reference List

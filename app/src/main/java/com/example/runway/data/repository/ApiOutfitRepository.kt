@@ -33,7 +33,6 @@ class ApiOutfitRepository(
             UpdateOutfitDto(
                 name = outfit.name,
                 occasion = outfit.occasion,
-                coverImagePath = outfit.renderPath,
                 items = outfit.toItemDtos(),
             ),
         ).toDomain()
@@ -68,7 +67,6 @@ private fun Outfit.toItemDtos(): List<OutfitItemDto> {
 private fun Outfit.toCreateDto(): OutfitDto = OutfitDto(
     name = name,
     occasion = occasion,
-    coverImagePath = renderPath,
     items = toItemDtos(),
 )
 
@@ -78,7 +76,6 @@ private fun OutfitDto.toDomain(): Outfit {
         id = id,
         name = name,
         itemIds = ordered.map { it.clothingItemId },
-        renderPath = coverImagePath,
         updatedAt = updatedAt,
         occasion = occasion,
         layers = ordered.map {

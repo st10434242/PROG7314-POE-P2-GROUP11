@@ -62,7 +62,6 @@ data class OutfitDocument(
     var name: String = "",
     var occasion: String? = null,
     var season: String? = null,
-    var coverImagePath: String? = null,
     var deleted: Boolean = false,
     var createdAt: Timestamp? = null,
     var updatedAt: Timestamp? = null,
@@ -140,8 +139,6 @@ object Collections {
     const val USERS = "users"
     const val SETTINGS = "settings"
     const val SETTINGS_DOC = "preferences"
-    const val MODEL = "model"
-    const val MODEL_DOC = "profile"
     const val CLOTHING_ITEMS = "clothingItems"
     const val IMAGES = "images"
     const val OUTFITS = "outfits"

@@ -9,7 +9,6 @@ import com.example.runway.domain.model.OutfitLayer
 import com.example.runway.fake.FakeItemRepository
 import com.example.runway.fake.FakeOutfitRepository
 import com.example.runway.fake.FakeRatingRepository
-import com.example.runway.fake.FakeRenderStore
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -37,13 +36,11 @@ class OutfitDetailViewModelTest {
     private val outfits = FakeOutfitRepository(outfit)
     private val items = FakeItemRepository()
     private val ratings = FakeRatingRepository()
-    private val renders = FakeRenderStore()
 
     private fun viewModel() = OutfitDetailViewModel(
         SavedStateHandle(mapOf(NavArgs.OUTFIT_ID to "o1")),
         outfits,
         items,
-        renders,
         ratings,
     )
 

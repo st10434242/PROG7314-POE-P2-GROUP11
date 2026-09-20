@@ -15,8 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.runway.R
 import com.example.runway.databinding.FragmentItemDetailBinding
-import com.example.runway.domain.model.ClothingSize
-import com.example.runway.domain.model.FitVerdict
 import com.example.runway.domain.model.Item
 import com.example.runway.ui.components.RunwayDialogs
 import com.example.runway.ui.navigation.NavArgs
@@ -63,13 +61,13 @@ class ItemDetailFragment : Fragment() {
             binding.detailHeader.title = getString(
                 if (state.isLoading) R.string.rw_item_detail_loading else R.string.rw_item_detail_not_found
             )
-            binding.detailTryOnButton.isEnabled = false
+            binding.detailUseInOutfitButton.isEnabled = false
             binding.detailFindMatchesButton.isEnabled = false
             binding.detailDeleteButton.isEnabled = false
             return
         }
 
-        binding.detailTryOnButton.isEnabled = true
+        binding.detailUseInOutfitButton.isEnabled = true
         binding.detailFindMatchesButton.isEnabled = true
         binding.detailDeleteButton.isEnabled = true
 
@@ -96,32 +94,13 @@ class ItemDetailFragment : Fragment() {
         binding.detailCostTile.subLabel = item.purchasePrice
             ?.let { getString(R.string.rw_item_detail_paid, it) }
 
-        renderFit(item)
         loadPhoto(item)
 
-        binding.detailTryOnButton.setOnClickListener { tryOn(item) }
+        binding.detailUseInOutfitButton.setOnClickListener { useInOutfit(item) }
         binding.detailFindMatchesButton.setOnClickListener { findMatches(item) }
         binding.detailDeleteButton.setOnClickListener { confirmDelete(item) }
     }
 
-    // The same size comparison the model screen makes, shown here so the user can
-    // see how a garment is likely to fit before putting it on.
-    private fun renderFit(item: Item) {
-        val usual = when (item.category.uppercase()) {
-            "TOP", "OUTERWEAR" -> cachedProfile().topSize
-            "BOTTOM" -> cachedProfile().bottomSize
-            else -> null
-        }
-        val verdict = FitVerdict.compare(ClothingSize.parse(item.size), usual)
-        binding.detailFit.isVisible = verdict != null
-        if (verdict != null) {
-            binding.detailFit.text = getString(R.string.rw_item_detail_fit, getString(labelFor(verdict)))
-        }
-    }
-
-    private fun cachedProfile() =
-        (requireActivity().application as com.example.runway.RunwayApplication)
-            .container.modelRepository.cachedProfile()
 
     private fun loadPhoto(item: Item) {
         val path = item.imagePath
@@ -137,11 +116,10 @@ class ItemDetailFragment : Fragment() {
         }
     }
 
-    // Opens the model screen with this garment already on, rather than making the
-    // user find it again in the wardrobe list there.
-    private fun tryOn(item: Item) {
+    // Starts a new outfit with this garment already on the canvas.
+    private fun useInOutfit(item: Item) {
         findNavController().navigate(
-            R.id.action_itemDetail_to_model,
+            R.id.action_itemDetail_to_builder,
             bundleOf(NavArgs.ITEM_ID to item.id),
         )
     }
@@ -164,13 +142,6 @@ class ItemDetailFragment : Fragment() {
         viewModel.onDelete { if (isAdded) findNavController().navigateUp() }
     }
 
-    private fun labelFor(verdict: FitVerdict): Int = when (verdict) {
-        FitVerdict.TIGHT -> R.string.rw_model_fit_tight
-        FitVerdict.SNUG -> R.string.rw_model_fit_snug
-        FitVerdict.TRUE_TO_SIZE -> R.string.rw_model_fit_true
-        FitVerdict.LOOSE -> R.string.rw_model_fit_loose
-        FitVerdict.OVERSIZED -> R.string.rw_model_fit_oversized
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

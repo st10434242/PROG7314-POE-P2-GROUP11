@@ -17,8 +17,6 @@ fun Application.configureRouting() {
         ratingRoutes()
         planRoutes()
         userRoutes()
-        modelRoutes()
-        tryOnRoutes()
     }
 }
 

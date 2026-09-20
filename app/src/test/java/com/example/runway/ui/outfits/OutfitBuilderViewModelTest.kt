@@ -128,7 +128,7 @@ class OutfitBuilderViewModelTest {
                 layers = listOf(OutfitLayer("shirt", x = 0.3f, y = 0.4f)),
             )
         )
-        val vm = OutfitBuilderViewModel("o1", outfits, items)
+        val vm = OutfitBuilderViewModel(outfitId = "o1", outfitRepository = outfits, itemRepository = items)
 
         assertTrue(vm.uiState.value.isEditing)
         assertEquals("Friday", vm.uiState.value.name)
@@ -141,30 +141,12 @@ class OutfitBuilderViewModelTest {
         assertEquals(listOf("shirt", "jeans"), outfits.updated?.itemIds)
     }
 
-    @Test
-    fun `changing the garments drops a try-on render that no longer matches`() = runTest {
-        outfits.outfits = listOf(Outfit(id = "o1", name = "Friday", itemIds = listOf("shirt"), renderPath = "/r.png"))
-        val vm = OutfitBuilderViewModel("o1", outfits, items)
 
-        vm.onAdd("jeans")
-        vm.onSave("New outfit")
-        assertNull(outfits.updated?.renderPath)
-    }
-
-    @Test
-    fun `just moving pieces keeps the try-on render`() = runTest {
-        outfits.outfits = listOf(Outfit(id = "o1", name = "Friday", itemIds = listOf("shirt"), renderPath = "/r.png"))
-        val vm = OutfitBuilderViewModel("o1", outfits, items)
-
-        vm.onMove("shirt", 0.2f, 0.2f)
-        vm.onSave("New outfit")
-        assertEquals("/r.png", outfits.updated?.renderPath)
-    }
 
     @Test
     fun `an outfit that can't be opened for editing says so`() = runTest {
         outfits.getError = IOException("offline")
-        val vm = OutfitBuilderViewModel("o1", outfits, items)
+        val vm = OutfitBuilderViewModel(outfitId = "o1", outfitRepository = outfits, itemRepository = items)
 
         assertTrue(vm.uiState.value.loadFailed)
         assertFalse(vm.uiState.value.canSave)

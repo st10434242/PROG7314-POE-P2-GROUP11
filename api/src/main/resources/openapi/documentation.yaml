@@ -25,8 +25,6 @@ tags:
   - name: Planner
   - name: Wardrobe
   - name: Users
-  - name: Model
-  - name: TryOn
 
 paths:
 
@@ -249,7 +247,6 @@ paths:
                 name: { type: string, example: Friday dinner }
                 occasion: { type: string, nullable: true }
                 season: { type: string, nullable: true }
-                coverImagePath: { type: string, nullable: true }
                 items:
                   type: array
                   items: { $ref: '#/components/schemas/OutfitItem' }
@@ -297,7 +294,6 @@ paths:
                 name: { type: string, example: Friday dinner }
                 occasion: { type: string, nullable: true }
                 season: { type: string, nullable: true }
-                coverImagePath: { type: string, nullable: true }
                 items:
                   type: array
                   items: { $ref: '#/components/schemas/OutfitItem' }
@@ -510,77 +506,6 @@ paths:
               schema: { $ref: '#/components/schemas/Settings' }
         '400': { $ref: '#/components/responses/BadRequest' }
 
-  /api/v1/users/me/model:
-    get:
-      tags: [Model]
-      summary: Read the virtual model
-      description: >
-        Returns the caller's model. A user who has never chosen one gets the
-        defaults rather than a 404, so the model screen always has something to draw.
-      security:
-        - firebaseAuth: []
-      responses:
-        '200':
-          description: The model profile
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ModelProfile' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-    put:
-      tags: [Model]
-      summary: Replace the virtual model
-      description: The selection screen always sends the whole profile, so this is a PUT.
-      security:
-        - firebaseAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/ModelProfile' }
-      responses:
-        '200':
-          description: The saved model profile
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ModelProfile' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-
-  /api/v1/tryon:
-    post:
-      tags: [TryOn]
-      summary: Render the user wearing one or two of their own garments
-      description: >
-        Sends the user's body photo and the garment photos to the image service and
-        returns the finished picture. Each garment is a separate paid render, applied
-        one after another, so two garments take about twice as long as one. Shoes and
-        accessories are not supported by the model.
-      security:
-        - firebaseAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/TryOnRequest' }
-      responses:
-        '200':
-          description: The rendered image
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/TryOnResponse' }
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
-        '502':
-          description: The image service refused or failed
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ApiError' }
-        '503':
-          description: The image service is not configured on this server
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ApiError' }
-
 components:
 
   schemas:
@@ -660,7 +585,6 @@ components:
         name: { type: string, example: Friday dinner }
         occasion: { type: string, nullable: true, example: Evening }
         season: { type: string, nullable: true, example: Winter }
-        coverImagePath: { type: string, nullable: true }
         items:
           type: array
           items: { $ref: '#/components/schemas/OutfitItem' }
@@ -691,50 +615,6 @@ components:
           maximum: 60
           description: Applied to a new item that does not name its own limit.
 
-    ModelProfile:
-      type: object
-      description: >
-        The measurements a try-on render needs. The body photo itself stays on the
-        user's device and is never sent here.
-      properties:
-        heightCm:
-          type: integer
-          default: 170
-          minimum: 120
-          maximum: 220
-        weightKg:
-          type: integer
-          nullable: true
-          minimum: 30
-          maximum: 250
-        topSize:
-          type: string
-          nullable: true
-          enum: [XXS, XS, S, M, L, XL, XXL, XXXL]
-        bottomSize:
-          type: string
-          nullable: true
-          enum: [XXS, XS, S, M, L, XL, XXL, XXXL]
-        shoeSizeEu:
-          type: integer
-          nullable: true
-          minimum: 33
-          maximum: 50
-        bodyType:
-          type: string
-          nullable: true
-          enum: [SLIM, AVERAGE, ATHLETIC, FULL]
-          description: Read from the photo by the app, not chosen by the user.
-        bodyShape:
-          type: string
-          nullable: true
-          enum: [RECTANGLE, TRIANGLE, INVERTED_TRIANGLE, HOURGLASS, OVAL]
-          description: Read from the photo by the app, not chosen by the user.
-        updatedAt:
-          type: string
-          format: date-time
-          nullable: true
-          readOnly: true
     WardrobeSummary:
       type: object
       properties:
@@ -793,47 +673,6 @@ components:
         items:
           type: array
           items: { $ref: '#/components/schemas/Wear' }
-
-    TryOnGarment:
-      type: object
-      required: [image, category]
-      properties:
-        image:
-          type: string
-          description: "Base64 of a PNG or JPEG, with no data: prefix."
-        category:
-          type: string
-          enum: [TOP, OUTERWEAR, BOTTOM, DRESS]
-        description:
-          type: string
-          example: blue oxford shirt, size M
-
-    TryOnRequest:
-      type: object
-      required: [personImage, garments]
-      properties:
-        personImage:
-          type: string
-          description: Base64 of the user's full-body photo.
-        garments:
-          type: array
-          minItems: 1
-          maxItems: 2
-          items: { $ref: '#/components/schemas/TryOnGarment' }
-
-    TryOnResponse:
-      type: object
-      properties:
-        image:
-          type: string
-          description: Base64 PNG of the finished render.
-        renders:
-          type: integer
-          description: How many paid renders this took, one per garment.
-          example: 2
-        elapsedMs:
-          type: integer
-          example: 34000
 
     ApiError:
       type: object

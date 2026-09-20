@@ -48,11 +48,6 @@ dependencies {
     // Serves interactive API documentation from the OpenAPI file (Ktor, 2026).
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
 
-    // Calls the Replicate image API for the virtual try-on (Ktor, 2026).
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-
     implementation(libs.firebase.admin)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.logback.classic)

@@ -21,9 +21,6 @@ object GarmentImages {
             itemIds.associateWith { id -> items[id]?.imagePath?.let { decode(it, maxPx) } }
         }
 
-    // For a single file, like an outfit's try-on render.
-    suspend fun loadPath(path: String, maxPx: Int): Bitmap? = withContext(Dispatchers.IO) { decode(path, maxPx) }
-
     private fun decode(path: String, maxPx: Int): Bitmap? {
         val key = "$path@$maxPx"
         cache.get(key)?.let { return it }

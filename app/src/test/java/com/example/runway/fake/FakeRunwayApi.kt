@@ -5,7 +5,6 @@ import com.example.runway.data.remote.api.CreateRatingDto
 import com.example.runway.data.remote.api.ItemDto
 import com.example.runway.data.remote.api.LogOutfitWearDto
 import com.example.runway.data.remote.api.LogWearDto
-import com.example.runway.data.remote.api.ModelProfileDto
 import com.example.runway.data.remote.api.OutfitDto
 import com.example.runway.data.remote.api.OutfitWearDto
 import com.example.runway.data.remote.api.PageDto
@@ -15,8 +14,6 @@ import com.example.runway.data.remote.api.RatingSummaryDto
 import com.example.runway.data.remote.api.RunwayApi
 import com.example.runway.data.remote.api.SetPlanDto
 import com.example.runway.data.remote.api.SettingsDto
-import com.example.runway.data.remote.api.TryOnRequestDto
-import com.example.runway.data.remote.api.TryOnResponseDto
 import com.example.runway.data.remote.api.UpdateItemDto
 import com.example.runway.data.remote.api.UpdateOutfitDto
 import com.example.runway.data.remote.api.UserDto
@@ -114,9 +111,6 @@ class FakeRunwayApi : RunwayApi {
     override suspend fun getProfile(): UserDto = unused()
     override suspend fun getSettings(): SettingsDto = unused()
     override suspend fun saveSettings(body: SettingsDto): SettingsDto = unused()
-    override suspend fun renderTryOn(body: TryOnRequestDto): TryOnResponseDto = unused()
-    override suspend fun getModelProfile(): ModelProfileDto = unused()
-    override suspend fun saveModelProfile(body: ModelProfileDto): ModelProfileDto = unused()
 
     private fun unused(): Nothing = throw UnsupportedOperationException("Not set up in this test")
 }

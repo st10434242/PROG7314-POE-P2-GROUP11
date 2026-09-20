@@ -25,6 +25,8 @@ import kotlinx.coroutines.launch
 class OutfitBuilderViewModel(
     // Null for a new outfit, set when editing one.
     private val outfitId: String?,
+    // Set when the builder was opened from a garment, so it starts on the canvas.
+    startItemId: String? = null,
     private val outfitRepository: OutfitRepository,
     itemRepository: ItemRepository,
 ) : ViewModel() {
@@ -32,7 +34,7 @@ class OutfitBuilderViewModel(
     private val _uiState = MutableStateFlow(OutfitBuilderUiState(isEditing = outfitId != null))
     val uiState: StateFlow<OutfitBuilderUiState> = _uiState.asStateFlow()
 
-    // The outfit being edited, so its render can be kept if the garments don't change.
+    // The outfit being edited, so a save updates it instead of making a new one.
     private var original: Outfit? = null
 
     init {
@@ -42,6 +44,7 @@ class OutfitBuilderViewModel(
             }
         }
         if (outfitId != null) loadExisting(outfitId)
+        else if (startItemId != null) onAdd(startItemId)
     }
 
     fun loadExisting(id: String) {
@@ -102,8 +105,6 @@ class OutfitBuilderViewModel(
             id = existing?.id.orEmpty(),
             name = state.name.trim().ifEmpty { existing?.name ?: fallbackName },
             itemIds = itemIds,
-            // A try-on render only still matches if the same garments are in the outfit.
-            renderPath = existing?.renderPath?.takeIf { existing.itemIds.toSet() == itemIds.toSet() },
             occasion = state.occasion,
             layers = ordered,
         )
@@ -142,6 +143,7 @@ class OutfitBuilderViewModel(
                 val handle: SavedStateHandle = createSavedStateHandle()
                 OutfitBuilderViewModel(
                     outfitId = handle.get<String>(NavArgs.OUTFIT_ID),
+                    startItemId = handle.get<String>(NavArgs.ITEM_ID),
                     outfitRepository = app.container.outfitRepository,
                     itemRepository = app.container.itemRepository,
                 )

@@ -62,9 +62,8 @@ class PlannerSheetsViewModelTest {
 
     @Test
     fun `picking for a day lists the outfits and plans the one chosen`() = runTest {
-        val vm = PickOutfitViewModel(today, null, plans, outfits) { today }
+        val vm = PickOutfitViewModel(today, plans, outfits)
 
-        assertTrue(vm.uiState.value.choosingOutfit)
         assertEquals(listOf("o1", "o2"), vm.uiState.value.outfits.map { it.id })
 
         vm.onPickOutfit("o2")
@@ -73,25 +72,11 @@ class PlannerSheetsViewModelTest {
         assertEquals(today, vm.uiState.value.plannedFor)
     }
 
-    @Test
-    fun `picking for an outfit offers the coming week and says what gets replaced`() = runTest {
-        plans.plans[today.plusDays(2)] = "o2"
-        val vm = PickOutfitViewModel(null, "o1", plans, outfits) { today }
-
-        val state = vm.uiState.value
-        assertFalse(state.choosingOutfit)
-        assertEquals(PickOutfitViewModel.DAYS_AHEAD, state.days.size)
-        assertEquals(today, state.days.first())
-        assertEquals("Office", state.plannedByDay[today.plusDays(2)]?.name)
-
-        vm.onPickDay(today.plusDays(2))
-        assertEquals("o1", plans.plans[today.plusDays(2)])
-    }
 
     @Test
     fun `a failed plan shows an error and leaves the sheet open`() = runTest {
         plans.planError = IOException("offline")
-        val vm = PickOutfitViewModel(today, null, plans, outfits) { today }
+        val vm = PickOutfitViewModel(today, plans, outfits)
 
         vm.onPickOutfit("o1")
 
@@ -102,6 +87,6 @@ class PlannerSheetsViewModelTest {
     @Test
     fun `no outfits loaded means the picker can say why`() = runTest {
         outfits.listError = IOException("offline")
-        assertTrue(PickOutfitViewModel(today, null, plans, outfits) { today }.uiState.value.loadFailed)
+        assertTrue(PickOutfitViewModel(today, plans, outfits).uiState.value.loadFailed)
     }
 }

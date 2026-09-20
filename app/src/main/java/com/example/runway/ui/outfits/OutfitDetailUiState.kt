@@ -12,6 +12,8 @@ data class OutfitDetailUiState(
     val garments: List<Item> = emptyList(),
     val name: String = "",
     val ratings: RatingSummary = RatingSummary(),
+    // True when the ratings couldn't be fetched, which is not the same as having none.
+    val ratingsFailed: Boolean = false,
     // Set once a wear is logged, so the screen knows to ask for a rating.
     val wearLoggedAt: Long? = null,
     val isLoading: Boolean = true,
@@ -20,6 +22,8 @@ data class OutfitDetailUiState(
     val isSaving: Boolean = false,
     val savedAt: Long? = null,
     val deleted: Boolean = false,
+    // The day this outfit was just scheduled for, so the screen can confirm it.
+    val scheduledFor: java.time.LocalDate? = null,
     val errorMessage: String? = null,
 ) {
     // Only offer to save when there is something to save.

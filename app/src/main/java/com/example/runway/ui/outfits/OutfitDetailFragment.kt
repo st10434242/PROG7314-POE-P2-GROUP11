@@ -16,6 +16,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.runway.R
 import com.example.runway.databinding.FragmentOutfitDetailBinding
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.time.Instant
+import java.time.ZoneOffset
 import com.example.runway.domain.model.RatingSummary
 import com.example.runway.ui.navigation.NavArgs
 import com.example.runway.ui.sheets.ConfidenceSheet
@@ -71,10 +76,7 @@ class OutfitDetailFragment : Fragment() {
                 setOnClickListener { viewModel.reload() }
             }
         )
-        binding.outfitScheduleButton.setOnClickListener {
-            val id = viewModel.uiState.value.outfit?.id ?: return@setOnClickListener
-            findNavController().navigate(R.id.action_outfitDetail_to_pickOutfitSheet, bundleOf(NavArgs.OUTFIT_ID to id))
-        }
+        binding.outfitScheduleButton.setOnClickListener { pickDate() }
         binding.outfitDetailHeader.addAction(R.drawable.ic_rw_edit, getString(R.string.rw_outfit_edit)) {
             val id = viewModel.uiState.value.outfit?.id ?: return@addAction
             findNavController().navigate(R.id.action_outfitDetail_to_builder, bundleOf(NavArgs.OUTFIT_ID to id))
@@ -130,7 +132,7 @@ class OutfitDetailFragment : Fragment() {
         binding.outfitScheduleButton.isEnabled = state.outfit != null
 
         renderGarments(state)
-        renderConfidence(state.ratings)
+        renderConfidence(state)
 
         // A logged wear is what prompts for a rating.
         if (state.wearLoggedAt != null) {
@@ -148,26 +150,51 @@ class OutfitDetailFragment : Fragment() {
             RunwayToast.show(requireView(), getString(R.string.rw_outfit_saved))
             viewModel.onMessageShown()
         }
+        state.scheduledFor?.let { date ->
+            RunwayToast.show(
+                requireView(),
+                getString(R.string.rw_plan_planned_for, PlanDates.label(requireContext(), date)),
+            )
+            viewModel.onScheduleHandled()
+        }
         state.errorMessage?.let {
-            RunwayToast.show(requireView(), it)
+            RunwayToast.show(requireView(), it, R.drawable.ic_rw_alert)
             viewModel.onMessageShown()
         }
 
         applyingState = false
     }
 
-    private fun renderConfidence(ratings: RatingSummary) {
+    private fun renderConfidence(state: OutfitDetailUiState) {
+        val ratings = state.ratings
         binding.outfitConfidenceStars.rating = ratings.roundedAverage
-        binding.outfitConfidenceLabel.text = if (ratings.hasRatings) {
-            resources.getQuantityString(
+        binding.outfitConfidenceLabel.text = when {
+            ratings.hasRatings -> resources.getQuantityString(
                 R.plurals.rw_outfit_confidence_count,
                 ratings.count,
                 ratings.average.toString(),
                 ratings.count,
             )
-        } else {
-            getString(R.string.rw_outfit_confidence_none)
+            // Saying "not rated yet" when the fetch failed would be a lie.
+            state.ratingsFailed -> getString(R.string.rw_outfit_confidence_failed)
+            else -> getString(R.string.rw_outfit_confidence_none)
         }
+    }
+
+    // A calendar is easier to aim at than a list of the next few days.
+    private fun pickDate() {
+        val picker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(R.string.rw_plan_schedule_title)
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .setCalendarConstraints(
+                CalendarConstraints.Builder().setValidator(DateValidatorPointForward.now()).build()
+            )
+            .build()
+        picker.addOnPositiveButtonClickListener { millis ->
+            // The picker hands back UTC midnight, so read the date in UTC too.
+            viewModel.onScheduled(Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate())
+        }
+        picker.show(parentFragmentManager, "schedule")
     }
 
     private fun openConfidenceSheet() {

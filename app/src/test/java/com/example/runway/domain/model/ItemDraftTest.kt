@@ -79,7 +79,7 @@ class ItemDraftTest {
         val item = ItemDraft(
             name = "  Linen shirt  ",
             category = "TOP",
-            colour = ItemColour.NAVY,
+            colour = ItemColour.NAVY.asPaletteColour(),
             brand = "   ",
             size = " M ",
             priceText = "450",

@@ -14,8 +14,7 @@ class RatingService(firestore: Firestore? = null) {
     suspend fun listForOutfit(uid: String, outfitId: String): RatingSummaryResponse {
         requireOwnedOutfit(db, uid, outfitId)
 
-        // Sorted here rather than in the query: ordering by ratedAt on top of two equality
-        // filters needs a composite index, and one outfit only ever has a handful of ratings.
+        // Sorted here instead of in the query, which would need a composite index.
         val documents = ratings
             .whereEqualTo(Fields.OWNER_UID, uid)
             .whereEqualTo(Fields.OUTFIT_ID, outfitId)
@@ -36,8 +35,7 @@ class RatingService(firestore: Firestore? = null) {
 
     suspend fun create(uid: String, outfitId: String, body: CreateRatingRequest): RatingResponse {
         body.validate()
-        // Proving the outfit belongs to the caller is what stops a rating being
-        // attached to somebody else's outfit.
+        // Stops a rating being attached to someone else's outfit.
         requireOwnedOutfit(db, uid, outfitId)
 
         val ref = ratings.document()

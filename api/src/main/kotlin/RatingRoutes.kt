@@ -11,7 +11,6 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 
 // Confidence rating endpoints, nested under the outfit they belong to.
-// Built on the Ktor server framework.
 fun Route.ratingRoutes(service: RatingService = RatingService()) {
     authenticate(FIREBASE_AUTH) {
         route("/api/v1/outfits/{id}/ratings") {

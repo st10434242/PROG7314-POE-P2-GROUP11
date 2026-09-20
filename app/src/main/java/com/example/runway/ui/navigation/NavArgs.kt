@@ -1,9 +1,6 @@
 package com.example.runway.ui.navigation
 
-/**
- * Argument names used by the nav graph, kept in one place so the graph and the
- * ViewModels that read them cannot drift apart.
- */
+// Argument names used by the nav graph, kept in one place so they cannot drift apart.
 object NavArgs {
 
     /** The wardrobe item a detail, edit, matcher or listing destination is showing. */

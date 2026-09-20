@@ -26,8 +26,7 @@ object ApiClient {
                 // Request and response headers in Logcat while developing.
                 addInterceptor(
                     HttpLoggingInterceptor().apply {
-                        // HEADERS, not BODY: response bodies can be long and
-                        // Logcat truncates them anyway.
+                        // HEADERS, not BODY: response bodies are long and Logcat truncates them anyway.
                         level = HttpLoggingInterceptor.Level.HEADERS
                         redactHeader("Authorization")
                     }

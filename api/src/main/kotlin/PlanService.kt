@@ -11,8 +11,7 @@ class PlanService(firestore: Firestore? = null) {
 
     private val plans get() = db.collection(Collections.OUTFIT_PLANS)
 
-    // Filtered by owner in Firestore and by date here. A user only has a handful of plans,
-    // and it saves needing a composite index on ownerUid + date.
+    // Filtered by owner in Firestore and by date here, so no composite index is needed.
     suspend fun list(uid: String, from: LocalDate, to: LocalDate): List<PlanResponse> {
         validatePlanRange(from, to)
 

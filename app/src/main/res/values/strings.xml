@@ -86,6 +86,7 @@
     <string name="rw_biometric_avatar_content_description">Signed-in account</string>
 
     <!--Home tab pushes-->
+    <string name="rw_stub_coming_soon">Coming soon</string>
     <string name="rw_stub_weather_title">Weather suggestions</string>
     <string name="rw_stub_weather_body">Outfit picks based on today\'s forecast land here.</string>
 
@@ -164,6 +165,14 @@
 
     <!-- Helper text under each field, visible at all times. -->
     <string name="rw_tag_name_example">For example: Blue oxford shirt</string>
+    <string name="rw_colour_picker_add">Custom</string>
+    <string name="rw_colour_picker_title">Mix a colour</string>
+    <string name="rw_colour_picker_save">Add to palette</string>
+    <string name="rw_colour_picker_name">Name this colour</string>
+    <string name="rw_colour_picker_name_required">Give the colour a name</string>
+    <string name="rw_colour_picker_hue">Hue</string>
+    <string name="rw_colour_picker_saturation">Saturation</string>
+    <string name="rw_colour_picker_lightness">Lightness</string>
     <string name="rw_tag_colour_none">Pick the closest colour</string>
     <string name="rw_tag_hint">Only the name is required</string>
     <string name="rw_tag_wear_limit">Wears before washing</string>
@@ -415,6 +424,7 @@
     <string name="rw_outfit_wear">Wore this today</string>
     <string name="rw_outfit_wear_logged">Wear logged</string>
     <string name="rw_outfit_confidence">Confidence</string>
+    <string name="rw_outfit_confidence_failed">Ratings could not be loaded. Pull down or reopen to try again.</string>
     <string name="rw_outfit_confidence_none">Not rated yet</string>
     <plurals name="rw_outfit_confidence_count">
         <item quantity="one">%1$s from %2$d rating</item>

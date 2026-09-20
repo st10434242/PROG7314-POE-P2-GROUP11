@@ -19,10 +19,7 @@ import com.example.runway.ui.components.SyncBannerView
 import com.google.android.material.chip.Chip
 import com.google.android.material.materialswitch.MaterialSwitch
 
-/**
- * Shows every component in the Runway library on one scrolling screen, with a
- * day/night toggle at the top for checking both themes.
- */
+// Shows every component in the library on one screen, with a day/night toggle.
 class CatalogActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCatalogBinding

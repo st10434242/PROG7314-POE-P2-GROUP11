@@ -182,7 +182,7 @@ The hosted API sleeps when idle on Render's free tier, so the first request afte
 
 | Suite | Count | Command |
 |---|---|---|
-| Android unit tests | 171 | `./gradlew :app:testDebugUnitTest` |
+| Android unit tests | 180 | `./gradlew :app:testDebugUnitTest` |
 | API unit tests | 39 | `cd api && ./gradlew test` |
 
 They cover the pure rules (`ItemDraft`, `OutfitCanvas`, `ColourMatcher`), the repositories and their mappers, and the ViewModels behind the wardrobe, outfits, builder and planner.

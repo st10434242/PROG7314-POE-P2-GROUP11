@@ -47,8 +47,7 @@ class ApiOutfitRepository(
     }
 }
 
-// itemIds decides what is in the outfit. layers only adds where each garment sits, so a
-// garment removed on the detail screen can't leave a stray layer behind.
+// itemIds decides what is in the outfit; layers only says where each garment sits.
 private fun Outfit.toItemDtos(): List<OutfitItemDto> {
     val placed = layers.associateBy { it.itemId }
     return itemIds.mapIndexed { index, itemId ->

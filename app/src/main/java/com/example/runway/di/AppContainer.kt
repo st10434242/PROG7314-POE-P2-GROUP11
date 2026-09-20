@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.runway.data.auth.AuthSessionStore
 import com.example.runway.data.auth.GoogleAuthClient
 import com.example.runway.data.local.ItemImageStore
+import com.example.runway.data.local.PreferencesColourStore
 import com.example.runway.data.local.PreferencesSettingsStore
 import com.example.runway.data.local.RunwayDatabase
 import com.example.runway.data.local.SyncPreferences
@@ -54,6 +55,11 @@ class AppContainer(context: Context) {
     }
 
     // Garment photos, kept on this device alongside the Room rows.
+    // The colours on offer when tagging, including any the user mixed themselves.
+    val colourRepository: com.example.runway.domain.repository.ColourRepository by lazy {
+        PreferencesColourStore(appContext)
+    }
+
     val itemImageStore: ItemImageStore by lazy {
         ItemImageStore(appContext)
     }
@@ -64,8 +70,7 @@ class AppContainer(context: Context) {
         ApiOutfitRepository(ApiClient.api)
     }
 
-    // Confidence ratings for those outfits. Also API-backed, so a rating follows
-    // the user to another device.
+    // Confidence ratings, API-backed so a rating follows the user to another device.
     val ratingRepository: RatingRepository by lazy {
         ApiRatingRepository(ApiClient.api)
     }

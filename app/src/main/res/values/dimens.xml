@@ -42,6 +42,8 @@
     <dimen name="rw_avatar_size">44dp</dimen>
     <dimen name="rw_auth_logo_size">112dp</dimen>
     <dimen name="rw_swatch_size">18dp</dimen>
+    <!-- The preview circle in the colour picker. -->
+    <dimen name="rw_swatch_preview">64dp</dimen>
     <dimen name="rw_meter_height">6dp</dimen>
     <dimen name="rw_divider_height">1dp</dimen>
     <dimen name="rw_border_width">1dp</dimen>

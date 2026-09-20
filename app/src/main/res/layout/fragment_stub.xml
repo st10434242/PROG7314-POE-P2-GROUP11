@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder screen shared by the four tab roots. -->
+<!-- Placeholder for a screen that is not built yet. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:rwLarge="true"
-        app:rwShowBack="false"
+        app:rwShowBack="true"
         tools:rwTitle="@string/rw_nav_wardrobe" />
 
     <androidx.core.widget.NestedScrollView
@@ -32,15 +32,12 @@
                 tools:rwBody="@string/rw_stub_wardrobe_body"
                 tools:rwTitle="@string/rw_nav_wardrobe" />
 
-            <!-- Opens the component catalog. -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/stubCatalog"
-                style="@style/Widget.Runway.Button.Secondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/stubComingSoon"
+                style="@style/Widget.Runway.Badge.Muted"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/rw_space_8"
-                android:text="@string/rw_catalog_open"
-                app:icon="@drawable/ic_rw_palette" />
+                android:text="@string/rw_stub_coming_soon" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

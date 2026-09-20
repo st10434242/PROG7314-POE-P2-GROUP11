@@ -3,6 +3,7 @@ package com.example.runway.ui.wardrobe
 import androidx.lifecycle.SavedStateHandle
 import com.example.runway.MainDispatcherRule
 import com.example.runway.domain.model.Item
+import com.example.runway.fake.FakeColourRepository
 import com.example.runway.fake.FakeItemRepository
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.launch
@@ -22,9 +23,10 @@ class ColourMatcherViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val repository = FakeItemRepository()
+    private val colours = FakeColourRepository()
 
     private fun viewModel(referenceId: String = "shirt") =
-        ColourMatcherViewModel(SavedStateHandle(mapOf(NavArgs.ITEM_ID to referenceId)), repository)
+        ColourMatcherViewModel(SavedStateHandle(mapOf(NavArgs.ITEM_ID to referenceId)), repository, colours)
 
     private fun item(id: String, category: String, colour: String?, wears: Long = 0) =
         Item(id = id, name = id, category = category, colour = colour, wearCount = wears)

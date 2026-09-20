@@ -43,8 +43,7 @@ object RunwayDialogs {
 
         val dialog = builder.create()
         if (destructive) {
-            // The buttons do not exist until the dialog is shown, so the tint
-            // has to wait for onShow rather than being applied to the builder.
+            // The buttons only exist once the dialog is shown, so the tint waits for onShow.
             dialog.setOnShowListener {
                 dialog.getButton(android.content.DialogInterface.BUTTON_POSITIVE)?.let { button ->
                     button.setTextColor(

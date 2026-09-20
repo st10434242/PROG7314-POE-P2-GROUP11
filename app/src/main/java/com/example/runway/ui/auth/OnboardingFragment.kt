@@ -11,6 +11,7 @@ import com.google.android.material.button.MaterialButton
 class OnboardingFragment : StubFragment() {
     override val titleRes = R.string.rw_onboarding_title
     override val bodyRes = R.string.rw_onboarding_body
+    override val showBack = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -106,9 +106,7 @@ class GoogleAuthClient(
     }
 
     private fun GetCredentialException.toFailure(): SignInOutcome.Failure = when (this) {
-        // Credential Manager reports a refused request as a cancellation too, so the
-        // message is the only thing that separates "the user closed the sheet" from
-        // "Google would not accept this build".
+        // Credential Manager reports a refused request as a cancellation, so only the message tells them apart.
         is GetCredentialCancellationException ->
             if (message?.contains(REAUTH_FAILED, ignoreCase = true) == true) {
                 SignInOutcome.Failure.Unregistered

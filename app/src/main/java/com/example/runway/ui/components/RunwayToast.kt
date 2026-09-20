@@ -27,9 +27,7 @@ object RunwayToast {
         val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         if (anchor != null) snackbar.anchorView = anchor
 
-        // Invert against the page: dark pill in Day, light pill in Night. The
-        // names read backwards on purpose - the pill's fill IS the foreground
-        // colour, and its text is the page background.
+        // Inverts against the page: a dark pill in Day, a light one in Night.
         val pillFill = MaterialColors.getColor(
             snackbar.view, com.google.android.material.R.attr.colorOnSurface
         )

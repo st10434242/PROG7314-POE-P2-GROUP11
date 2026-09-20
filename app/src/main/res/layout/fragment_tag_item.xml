@@ -81,10 +81,19 @@
 
             <TextView
                 android:id="@+id/tagColourName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/rw_tag_colour_none"
                 android:textAppearance="@style/TextAppearance.Runway.Caption" />
+
+            <!-- Mixes a colour that is not in the palette and adds it to it. -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tagColourAdd"
+                style="@style/Widget.Runway.Button.Secondary.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rw_colour_picker_add" />
         </LinearLayout>
 
         <!-- The palette the colour matcher understands. Filled in by TagItemFragment. -->

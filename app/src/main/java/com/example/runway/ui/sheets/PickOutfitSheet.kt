@@ -19,16 +19,13 @@ import com.example.runway.ui.outfits.PlanDates
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.launch
 
-// Plans an outfit onto the calendar: pick an outfit for a day, or a day for an outfit.
+// Picks an outfit for one day on the planner.
 class PickOutfitSheet : RunwayBottomSheet(R.layout.sheet_pick_outfit) {
 
     private val viewModel: PickOutfitViewModel by viewModels { PickOutfitViewModel.Factory }
 
     override val sheetTitle: CharSequence
-        get() = getString(
-            if (viewModel.uiState.value.choosingOutfit) R.string.rw_sheet_pick_outfit_title
-            else R.string.rw_plan_schedule_title
-        )
+        get() = getString(R.string.rw_sheet_pick_outfit_title)
 
     // Rows are only rebuilt when what they show changes, not on every state update.
     private var shownRows: Any? = null
@@ -49,8 +46,7 @@ class PickOutfitSheet : RunwayBottomSheet(R.layout.sheet_pick_outfit) {
         content.findViewById<LinearProgressIndicator>(R.id.pickLoading).isVisible = state.isLoading || state.isSaving
 
         val empty = content.findViewById<EmptyStateView>(R.id.pickEmpty)
-        val nothingToPick = state.choosingOutfit && state.outfits.isEmpty()
-        empty.isVisible = !state.isLoading && (state.loadFailed || nothingToPick)
+        empty.isVisible = !state.isLoading && (state.loadFailed || state.outfits.isEmpty())
         if (state.loadFailed) {
             empty.title = getString(R.string.rw_plan_load_failed)
             empty.body = null
@@ -60,11 +56,18 @@ class PickOutfitSheet : RunwayBottomSheet(R.layout.sheet_pick_outfit) {
         }
 
         val options = content.findViewById<LinearLayout>(R.id.pickOptions)
-        val rowsKey = if (state.choosingOutfit) state.outfits else state.days to state.plannedByDay
-        if (!state.isLoading && rowsKey != shownRows) {
-            shownRows = rowsKey
+        if (!state.isLoading && state.outfits != shownRows) {
+            shownRows = state.outfits
             options.removeAllViews()
-            if (state.choosingOutfit) addOutfitRows(options, state) else addDayRows(options, state)
+            state.outfits.forEach { outfit ->
+                options.addView(ListRowView(requireContext()).apply {
+                    setIcon(R.drawable.ic_rw_sparkles)
+                    label = outfit.name
+                    value = outfit.occasion
+                    showChevron = true
+                    onClick { viewModel.onPickOutfit(outfit.id) }
+                })
+            }
         }
         for (i in 0 until options.childCount) options.getChildAt(i).isEnabled = !state.isSaving
 
@@ -79,27 +82,6 @@ class PickOutfitSheet : RunwayBottomSheet(R.layout.sheet_pick_outfit) {
             RunwayToast.show(content, it, R.drawable.ic_rw_alert)
             viewModel.onMessageShown()
         }
-    }
-
-    private fun addOutfitRows(options: LinearLayout, state: PickOutfitUiState) = state.outfits.forEach { outfit ->
-        options.addView(ListRowView(requireContext()).apply {
-            setIcon(R.drawable.ic_rw_sparkles)
-            label = outfit.name
-            value = outfit.occasion
-            showChevron = true
-            onClick { viewModel.onPickOutfit(outfit.id) }
-        })
-    }
-
-    private fun addDayRows(options: LinearLayout, state: PickOutfitUiState) = state.days.forEach { day ->
-        options.addView(ListRowView(requireContext()).apply {
-            setIcon(R.drawable.ic_rw_calendar)
-            label = PlanDates.label(requireContext(), day)
-            // Says what's there already, since picking the day replaces it.
-            value = state.plannedByDay[day]?.let { getString(R.string.rw_plan_replaces, it.name) }
-            showChevron = true
-            onClick { viewModel.onPickDay(day) }
-        })
     }
 
     override fun onDestroyView() {

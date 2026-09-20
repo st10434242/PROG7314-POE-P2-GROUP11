@@ -15,10 +15,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.runway.R
 import com.example.runway.RunwayApplication
 import com.example.runway.databinding.FragmentTagItemBinding
-import com.example.runway.domain.model.ItemColour
+import com.example.runway.domain.model.ColourPalette
+import com.example.runway.domain.model.PaletteColour
 import com.example.runway.domain.model.ItemDraft
 import com.example.runway.domain.model.RunwaySettings
 import com.example.runway.ui.components.RunwayToast
+import com.example.runway.ui.components.ColourPickerDialog
 import com.example.runway.ui.components.SwatchView
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
@@ -34,7 +36,12 @@ class TagItemFragment : Fragment() {
     private val viewModel: AddItemViewModel by activityViewModels { AddItemViewModel.Factory }
 
     private var category: String = CATEGORIES.first()
-    private var colour: ItemColour? = null
+    private val colours get() =
+        (requireActivity().application as RunwayApplication).container.colourRepository
+
+    private var colour: PaletteColour? = null
+    // The built-in colours plus the user's own. Re-read whenever one is added.
+    private var palette: List<PaletteColour> = emptyList()
     private var wearLimit: Int = RunwaySettings.DEFAULT_WEAR_LIMIT
 
     override fun onCreateView(
@@ -51,7 +58,7 @@ class TagItemFragment : Fragment() {
 
         if (savedInstanceState != null) {
             category = savedInstanceState.getString(KEY_CATEGORY) ?: category
-            colour = ItemColour.parse(savedInstanceState.getString(KEY_COLOUR))
+            colour = ColourPalette.parse(savedInstanceState.getString(KEY_COLOUR), colours.custom())
             wearLimit = savedInstanceState.getInt(KEY_WEAR_LIMIT, wearLimit)
         } else {
             // Starts from whatever the user picked in Settings.
@@ -106,8 +113,12 @@ class TagItemFragment : Fragment() {
     private fun buildPalette() {
         val size = resources.getDimensionPixelSize(R.dimen.rw_space_32)
         val gap = resources.getDimensionPixelSize(R.dimen.rw_space_8)
+        val params = LinearLayout.LayoutParams(size, size).apply { marginEnd = gap }
 
-        ItemColour.entries.forEach { option ->
+        palette = colours.palette()
+        binding.tagColourPalette.removeAllViews()
+
+        palette.forEach { option ->
             val swatch = SwatchView(requireContext()).apply {
                 swatchColor = option.argb
                 swatchSize = size
@@ -118,15 +129,25 @@ class TagItemFragment : Fragment() {
                     showColour()
                 }
             }
-            val params = LinearLayout.LayoutParams(size, size).apply { marginEnd = gap }
             binding.tagColourPalette.addView(swatch, params)
+        }
+
+        binding.tagColourAdd.setOnClickListener { addColour() }
+    }
+
+    // A mixed colour joins the palette, so it can be picked again and filtered on later.
+    private fun addColour() {
+        ColourPickerDialog.show(requireContext()) { label, argb ->
+            colour = colours.add(label, argb)
+            buildPalette()
+            showColour()
         }
     }
 
     private fun showColour() {
-        val palette = binding.tagColourPalette
-        for (i in 0 until palette.childCount) {
-            (palette.getChildAt(i) as SwatchView).picked = ItemColour.entries[i] == colour
+        val swatches = binding.tagColourPalette
+        palette.forEachIndexed { i, option ->
+            (swatches.getChildAt(i) as SwatchView).picked = option == colour
         }
         binding.tagColourName.text = colour?.label ?: getString(R.string.rw_tag_colour_none)
     }

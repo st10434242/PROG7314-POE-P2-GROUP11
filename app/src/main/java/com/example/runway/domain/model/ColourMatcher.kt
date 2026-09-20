@@ -24,7 +24,7 @@ data class ColourMatch(
 // (HTML Color Codes, 2026; Android Open Source Project, 2026).
 object ColourMatcher {
 
-    fun relate(reference: ItemColour, candidate: ItemColour): ColourRelationship {
+    fun relate(reference: PaletteColour, candidate: PaletteColour): ColourRelationship {
         if (reference.neutral || candidate.neutral) return ColourRelationship.NEUTRAL
 
         return when (hueGap(reference, candidate)) {
@@ -36,13 +36,13 @@ object ColourMatcher {
     }
 
     // e.g. 350 and 10 should be 20 degrees apart rather than 340
-    private fun hueGap(a: ItemColour, b: ItemColour): Float {
+    private fun hueGap(a: PaletteColour, b: PaletteColour): Float {
         val gap = abs(hsl(a)[0] - hsl(b)[0])
         return min(gap, 360f - gap)
     }
 
     // Splits the channels by hand so this works in unit tests, where android.graphics.Color is only a stub.
-    private fun hsl(colour: ItemColour): FloatArray {
+    private fun hsl(colour: PaletteColour): FloatArray {
         val argb = colour.argb
         return FloatArray(3).also {
             ColorUtils.RGBToHSL((argb shr 16) and 0xFF, (argb shr 8) and 0xFF, argb and 0xFF, it)

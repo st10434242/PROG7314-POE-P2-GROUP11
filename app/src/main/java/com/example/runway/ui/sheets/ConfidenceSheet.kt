@@ -18,7 +18,6 @@ import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 
 // "How confident did you feel?" - shown after marking an outfit worn.
-// Takes an [com.example.runway.ui.navigation.NavArgs.OUTFIT_ID] argument.
 
 class ConfidenceSheet : RunwayBottomSheet(R.layout.sheet_confidence) {
 

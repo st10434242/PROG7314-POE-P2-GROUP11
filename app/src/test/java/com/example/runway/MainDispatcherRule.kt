@@ -9,10 +9,7 @@ import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-/**
- * viewModelScope runs on Dispatchers.Main, which does not exist on the JVM.
- * This rule swaps in a test dispatcher for the duration of each test.
- */
+// viewModelScope needs Dispatchers.Main, which the JVM has no real one of, so swap in a test one.
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainDispatcherRule(
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()

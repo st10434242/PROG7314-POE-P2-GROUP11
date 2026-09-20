@@ -9,51 +9,50 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-// SCRUM-143: the hue-angle rules behind the smart colour matcher.
-// Pairs were picked well away from the 30/90/150 degree boundaries.
+// SCRUM-143: the hue-angle rules behind the colour matcher.
 class ColourMatcherTest {
 
     @Test
     fun `anything with a neutral is neutral`() {
-        assertEquals(NEUTRAL, ColourMatcher.relate(ItemColour.BLACK, ItemColour.RED))
-        assertEquals(NEUTRAL, ColourMatcher.relate(ItemColour.RED, ItemColour.BEIGE))
-        assertEquals(NEUTRAL, ColourMatcher.relate(ItemColour.NAVY, ItemColour.WHITE))
+        assertEquals(NEUTRAL, ColourMatcher.relate(ItemColour.BLACK.asPaletteColour(), ItemColour.RED.asPaletteColour()))
+        assertEquals(NEUTRAL, ColourMatcher.relate(ItemColour.RED.asPaletteColour(), ItemColour.BEIGE.asPaletteColour()))
+        assertEquals(NEUTRAL, ColourMatcher.relate(ItemColour.NAVY.asPaletteColour(), ItemColour.WHITE.asPaletteColour()))
     }
 
     @Test
     fun `two shades of the same hue are tonal`() {
         // About 4 degrees apart.
-        assertEquals(TONAL, ColourMatcher.relate(ItemColour.BLUE, ItemColour.LIGHT_BLUE))
+        assertEquals(TONAL, ColourMatcher.relate(ItemColour.BLUE.asPaletteColour(), ItemColour.LIGHT_BLUE.asPaletteColour()))
     }
 
     @Test
     fun `neighbours on the wheel are analogous`() {
         // About 41 degrees apart.
-        assertEquals(ANALOGOUS, ColourMatcher.relate(ItemColour.BLUE, ItemColour.TEAL))
+        assertEquals(ANALOGOUS, ColourMatcher.relate(ItemColour.BLUE.asPaletteColour(), ItemColour.TEAL.asPaletteColour()))
     }
 
     @Test
     fun `a third of the way round is triadic`() {
         // About 130 degrees apart.
-        assertEquals(TRIADIC, ColourMatcher.relate(ItemColour.GREEN, ItemColour.PURPLE))
+        assertEquals(TRIADIC, ColourMatcher.relate(ItemColour.GREEN.asPaletteColour(), ItemColour.PURPLE.asPaletteColour()))
     }
 
     @Test
     fun `opposites are complementary`() {
         // About 179 degrees apart.
-        assertEquals(COMPLEMENTARY, ColourMatcher.relate(ItemColour.RED, ItemColour.TEAL))
+        assertEquals(COMPLEMENTARY, ColourMatcher.relate(ItemColour.RED.asPaletteColour(), ItemColour.TEAL.asPaletteColour()))
     }
 
     @Test
     fun `the gap is measured the short way round the wheel`() {
         // Red is near 354 and orange near 27, so they're 33 degrees apart, not 327.
-        assertEquals(ANALOGOUS, ColourMatcher.relate(ItemColour.RED, ItemColour.ORANGE))
+        assertEquals(ANALOGOUS, ColourMatcher.relate(ItemColour.RED.asPaletteColour(), ItemColour.ORANGE.asPaletteColour()))
     }
 
     @Test
     fun `the order of the two colours doesn't matter`() {
-        ItemColour.entries.forEach { a ->
-            ItemColour.entries.forEach { b ->
+        ColourPalette.builtIn.forEach { a ->
+            ColourPalette.builtIn.forEach { b ->
                 assertEquals(ColourMatcher.relate(a, b), ColourMatcher.relate(b, a))
             }
         }

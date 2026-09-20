@@ -9,10 +9,7 @@ import androidx.core.view.isVisible
 import com.example.runway.R
 import com.example.runway.databinding.ViewStatTileBinding
 
-/**
- * A card showing a single statistic: a large value, a label, and an optional sub-label.
- * It draws its own card background, so it does not need wrapping in a MaterialCardView.
- */
+// A card showing one statistic: a large value, a label and an optional sub-label.
 class StatTileView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

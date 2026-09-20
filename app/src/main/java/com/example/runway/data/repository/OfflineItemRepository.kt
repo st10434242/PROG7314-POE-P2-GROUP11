@@ -18,10 +18,7 @@ import java.io.IOException
 import java.time.Instant
 import java.util.UUID
 
-// Offline-first wardrobe repository.
-// Room is the source of truth; Retrofit reconciles it with the API.
-// Network work runs off the main thread.
-// Uses kotlinx.coroutines for the sync work.
+// Offline-first wardrobe: Room is the source of truth and Retrofit reconciles it with the API.
 class OfflineItemRepository(
     private val dao: ItemDao,
     private val api: RunwayApi,

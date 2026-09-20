@@ -13,6 +13,7 @@ import com.example.runway.data.remote.api.toUserMessage
 import com.example.runway.domain.model.Item
 import com.example.runway.domain.repository.ItemRepository
 import com.example.runway.domain.repository.OutfitRepository
+import com.example.runway.domain.repository.PlanRepository
 import com.example.runway.domain.repository.RatingRepository
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,7 @@ class OutfitDetailViewModel(
     private val outfitRepository: OutfitRepository,
     private val itemRepository: ItemRepository,
     private val ratingRepository: RatingRepository,
+    private val planRepository: PlanRepository,
 ) : ViewModel() {
 
     private val outfitId: String = checkNotNull(savedStateHandle[NavArgs.OUTFIT_ID]) {
@@ -82,7 +84,9 @@ class OutfitDetailViewModel(
     private fun loadRatings() {
         viewModelScope.launch {
             ratingRepository.listForOutfit(outfitId)
-                .onSuccess { summary -> _uiState.update { it.copy(ratings = summary) } }
+                .onSuccess { summary -> _uiState.update { it.copy(ratings = summary, ratingsFailed = false) } }
+                // Without this a failed load looks exactly like having no ratings yet.
+                .onFailure { _uiState.update { it.copy(ratingsFailed = true) } }
         }
     }
 
@@ -102,6 +106,17 @@ class OutfitDetailViewModel(
     }
 
     fun onWearHandled() = _uiState.update { it.copy(wearLoggedAt = null) }
+
+    // Plans this outfit for a day the user picked on the calendar.
+    fun onScheduled(date: java.time.LocalDate) {
+        viewModelScope.launch {
+            planRepository.plan(date, outfitId)
+                .onSuccess { _uiState.update { it.copy(scheduledFor = date) } }
+                .onFailure { e -> _uiState.update { it.copy(errorMessage = e.toUserMessage()) } }
+        }
+    }
+
+    fun onScheduleHandled() = _uiState.update { it.copy(scheduledFor = null) }
 
     fun onNameChanged(value: String) = _uiState.update { it.copy(name = value) }
 
@@ -155,6 +170,7 @@ class OutfitDetailViewModel(
                     outfitRepository = app.container.outfitRepository,
                     itemRepository = app.container.itemRepository,
                     ratingRepository = app.container.ratingRepository,
+                    planRepository = app.container.planRepository,
                 )
             }
         }

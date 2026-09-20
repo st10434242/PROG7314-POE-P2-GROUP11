@@ -10,10 +10,7 @@ import androidx.core.view.isVisible
 import com.example.runway.databinding.ViewBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-/**
- * Base class for the app's bottom sheets. Subclasses supply a content layout and a
- * title; the handle, close button and optional footer come from here.
- */
+// Base class for the app's bottom sheets. Subclasses supply the content layout and the title.
 abstract class RunwayBottomSheet(
     @LayoutRes private val contentLayoutRes: Int,
 ) : BottomSheetDialogFragment() {
@@ -24,10 +21,7 @@ abstract class RunwayBottomSheet(
     /** Heading shown at the top of the sheet. */
     abstract val sheetTitle: CharSequence
 
-    /**
-     * Optional layout pinned below the scrolling content, e.g. an "Apply filters"
-     * button. Null - the default - leaves the footer and its divider hidden.
-     */
+    // Optional layout pinned under the content, like an Apply button. Null hides the footer.
     @get:LayoutRes
     protected open val footerLayoutRes: Int? = null
 

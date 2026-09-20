@@ -22,33 +22,25 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 data class PickOutfitUiState(
-    // Set when choosing an outfit for this day.
+    // The day an outfit is being chosen for.
     val date: LocalDate? = null,
-    // Set when choosing a day for this outfit.
-    val outfitId: String? = null,
     val outfits: List<Outfit> = emptyList(),
-    val days: List<LocalDate> = emptyList(),
-    // What's already on each of those days, so the list can say what gets replaced.
-    val plannedByDay: Map<LocalDate, Outfit> = emptyMap(),
     val isLoading: Boolean = true,
     val loadFailed: Boolean = false,
     val isSaving: Boolean = false,
-    // The day that was just planned, so the sheet can say so and close.
+    // Set once the day is planned, so the sheet can say so and close.
     val plannedFor: LocalDate? = null,
     val errorMessage: String? = null,
-) {
-    val choosingOutfit: Boolean get() = date != null
-}
+)
 
+// Picks an outfit for one day. The other direction is a date picker on the outfit screen.
 class PickOutfitViewModel(
-    date: LocalDate?,
-    outfitId: String?,
+    private val date: LocalDate,
     private val planRepository: PlanRepository,
     private val outfitRepository: OutfitRepository,
-    private val today: () -> LocalDate = LocalDate::now,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PickOutfitUiState(date = date, outfitId = outfitId))
+    private val _uiState = MutableStateFlow(PickOutfitUiState(date = date))
     val uiState: StateFlow<PickOutfitUiState> = _uiState.asStateFlow()
 
     init {
@@ -58,45 +50,13 @@ class PickOutfitViewModel(
     fun load() {
         _uiState.update { it.copy(isLoading = true, loadFailed = false) }
         viewModelScope.launch {
-            val outfits = outfitRepository.list().getOrElse {
-                _uiState.update { state -> state.copy(isLoading = false, loadFailed = true) }
-                return@launch
-            }
-
-            if (_uiState.value.choosingOutfit) {
-                _uiState.update { it.copy(isLoading = false, outfits = outfits) }
-                return@launch
-            }
-
-            val start = today()
-            val days = (0 until DAYS_AHEAD).map { start.plusDays(it.toLong()) }
-            val byId = outfits.associateBy { it.id }
-            // Not knowing what's already planned shouldn't stop someone planning.
-            val plans = planRepository.between(days.first(), days.last()).getOrDefault(emptyList())
-            _uiState.update {
-                it.copy(
-                    isLoading = false,
-                    outfits = outfits,
-                    days = days,
-                    plannedByDay = plans.mapNotNull { plan -> byId[plan.outfitId]?.let { o -> plan.date to o } }.toMap(),
-                )
-            }
+            outfitRepository.list()
+                .onSuccess { outfits -> _uiState.update { it.copy(isLoading = false, outfits = outfits) } }
+                .onFailure { _uiState.update { it.copy(isLoading = false, loadFailed = true) } }
         }
     }
 
     fun onPickOutfit(outfitId: String) {
-        val date = _uiState.value.date ?: return
-        save(date, outfitId)
-    }
-
-    fun onPickDay(date: LocalDate) {
-        val outfitId = _uiState.value.outfitId ?: return
-        save(date, outfitId)
-    }
-
-    fun onMessageShown() = _uiState.update { it.copy(errorMessage = null) }
-
-    private fun save(date: LocalDate, outfitId: String) {
         if (_uiState.value.isSaving) return
         _uiState.update { it.copy(isSaving = true) }
         viewModelScope.launch {
@@ -106,17 +66,18 @@ class PickOutfitViewModel(
         }
     }
 
-    companion object {
-        // Planning from an outfit offers the coming week, like the mockup.
-        const val DAYS_AHEAD = 7
+    fun onMessageShown() = _uiState.update { it.copy(errorMessage = null) }
 
+    companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as RunwayApplication
                 val handle: SavedStateHandle = createSavedStateHandle()
+                val iso = checkNotNull(handle.get<String>(NavArgs.DATE_ISO)) {
+                    "PickOutfitViewModel requires a ${NavArgs.DATE_ISO} argument"
+                }
                 PickOutfitViewModel(
-                    date = handle.get<String>(NavArgs.DATE_ISO)?.let { LocalDate.parse(it) },
-                    outfitId = handle.get<String>(NavArgs.OUTFIT_ID),
+                    date = LocalDate.parse(iso),
                     planRepository = app.container.planRepository,
                     outfitRepository = app.container.outfitRepository,
                 )

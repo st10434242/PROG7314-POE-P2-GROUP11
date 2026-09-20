@@ -274,9 +274,6 @@
             android:id="@+id/action_outfitDetail_to_confidenceSheet"
             app:destination="@id/confidenceSheet" />
         <action
-            android:id="@+id/action_outfitDetail_to_pickOutfitSheet"
-            app:destination="@id/pickOutfitSheet" />
-        <action
             android:id="@+id/action_outfitDetail_to_builder"
             app:destination="@id/outfitBuilderFragment" />
     </fragment>
@@ -423,14 +420,7 @@
         android:label="Pick Outfit">
         <argument
             android:name="dateISO"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
-        <argument
-            android:name="outfitId"
-            app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:argType="string" />
     </dialog>
 
     <dialog

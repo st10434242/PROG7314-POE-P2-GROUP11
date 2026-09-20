@@ -4,7 +4,7 @@ package com.example.runway.domain.model
 data class ItemDraft(
     val name: String = "",
     val category: String = "TOP",
-    val colour: ItemColour? = null,
+    val colour: PaletteColour? = null,
     val brand: String = "",
     val size: String = "",
     // Kept as text so "12.5.3" can be flagged instead of quietly becoming no price.

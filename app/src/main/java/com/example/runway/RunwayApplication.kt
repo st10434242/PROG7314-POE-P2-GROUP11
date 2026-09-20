@@ -5,11 +5,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.example.runway.di.AppContainer
 import com.example.runway.domain.model.ThemeOption
 
-/**
- * Registered in AndroidManifest.xml as android:name=".RunwayApplication".
- * Forgetting that registration is what produces a ClassCastException the
- * first time a ViewModel factory runs.
- */
+// Registered in AndroidManifest.xml as android:name=".RunwayApplication".
 class RunwayApplication : Application() {
 
     lateinit var container: AppContainer

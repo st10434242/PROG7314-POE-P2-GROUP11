@@ -8,6 +8,7 @@ import com.example.runway.domain.model.Outfit
 import com.example.runway.domain.model.OutfitLayer
 import com.example.runway.fake.FakeItemRepository
 import com.example.runway.fake.FakeOutfitRepository
+import com.example.runway.fake.FakePlanRepository
 import com.example.runway.fake.FakeRatingRepository
 import com.example.runway.ui.navigation.NavArgs
 import kotlinx.coroutines.test.runTest
@@ -19,6 +20,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
+import java.time.LocalDate
 
 // SCRUM-144 and 146: the outfit screen, including its confidence ratings.
 class OutfitDetailViewModelTest {
@@ -36,12 +38,14 @@ class OutfitDetailViewModelTest {
     private val outfits = FakeOutfitRepository(outfit)
     private val items = FakeItemRepository()
     private val ratings = FakeRatingRepository()
+    private val plans = FakePlanRepository()
 
     private fun viewModel() = OutfitDetailViewModel(
         SavedStateHandle(mapOf(NavArgs.OUTFIT_ID to "o1")),
         outfits,
         items,
         ratings,
+        plans,
     )
 
     private fun wardrobe() = items.emit(
@@ -151,5 +155,41 @@ class OutfitDetailViewModelTest {
         vm.reload()
         assertFalse(vm.uiState.value.loadFailed)
         assertEquals("Friday dinner", vm.uiState.value.name)
+    }
+
+    @Test
+    fun `ratings that fail to load are not reported as having none`() = runTest {
+        ratings.listError = IOException("offline")
+        val vm = viewModel()
+
+        assertTrue(vm.uiState.value.ratingsFailed)
+        assertFalse(vm.uiState.value.ratings.hasRatings)
+
+        ratings.listError = null
+        vm.onRatingsChanged()
+        assertFalse(vm.uiState.value.ratingsFailed)
+    }
+
+    @Test
+    fun `scheduling plans the outfit for the day picked`() = runTest {
+        val vm = viewModel()
+        val friday = LocalDate.of(2026, 9, 25)
+
+        vm.onScheduled(friday)
+
+        assertEquals("o1", plans.plans[friday])
+        assertEquals(friday, vm.uiState.value.scheduledFor)
+    }
+
+    @Test
+    fun `a schedule that fails says so and plans nothing`() = runTest {
+        plans.planError = IOException("offline")
+        val vm = viewModel()
+
+        vm.onScheduled(LocalDate.of(2026, 9, 25))
+
+        assertTrue(plans.plans.isEmpty())
+        assertNull(vm.uiState.value.scheduledFor)
+        assertNotNull(vm.uiState.value.errorMessage)
     }
 }

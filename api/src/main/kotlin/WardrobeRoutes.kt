@@ -7,7 +7,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 
 // Wardrobe-wide endpoints, as opposed to the single-item ones in ItemRoutes.
-// Built on the Ktor server framework.
 fun Route.wardrobeRoutes(service: ItemService = ItemService()) {
     authenticate(FIREBASE_AUTH) {
         route("/api/v1/wardrobe") {

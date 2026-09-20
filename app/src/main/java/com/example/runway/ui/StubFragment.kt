@@ -1,6 +1,5 @@
 package com.example.runway.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,14 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.runway.databinding.FragmentStubBinding
-import com.example.runway.ui.catalog.CatalogActivity
 import com.example.runway.ui.components.EmptyStateView
 
-/**
- * Placeholder for a tab root that has not been built yet. Each tab subclasses
- * this and supplies its own title and body text.
- */
+// Placeholder for a screen that has not been built yet.
 abstract class StubFragment : Fragment() {
 
     /** Title shown in the header and the empty state. */
@@ -25,6 +21,9 @@ abstract class StubFragment : Fragment() {
     /** Short description of what will live on this screen. */
     @get:StringRes
     protected abstract val bodyRes: Int
+
+    /** Off for a screen with nothing behind it, like the first screen of the app. */
+    protected open val showBack: Boolean = true
 
     private var _binding: FragmentStubBinding? = null
     private val binding get() = requireNotNull(_binding) { "Accessed binding outside the view lifecycle" }
@@ -58,10 +57,12 @@ abstract class StubFragment : Fragment() {
         binding.stubEmpty.title = title
         binding.stubEmpty.body = getString(bodyRes)
 
-        binding.stubCatalog.setOnClickListener {
-            Log.d(logTag, "opening the component catalog")
-            startActivity(Intent(requireContext(), CatalogActivity::class.java))
+        binding.stubHeader.onBackClick {
+            Log.d(logTag, "back from a placeholder screen")
+            findNavController().navigateUp()
         }
+        // onBackClick turns the arrow on, so hiding it has to come after.
+        binding.stubHeader.setShowBack(showBack)
     }
 
     override fun onResume() {

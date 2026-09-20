@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 // ViewModel for the wardrobe list.
-// Synchronisation runs off the main thread.
 
 class ItemsViewModel(
     private val repository: ItemRepository

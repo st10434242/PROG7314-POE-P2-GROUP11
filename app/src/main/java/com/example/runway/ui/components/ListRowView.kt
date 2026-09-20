@@ -13,10 +13,7 @@ import com.example.runway.R
 import com.example.runway.databinding.ViewListRowBinding
 import com.google.android.material.color.MaterialColors
 
-/**
- * One row in a settings-style list: optional icon, a label, an optional value, and
- * either a trailing chevron or a trailing control such as a switch.
- */
+// One row in a settings-style list: icon, label, optional value, then a chevron or a control.
 class ListRowView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

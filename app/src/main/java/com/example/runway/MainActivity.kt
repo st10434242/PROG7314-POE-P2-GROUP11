@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         applyWindowInsets()
-        setUpNavigation()
+        setUpNavigation(isFreshStart = savedInstanceState == null)
         setUpFab()
         watchConnection()
     }
@@ -73,14 +73,16 @@ class MainActivity : AppCompatActivity() {
 
     /** Connects the bottom navigation bar to the nav graph and hides the shell chrome
      * (bottom bar + FAB) on destinations that are not part of the four-tab shell. */
-    private fun setUpNavigation() {
+    private fun setUpNavigation(isFreshStart: Boolean) {
         val host = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
         navController = host.navController
 
         // Re-inflated so a returning user does not land on the sign-in screen.
-        val graph = navController.navInflater.inflate(R.navigation.runway_nav_graph)
-        graph.setStartDestination(resolveStartDestination())
-        navController.graph = graph
+        if (isFreshStart) {
+            val graph = navController.navInflater.inflate(R.navigation.runway_nav_graph)
+            graph.setStartDestination(resolveStartDestination())
+            navController.graph = graph
+        }
 
         binding.bottomNav.setupWithNavController(navController)
 

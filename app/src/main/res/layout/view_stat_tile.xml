@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Internals of StatTileView: a value with a label underneath. -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:parentTag="android.widget.LinearLayout"
     tools:orientation="vertical">
@@ -12,6 +13,9 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.Runway.Display.Stat"
+        app:autoSizeMaxTextSize="19sp"
+        app:autoSizeMinTextSize="11sp"
+        app:autoSizeTextType="uniform"
         tools:text="26" />
 
     <TextView

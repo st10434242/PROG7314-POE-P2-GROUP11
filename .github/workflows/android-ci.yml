@@ -1,4 +1,5 @@
-# Continuous integration for Runway (SCRUM-147).
+# Continuous integration workflow for the Runway app and REST API (IIE, 2026).
+# Built with GitHub Actions (GitHub, 2026a) - SCRUM-147.
 # On every push and pull request this workflow:
 #   1. builds the Android app (debug APK) and runs its unit tests
 #   2. runs the API unit tests
@@ -10,9 +11,9 @@ on:
     branches: ["**"]
   pull_request:
     branches: [main]
-  workflow_dispatch: # lets the team start a build by hand from the Actions tab
+  workflow_dispatch: # (GitHub, 2026b) lets the team start a build by hand from the Actions tab
 
-# A newer push to the same branch cancels the older, still-running build.
+# A newer push to the same branch cancels the older, still-running build (GitHub, 2026b).
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -34,7 +35,7 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      # Caches Gradle downloads between runs so builds after the first are faster.
+      # Caches Gradle downloads between runs so builds after the first are faster (Gradle, 2026).
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
 
@@ -48,6 +49,7 @@ jobs:
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug --stacktrace
 
+      # Stores the APK on the run page so it can be downloaded (GitHub, 2026c).
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
@@ -97,3 +99,10 @@ jobs:
           name: api-test-report
           path: api/build/reports/tests/test/
           retention-days: 14
+
+# Reference List
+# GitHub, 2026a. Understanding GitHub Actions. [online] Available at: <https://docs.github.com/en/actions/get-started/understand-github-actions> [Accessed 21 September 2026].
+# GitHub, 2026b. Workflow syntax for GitHub Actions. [online] Available at: <https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax> [Accessed 21 September 2026].
+# GitHub, 2026c. Storing and sharing data from a workflow. [online] Available at: <https://docs.github.com/en/actions/tutorials/store-and-share-data> [Accessed 21 September 2026].
+# Gradle, 2026. Gradle GitHub Actions: setup-gradle. [online] Available at: <https://github.com/gradle/actions/blob/main/docs/setup-gradle.md> [Accessed 21 September 2026].
+# IIE, 2026. PROG7314 Module Manual. The Independent Institute of Education (Pty) Ltd.

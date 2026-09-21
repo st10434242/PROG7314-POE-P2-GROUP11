@@ -206,7 +206,14 @@ SCRUM-136, SCRUM-140
 
 ## Continuous integration
 
-**Coming soon: SCRUM-147.** A GitHub Actions workflow that builds the app and runs both test suites on every push and pull request. It will live in `.github/workflows/`, and this section will describe it once it is in place. Until then both suites are run locally before a pull request is opened.
+GitHub Actions builds and tests the project on every push to any branch and on every pull request into `main` (SCRUM-147). The workflow is [`.github/workflows/android-ci.yml`](.github/workflows/android-ci.yml) and has two jobs that run side by side on Ubuntu with JDK 21:
+
+| Job | What it runs |
+|---|---|
+| Build app and run unit tests | `./gradlew :app:testDebugUnitTest`, then `./gradlew :app:assembleDebug` |
+| Run API tests | `cd api && ./gradlew test` |
+
+Each run uploads the debug APK and both HTML test reports as downloadable artifacts, kept for 14 days. Test reports are uploaded even when a test fails, so the failure can be read without rebuilding. A newer push to the same branch cancels the older run, and a build can be started by hand from the **Actions** tab. A pull request is only merged once both jobs pass.
 
 ## AI usage
 

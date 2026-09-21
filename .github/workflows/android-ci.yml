@@ -1,0 +1,99 @@
+# Continuous integration for Runway (SCRUM-147).
+# On every push and pull request this workflow:
+#   1. builds the Android app (debug APK) and runs its unit tests
+#   2. runs the API unit tests
+#   3. uploads the APK and the test reports so they can be downloaded from the run
+name: Android CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # lets the team start a build by hand from the Actions tab
+
+# A newer push to the same branch cancels the older, still-running build.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Build app and run unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      # AGP 9 needs JDK 17 or newer; 21 matches the API's toolchain.
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      # Caches Gradle downloads between runs so builds after the first are faster.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      # gradlew is committed from Windows without the executable bit.
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew :app:testDebugUnitTest --stacktrace
+
+      - name: Build debug APK
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: runway-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+      - name: Upload unit test report
+        if: always() # upload the report even when a test fails, so the failure can be read
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-unit-test-report
+          path: app/build/reports/tests/testDebugUnitTest/
+          retention-days: 14
+
+  api:
+    name: Run API tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: api
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Run API tests
+        run: ./gradlew test --stacktrace
+
+      - name: Upload API test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-report
+          path: api/build/reports/tests/test/
+          retention-days: 14

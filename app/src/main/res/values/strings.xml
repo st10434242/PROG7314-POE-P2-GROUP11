@@ -154,14 +154,14 @@
     <string name="rw_tag_colour">Colour</string>
     <string name="rw_tag_brand">Brand</string>
     <string name="rw_tag_size">Size</string>
-    <string name="rw_tag_price">What it cost</string>
+    <string name="rw_tag_price">Price</string>
 
     <!-- Bold label above each text field. -->
     <string name="rw_tag_name_label">Name</string>
     <string name="rw_tag_colour_label">Colour</string>
     <string name="rw_tag_brand_label">Brand</string>
     <string name="rw_tag_size_label">Size</string>
-    <string name="rw_tag_price_label">What it cost</string>
+    <string name="rw_tag_price_label">Price</string>
 
     <!-- Helper text under each field, visible at all times. -->
     <string name="rw_tag_name_example">For example: Blue oxford shirt</string>
@@ -184,8 +184,8 @@
     <string name="rw_tag_error_price_number">Use numbers only, like 349.99</string>
     <string name="rw_tag_error_price_negative">A price can\'t be negative</string>
     <string name="rw_tag_brand_example">For example: Uniqlo</string>
-    <string name="rw_tag_size_example">S, M, L or a number like 32</string>
-    <string name="rw_tag_price_example">Numbers only, for example 349.99</string>
+    <string name="rw_tag_size_example">For example: M or 32</string>
+    <string name="rw_tag_price_example">For example: 349.99</string>
     <string name="rw_tag_save">Save item</string>
     <string name="rw_tag_saving">Saving\u2026</string>
     <string name="rw_tag_saved">Item added to your wardrobe</string>

@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="@dimen/rw_space_6"
             app:helperText="@string/rw_tag_name_example"
             app:hintEnabled="false">
 
@@ -73,9 +74,8 @@
             android:paddingTop="12dp">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/rw_tag_colour_label"
                 android:textStyle="bold" />
 
@@ -84,6 +84,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/rw_space_8"
                 android:text="@string/rw_tag_colour_none"
                 android:textAppearance="@style/TextAppearance.Runway.Caption" />
 
@@ -126,7 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/rw_space_6"
             app:helperText="@string/rw_tag_brand_example"
             app:hintEnabled="false">
 
@@ -150,7 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/rw_space_6"
             app:helperText="@string/rw_tag_size_example"
             app:hintEnabled="false">
 
@@ -175,7 +176,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/rw_space_6"
             app:helperText="@string/rw_tag_price_example"
             app:hintEnabled="false">
 

@@ -28,15 +28,37 @@ The problem is a full wardrobe with nothing to wear: clothes that were bought, w
 
 ## Screenshots
 
-Not captured yet. Save them into `docs/screenshots/` under these names and they will appear here:
+The following screenshots are included from `docs/screenshots/`:
 
-`sign-in.png` · `home.png` · `wardrobe.png` · `add-item-cutout.png` · `outfit-builder.png` · `planner.png` · `profile.png`
+### Sign in
 
 With an emulator running, this writes one straight to disk:
+![Sign in](docs/screenshots/sign-in.png)
 
-```bash
-adb exec-out screencap -p > docs/screenshots/home.png
-```
+### Home
+
+![Home](docs/screenshots/home.png)
+
+### Wardrobe
+
+![Wardrobe](docs/screenshots/wardrobe.png)
+
+### Add item cut-out
+
+![Add item cut-out](docs/screenshots/add-item-cutout.png)
+
+### Outfit builder
+
+![Outfit builder](docs/screenshots/outfit-builder.png)
+
+### Planner
+
+![Planner](docs/screenshots/planner.png)
+
+### Profile
+
+![Profile](docs/screenshots/profile.png)
+
 
 ## Stack
 

@@ -3,6 +3,11 @@
 A digital wardrobe app for Android. Photograph your clothes, build outfits on a drag-and-drop canvas, plan them across a month, and see what everything actually costs you per wear.
 
 Built for PROG7314 Part 2 by Group 11, from the design and clickable prototype produced in Part 1.
+## Youtube Link to Runway API explanation Video
+https://youtu.be/tZoQF8T4uEI?si=WMqXCy0hW0Q7QdyY 
+
+## Youtube Link to feature walkthrough video
+https://youtu.be/5MOHefsDEzw?si=Z6loIKRpBoeh_k9k
 
 ## What it does
 
